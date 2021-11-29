@@ -19,6 +19,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    void addChat(const QString& name);
 };
 
 #endif // MAINWINDOW_H

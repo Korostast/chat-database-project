@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>989</width>
-    <height>824</height>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@ color: rgb(231, 231, 231);</string>
      </layout>
     </item>
     <item>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0,0,0" columnminimumwidth="1,200,1,1,1,1">
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0,0" columnminimumwidth="1,200,1,1,1">
       <item row="0" column="4">
        <spacer name="horizontalSpacer_4">
         <property name="orientation">
@@ -191,41 +191,9 @@ color: rgb(231, 231, 231);</string>
          </size>
         </property>
         <widget class="QWidget" name="page_5">
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="1">
-           <widget class="QScrollArea" name="scrollArea">
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>520</width>
-               <height>754</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_6">
-              <item>
-               <layout class="QVBoxLayout" name="chats_layout"/>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-           </widget>
+         <layout class="QGridLayout" name="gridLayout_4" rowstretch="0" columnstretch="0">
+          <item row="0" column="0">
+           <widget class="QListWidget" name="listWidget"/>
           </item>
          </layout>
         </widget>

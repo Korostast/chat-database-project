@@ -30,7 +30,10 @@ find_package(Qt${QT_MAJOR_VERSION} COMPONENTS Widgets REQUIRED PATHS $ENV{Qt${QT
 add_executable(${TARGET_NAME}
         source/main.cpp
         source/MainWindow.cpp
-        include/MainWindow.h)
+        include/MainWindow.h
+        include/ChatForm.h
+        source/ChatForm.cpp
+        resources/image.qrc)
 
 #Copy required libraries into work directory
 if (WIN32)
