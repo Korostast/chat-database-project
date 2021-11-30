@@ -1,5 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource>
-        <file>images/testImage.png</file>
+        <file alias="chatDefaultImage.png">images/testImage.png</file>
     </qresource>
 </RCC>

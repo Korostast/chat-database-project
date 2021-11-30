@@ -33,7 +33,9 @@ add_executable(${TARGET_NAME}
         include/MainWindow.h
         include/ChatForm.h
         source/ChatForm.cpp
-        resources/image.qrc)
+        resources/image.qrc
+        source/UserInfo.cpp
+        include/UserInfo.h)
 
 #Copy required libraries into work directory
 if (WIN32)

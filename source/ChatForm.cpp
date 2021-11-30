@@ -12,8 +12,7 @@ ChatForm::~ChatForm() {
 }
 
 void ChatForm::mouseReleaseEvent(QMouseEvent *event) {
-    QWidget::mousePressEvent(event);
-    qDebug() << "TES";
+    qDebug() << this->ui->name->text();
 }
 
 void ChatForm::setChatName(const QString& name) const {
@@ -41,4 +40,8 @@ void ChatForm::setChatAvatar(const QString &pathToImage, const int size) const {
     QPixmap resultPixmap = getCircularPixmap(pathToImage, size);
 
     ui->avatar->setPixmap(resultPixmap);
+}
+
+void ChatForm::mousePressEvent(QMouseEvent *event) {
+    qDebug() << "Pressed";
 }

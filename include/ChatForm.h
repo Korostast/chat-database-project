@@ -23,11 +23,13 @@ public:
 
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    void setChatName(const QString& name) const;
+    void mousePressEvent(QMouseEvent *event) override;
 
-    void setChatAvatar(const QString& pathToImage, int size) const;
+    void setChatName(const QString &name) const;
 
-    static QPixmap getCircularPixmap(const QString &pathToImage, int size) ;
+    void setChatAvatar(const QString &pathToImage, int size) const;
+
+    static QPixmap getCircularPixmap(const QString &pathToImage, int size);
 };
 
 #endif //CHATDATABASEPROJECT_CHATFORM_H
