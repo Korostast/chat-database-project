@@ -9,6 +9,10 @@
 
 #define REGISTRATION_PAGE 1
 
+#define CHAT_LIST_PAGE 0
+
+#define MESSAGES_PAGE 1
+
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QPlainTextEdit>
@@ -35,6 +39,7 @@ class MainWindow : public QMainWindow {
 Q_OBJECT
 
 public:
+
     STATE currentState;
 
     static ChatForm *currentChat;
@@ -45,9 +50,11 @@ public:
 
     static QPixmap getCircularPixmap(const QString &pathToImage, int size);
 
-    static void openChat();
+    void openChat();
 
     bool eventFilter(QObject *object, QEvent *event) override;
+
+    void updateChat(int id, const QString &name, const QString &avatar, ROLE role = UNCHANGED);
 
 private:
 
@@ -59,15 +66,15 @@ private:
 
     QMap<int, QListWidgetItem *> chatMap;
 
-    void addChat(int id, const QString &name, const QString &avatar, bool isGroup);
+    void addChat(int id, const QString &name, const QString &avatar, bool isGroup, int countMembers, ROLE role);
 
     void addMessage(int id, const QString &username, const QString &time, const QString &avatar, const QString &content);
-
-    void updateChat(int id, const QString &name, const QString &avatar);
 
     static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
 
     int getNewEditTextHeight(const QSizeF &docSize, const QPlainTextEdit *textEdit, int &countLines);
+
+    static bool checkMessage(QString &content);
 
 private slots:
 
@@ -82,6 +89,10 @@ private slots:
     void messageTextChanged(QSizeF docSize);
 
     void chat_name_label_released();
+
+    void chats_button_released();
+
+    void sendMessage();
 };
 
 #endif // MAINWINDOW_H

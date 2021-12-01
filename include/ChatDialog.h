@@ -2,6 +2,7 @@
 #define CHATDATABASEPROJECT_CHATDIALOG_H
 
 #include <QDialog>
+#include "ChatForm.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,8 +18,13 @@ public:
 
     ~ChatDialog() override;
 
+    void setupCurrentChatUi(ChatForm *chat);
+
 private:
     Ui::ChatDialog *ui;
+
+private slots:
+    void changeChatName();
 };
 
 #endif //CHATDATABASEPROJECT_CHATDIALOG_H

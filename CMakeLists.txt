@@ -35,7 +35,7 @@ add_executable(${TARGET_NAME}
         source/ChatForm.cpp
         resources/image.qrc
         source/UserInfo.cpp
-        include/UserInfo.h include/UserMessageForm.h source/UserMessageForm.h.cpp include/ClickableLabel.h source/ClickableLabel.cpp include/ChatDialog.h source/ChatDialog.cpp)
+        include/UserInfo.h include/UserMessageForm.h source/UserMessageForm.cpp include/ClickableLabel.h source/ClickableLabel.cpp include/ChatDialog.h source/ChatDialog.cpp include/CustomPlainTextEdit.h source/CustomPlainTextEdit.cpp source/Authentication.cpp)
 
 #Copy required libraries into work directory
 if (WIN32)

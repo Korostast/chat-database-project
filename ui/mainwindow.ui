@@ -30,7 +30,7 @@
     <item row="1" column="0">
      <widget class="QStackedWidget" name="app_stacked_widget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0">
@@ -609,7 +609,7 @@
            </layout>
           </item>
           <item row="0" column="2">
-           <widget class="QStackedWidget" name="stackedWidget_3">
+           <widget class="QStackedWidget" name="main_stacked_widget">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -623,7 +623,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page_7">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="0">
@@ -754,7 +754,7 @@
                        <cursorShape>PointingHandCursor</cursorShape>
                       </property>
                       <property name="text">
-                       <string>TextLabel</string>
+                       <string>Name</string>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -762,7 +762,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="online_or_members_label">
+                     <widget class="QLabel" name="chat_online_or_members_label">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                         <horstretch>0</horstretch>
@@ -776,7 +776,7 @@
                        </size>
                       </property>
                       <property name="text">
-                       <string>TextLabel</string>
+                       <string>Count</string>
                       </property>
                       <property name="alignment">
                        <set>Qt::AlignCenter</set>
@@ -815,7 +815,7 @@
                        </size>
                       </property>
                       <property name="text">
-                       <string>TextLabel</string>
+                       <string>Search</string>
                       </property>
                      </widget>
                     </item>
@@ -870,7 +870,7 @@
               <item>
                <layout class="QGridLayout" name="gridLayout_2">
                 <item row="0" column="0">
-                 <widget class="QPlainTextEdit" name="message_text_edit">
+                 <widget class="CustomPlainTextEdit" name="message_text_edit">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -909,7 +909,7 @@
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="send_message_button">
                   <property name="text">
                    <string>PushButton</string>
                   </property>
@@ -962,6 +962,11 @@ color: rgb(231, 231, 231);</string>
    <class>ClickableLabel</class>
    <extends>QLabel</extends>
    <header>ClickableLabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomPlainTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>CustomPlainTextEdit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

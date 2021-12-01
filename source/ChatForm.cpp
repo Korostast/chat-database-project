@@ -4,7 +4,8 @@
 #include "ChatForm.h"
 #include "ui_chatform.h"
 
-ChatForm::ChatForm(QWidget *parent) : QWidget(parent), ui(new Ui::ChatForm), group(false) {
+ChatForm::ChatForm(QWidget *parent) : QWidget(parent), ui(new Ui::ChatForm), id(-1), countMembers(-1), role(VIEWER),
+                                      group(false) {
     ui->setupUi(this);
 }
 
@@ -15,10 +16,11 @@ ChatForm::~ChatForm() {
 void ChatForm::mouseReleaseEvent(QMouseEvent *event) {
     qDebug() << "Pressed";
     MainWindow::currentChat = this;
-    MainWindow::openChat();
+    auto *mainWindow = qobject_cast<MainWindow *>(this->window()); // TODO it may also be done in choosing avatar dialog
+    mainWindow->openChat();
 }
 
-void ChatForm::setName(const QString& name) {
+void ChatForm::setName(const QString &name) {
     ui->name->setText(name);
     this->name = name;
 }
@@ -44,4 +46,28 @@ int ChatForm::getId() const {
 
 void ChatForm::setId(int id) {
     ChatForm::id = id;
+}
+
+const QString &ChatForm::getAvatar() const {
+    return avatar;
+}
+
+const QString &ChatForm::getName() const {
+    return name;
+}
+
+int ChatForm::getCountMembers() const {
+    return countMembers;
+}
+
+void ChatForm::setCountMembers(int countMembers) {
+    ChatForm::countMembers = countMembers;
+}
+
+ROLE ChatForm::getRole() const {
+    return role;
+}
+
+void ChatForm::setRole(ROLE role) {
+    ChatForm::role = role;
 }

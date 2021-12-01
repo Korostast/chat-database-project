@@ -5,6 +5,13 @@
 
 #include <QWidget>
 
+enum ROLE {
+    UNCHANGED,  // if we don't need to use role in functions
+    ADMIN,
+    PARTICIPANT,
+    VIEWER
+};
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
     class ChatForm;
@@ -23,8 +30,25 @@ private:
 
     bool group;
 
+    int countMembers;
+
+    ROLE role;
+
 public:
+
     int getId() const;
+
+    const QString &getAvatar() const;
+
+    const QString &getName() const;
+
+    int getCountMembers() const;
+
+    void setCountMembers(int countMembers);
+
+    ROLE getRole() const;
+
+    void setRole(ROLE role);
 
     void setId(int id);
 
