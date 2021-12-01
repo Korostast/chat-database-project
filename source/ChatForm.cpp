@@ -1,9 +1,10 @@
 #include <QPainter>
 #include <QPainterPath>
+#include "MainWindow.h"
 #include "ChatForm.h"
 #include "ui_chatform.h"
 
-ChatForm::ChatForm(QWidget *parent) : QWidget(parent), ui(new Ui::ChatForm) {
+ChatForm::ChatForm(QWidget *parent) : QWidget(parent), ui(new Ui::ChatForm), group(false) {
     ui->setupUi(this);
 }
 
@@ -12,36 +13,35 @@ ChatForm::~ChatForm() {
 }
 
 void ChatForm::mouseReleaseEvent(QMouseEvent *event) {
-    qDebug() << this->ui->name->text();
+    qDebug() << "Pressed";
+    MainWindow::currentChat = this;
+    MainWindow::openChat();
 }
 
-void ChatForm::setChatName(const QString& name) const {
+void ChatForm::setName(const QString& name) {
     ui->name->setText(name);
+    this->name = name;
 }
 
-QPixmap ChatForm::getCircularPixmap(const QString &pathToImage, const int size) {
-    QPixmap currentPixmap(pathToImage);
-    currentPixmap = currentPixmap.scaled(size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-
-    QPixmap resultPixmap(QSize(size, size));
-    resultPixmap.fill(Qt::transparent);
-
-    QPainter painter(&resultPixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    QPainterPath p = QPainterPath();
-    p.addRoundedRect(0, 0, size, size, size / 2.0, size / 2.0);
-    painter.setClipPath(p);
-    painter.drawPixmap(0, 0, currentPixmap);
-    return resultPixmap;
-}
-
-void ChatForm::setChatAvatar(const QString &pathToImage, const int size) const {
-    QPixmap resultPixmap = getCircularPixmap(pathToImage, size);
+void ChatForm::setAvatar(const QString &pathToImage) {
+    QPixmap resultPixmap = MainWindow::getCircularPixmap(pathToImage, CHAT_IMAGE_SIZE);
 
     ui->avatar->setPixmap(resultPixmap);
+    this->avatar = pathToImage;
 }
 
-void ChatForm::mousePressEvent(QMouseEvent *event) {
-    qDebug() << "Pressed";
+bool ChatForm::isGroup() const {
+    return group;
+}
+
+void ChatForm::setGroup(bool group) {
+    ChatForm::group = group;
+}
+
+int ChatForm::getId() const {
+    return id;
+}
+
+void ChatForm::setId(int id) {
+    ChatForm::id = id;
 }

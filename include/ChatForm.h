@@ -14,6 +14,28 @@ QT_END_NAMESPACE
 class ChatForm : public QWidget {
 Q_OBJECT
 
+private:
+    int id;
+
+    QString avatar;
+
+    QString name;
+
+    bool group;
+
+public:
+    int getId() const;
+
+    void setId(int id);
+
+    bool isGroup() const;
+
+    void setGroup(bool group);
+
+    void setName(const QString &name);
+
+    void setAvatar(const QString &pathToImage);
+
 public:
     Ui::ChatForm *ui;
 
@@ -23,13 +45,6 @@ public:
 
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    void mousePressEvent(QMouseEvent *event) override;
-
-    void setChatName(const QString &name) const;
-
-    void setChatAvatar(const QString &pathToImage, int size) const;
-
-    static QPixmap getCircularPixmap(const QString &pathToImage, int size);
 };
 
 #endif //CHATDATABASEPROJECT_CHATFORM_H
