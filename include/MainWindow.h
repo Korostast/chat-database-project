@@ -19,6 +19,7 @@
 #include "UserInfo.h"
 #include "ChatForm.h"
 #include "ChatDialog.h"
+#include "AvatarEditor.h"
 
 enum STATE {
     AUTHORIZATION,
@@ -39,6 +40,8 @@ class MainWindow : public QMainWindow {
 Q_OBJECT
 
 public:
+    //TODO
+    AvatarEditor *avatarEditor;
 
     STATE currentState;
 

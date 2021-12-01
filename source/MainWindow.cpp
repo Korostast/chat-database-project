@@ -12,6 +12,11 @@
 ChatForm *MainWindow::currentChat = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+    //TODO
+    avatarEditor = new AvatarEditor(this);
+    avatarEditor->loadImageIntoScene(":chatDefaultImage.png");
+    avatarEditor->show();
+
     currentState = AUTHORIZATION;
     currentUser = new UserInfo();
     (currentChat = new ChatForm(this))->hide(); // TODO parent?

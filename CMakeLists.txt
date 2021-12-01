@@ -35,7 +35,22 @@ add_executable(${TARGET_NAME}
         source/ChatForm.cpp
         resources/image.qrc
         source/UserInfo.cpp
-        include/UserInfo.h include/UserMessageForm.h source/UserMessageForm.cpp include/ClickableLabel.h source/ClickableLabel.cpp include/ChatDialog.h source/ChatDialog.cpp include/CustomPlainTextEdit.h source/CustomPlainTextEdit.cpp source/Authentication.cpp)
+        include/UserInfo.h include/UserMessageForm.h
+        source/UserMessageForm.cpp
+        include/ClickableLabel.h
+        source/ClickableLabel.cpp
+        include/ChatDialog.h
+        source/ChatDialog.cpp
+        include/CustomPlainTextEdit.h
+        source/CustomPlainTextEdit.cpp
+        source/Authentication.cpp
+        AvatarEditorWidget/source/AvatarEditor.cpp
+        AvatarEditorWidget/include/AvatarEditor.h
+        AvatarEditorWidget/source/GraphicsItem.cpp
+        AvatarEditorWidget/include/GraphicsItem.h
+        AvatarEditorWidget/source/GraphicsView.cpp
+        AvatarEditorWidget/include/GraphicsView.h
+        AvatarEditorWidget/include/Defines.h)
 
 #Copy required libraries into work directory
 if (WIN32)
@@ -59,6 +74,7 @@ endif ()
 
 target_include_directories(${TARGET_NAME} PRIVATE ${Qt${QT_MAJOR_VERSION}_INCLUDE_DIRS})
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/AvatarEditorWidget/include)
 
 #Add any extra libs to link also.
 target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_MAJOR_VERSION}::Widgets)
