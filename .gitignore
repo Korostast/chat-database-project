@@ -1,3 +1,5 @@
 cmake-build-debug/*
 !cmake-build-debug/libmysql.dll
 .idea
+resources/images/chats
+resources/images/users

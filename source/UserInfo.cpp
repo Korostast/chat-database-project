@@ -26,11 +26,11 @@ void UserInfo::setEmail(const QString &email) {
     UserInfo::email = email;
 }
 
-const QString &UserInfo::getAvatar() const {
+const QImage & UserInfo::getAvatar() const {
     return avatar;
 }
 
-void UserInfo::setAvatar(const QString &avatar) {
+void UserInfo::setAvatar(const QImage &avatar) {
     UserInfo::avatar = avatar;
 }
 
@@ -58,7 +58,7 @@ void UserInfo::setLastName(const QString &lastName) {
     UserInfo::lastName = lastName;
 }
 
-UserInfo::UserInfo(int id, QString username, QString email, QString avatar,
+UserInfo::UserInfo(int id, QString username, QString email, QImage avatar,
                    QString phoneNumber, QString firstName, QString lastName)
                    : id(id), username(std::move(username)), email(std::move(email)), avatar(std::move(avatar)),
                    phoneNumber(std::move(phoneNumber)), firstName(std::move(firstName)), lastName(std::move(lastName))

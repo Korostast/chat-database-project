@@ -25,11 +25,11 @@ void ChatForm::setName(const QString &name) {
     this->name = name;
 }
 
-void ChatForm::setAvatar(const QString &pathToImage) {
-    QPixmap resultPixmap = MainWindow::getCircularPixmap(pathToImage, CHAT_IMAGE_SIZE);
+void ChatForm::setAvatar(const QImage &image) {
+    QPixmap resultPixmap = MainWindow::getCircularPixmap(image, CHAT_IMAGE_SIZE);
 
     ui->avatar->setPixmap(resultPixmap);
-    this->avatar = pathToImage;
+    this->avatar = image;
 }
 
 bool ChatForm::isGroup() const {
@@ -48,7 +48,7 @@ void ChatForm::setId(int id) {
     ChatForm::id = id;
 }
 
-const QString &ChatForm::getAvatar() const {
+const QImage & ChatForm::getAvatar() const {
     return avatar;
 }
 

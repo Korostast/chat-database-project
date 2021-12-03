@@ -6,7 +6,6 @@
 #include <QWidget>
 
 enum ROLE {
-    UNCHANGED,  // if we don't need to use role in functions
     ADMIN,
     PARTICIPANT,
     VIEWER
@@ -24,7 +23,7 @@ Q_OBJECT
 private:
     int id;
 
-    QString avatar;
+    QImage avatar;
 
     QString name;
 
@@ -38,7 +37,7 @@ public:
 
     int getId() const;
 
-    const QString &getAvatar() const;
+    const QImage &getAvatar() const;
 
     const QString &getName() const;
 
@@ -58,8 +57,6 @@ public:
 
     void setName(const QString &name);
 
-    void setAvatar(const QString &pathToImage);
-
 public:
     Ui::ChatForm *ui;
 
@@ -69,6 +66,7 @@ public:
 
     void mouseReleaseEvent(QMouseEvent *event) override;
 
+    void setAvatar(const QImage &image);
 };
 
 #endif //CHATDATABASEPROJECT_CHATFORM_H

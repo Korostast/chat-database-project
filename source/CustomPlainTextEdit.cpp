@@ -8,8 +8,6 @@ CustomPlainTextEdit::~CustomPlainTextEdit() = default;
 
 void CustomPlainTextEdit::keyPressEvent(QKeyEvent *event) {  // TODO eventFilter??
     if (event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier) {
-        qDebug() << "QWERTTY!!!!";
-
         emit returnKeyPressedEvent();
 
         event->accept();

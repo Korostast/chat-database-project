@@ -13,6 +13,12 @@
 
 #define MESSAGES_PAGE 1
 
+#define CHOOSE_FILE_PAGE_WIDTH 705
+#define CHOOSE_FILE_PAGE_HEIGHT 325
+
+#define EDITOR_PAGE_WIDTH 900
+#define EDITOR_PAGE_HEIGHT 700
+
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QPlainTextEdit>
@@ -43,21 +49,23 @@ public:
     //TODO
     AvatarEditor *avatarEditor;
 
-    STATE currentState;
+    static STATE currentState;
 
     static ChatForm *currentChat;
+
+    static UserInfo *currentUser;
 
     explicit MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow() override;
 
-    static QPixmap getCircularPixmap(const QString &pathToImage, int size);
+    static QPixmap getCircularPixmap(const QImage &image, int size);
 
     void openChat();
 
     bool eventFilter(QObject *object, QEvent *event) override;
 
-    void updateChat(int id, const QString &name, const QString &avatar, ROLE role = UNCHANGED);
+    void updateChat(int id, const QString &name, const QImage &avatar, ROLE role);
 
 private:
 
@@ -65,13 +73,11 @@ private:
 
     ChatDialog *chatDialog;
 
-    UserInfo *currentUser;
-
     QMap<int, QListWidgetItem *> chatMap;
 
-    void addChat(int id, const QString &name, const QString &avatar, bool isGroup, int countMembers, ROLE role);
+    void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role);
 
-    void addMessage(int id, const QString &username, const QString &time, const QString &avatar, const QString &content);
+    void addMessage(int id, const QString &username, const QString &time, const QImage &avatar, const QString &content);
 
     static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
 

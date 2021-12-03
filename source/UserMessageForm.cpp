@@ -18,13 +18,13 @@ void UserMessageForm::setId(int id) {
     UserMessageForm::id = id;
 }
 
-const QString &UserMessageForm::getAvatar() const {
+const QImage & UserMessageForm::getAvatar() const {
     return avatar;
 }
 
-void UserMessageForm::setAvatar(const QString &pathToImage) {
-    UserMessageForm::avatar = pathToImage;
-    ui->message_avatar->setPixmap(MainWindow::getCircularPixmap(pathToImage, 40));
+void UserMessageForm::setAvatar(const QImage &image) {
+    UserMessageForm::avatar = image;
+    ui->message_avatar->setPixmap(MainWindow::getCircularPixmap(image, 40));
 }
 
 const QString &UserMessageForm::getName() const {

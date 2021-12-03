@@ -35,9 +35,13 @@ public:
 
     void loadImageIntoScene(const QString &pathToImage);
 
+    void setChooseFilePage() const;
+
 private slots:
 
-    void saveImage() const;
+    void saveImage();
+
+    void avatar_editor_choose_file_released();
 };
 
 #endif //UNTITLED13_AVATAREDITOR_H

@@ -2,20 +2,21 @@
 #define CHATDATABASEPROJECT_USERINFO_H
 
 #include <QObject>
+#include <QImage>
 
 class UserInfo {
 private:
     int id;
     QString username;
     QString email;
-    QString avatar;
+    QImage avatar;
     QString phoneNumber;
     QString firstName;
     QString lastName;
 
 public:
-    explicit UserInfo(int id = -1, QString username = nullptr, QString email = nullptr, QString avatar = nullptr,
-             QString phoneNumber = nullptr, QString firstName = nullptr, QString lastName = nullptr);
+    explicit UserInfo(int id = -1, QString username = nullptr, QString email = nullptr, QImage avatar = QImage(":chatDefaultImage"),
+                      QString phoneNumber = nullptr, QString firstName = nullptr, QString lastName = nullptr);
 
     int getId() const;
 
@@ -29,9 +30,9 @@ public:
 
     void setEmail(const QString &email);
 
-    const QString &getAvatar() const;
+    const QImage & getAvatar() const;
 
-    void setAvatar(const QString &avatar);
+    void setAvatar(const QImage &avatar);
 
     const QString &getPhoneNumber() const;
 

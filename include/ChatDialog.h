@@ -25,6 +25,8 @@ private:
 
 private slots:
     void changeChatName();
+
+    void openFileChooser();
 };
 
 #endif //CHATDATABASEPROJECT_CHATDIALOG_H

@@ -9,13 +9,17 @@
 #include "ChatDialog.h"
 #include "./ui_mainwindow.h"
 
+STATE MainWindow::currentState = AUTHORIZATION;
+
 ChatForm *MainWindow::currentChat = nullptr;
+
+UserInfo *MainWindow::currentUser = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     //TODO
     avatarEditor = new AvatarEditor(this);
-    avatarEditor->loadImageIntoScene(":chatDefaultImage.png");
-    avatarEditor->show();
+    //avatarEditor->loadImageIntoScene(":chatDefaultImage.png");
+    //avatarEditor->show();
 
     currentState = AUTHORIZATION;
     currentUser = new UserInfo();
@@ -26,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Setting up interface and show default page (authorization)
     ui->setupUi(this);
-    ui->app_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
+    ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
 
@@ -47,11 +51,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Test
     for (int i = 0; i < 5; ++i) {
-        addChat(i, QString::fromStdString(std::to_string(i)), nullptr, true, 0, PARTICIPANT);
+        addChat(i, QString::fromStdString(std::to_string(i)), QImage(":chatDefaultImage"), true, 0, PARTICIPANT);
     }
-    addChat(5, "5", nullptr, true, 0, VIEWER);
-    addChat(6, "6", nullptr, true, 0, ADMIN);
-    updateChat(2, nullptr, nullptr, PARTICIPANT);
+    addChat(5, "5", QImage(":chatDefaultImage"), true, 0, VIEWER);
+    addChat(6, "6", QImage(":chatDefaultImage"), true, 0, ADMIN);
+    //updateChat(2, nullptr, QImage(":chatDefaultImage"), PARTICIPANT);
 
 
     connect(ui->sign_in_button, SIGNAL(released()), this, SLOT(sign_in_button_released()));
@@ -72,9 +76,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
     // Test
-    addMessage(0, "Korostast", "2021-03-31 22:10", nullptr, "Hello world!");
-    addMessage(1, "Korostast", "2021-03-31 22:11", nullptr, "Hello world!");
-    addMessage(2, "Korostast", "2021-03-31 23:59", nullptr, "Hello world! Hello world! "
+    addMessage(0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!");
+    addMessage(1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!");
+    addMessage(2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), "Hello world! Hello world! "
                                                             "Hello world! Hello world! Hello world! Hello world! Hello world! "
                                                             "Hello world! Hello world! Hello world! Hello world! Hello world! "
                                                             "Hello world! Hello world! Hello world!");
@@ -84,8 +88,8 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-QPixmap MainWindow::getCircularPixmap(const QString &pathToImage, const int size) {
-    QPixmap currentPixmap(pathToImage);
+QPixmap MainWindow::getCircularPixmap(const QImage &image, const int size) {
+    QPixmap currentPixmap(QPixmap::fromImage(image));
     currentPixmap = currentPixmap.scaled(size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
     QPixmap resultPixmap(QSize(size, size));
@@ -102,7 +106,7 @@ QPixmap MainWindow::getCircularPixmap(const QString &pathToImage, const int size
 }
 
 void
-MainWindow::addChat(int id, const QString &name, const QString &avatar, bool isGroup, int countMembers, ROLE role) {
+MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role) {
     auto *item = new QListWidgetItem;
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
@@ -114,8 +118,7 @@ MainWindow::addChat(int id, const QString &name, const QString &avatar, bool isG
     widget->setRole(role);
 
     // TODO avatars
-    if (isGroup & avatar == nullptr)
-        widget->setAvatar(":chatDefaultImage");
+    widget->setAvatar(avatar);
 
     item->setSizeHint(widget->sizeHint());
 
@@ -126,7 +129,7 @@ MainWindow::addChat(int id, const QString &name, const QString &avatar, bool isG
 }
 
 // Change chat's attributes and move chat at the top of the list TODO optimization of first row
-void MainWindow::updateChat(int id, const QString &name, const QString &avatar, ROLE role) {
+void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, ROLE role) {
     int rowNumber = ui->chat_list->row(chatMap[id]);
 
     QListWidgetItem *itemN = chatMap[id]->clone();
@@ -134,18 +137,18 @@ void MainWindow::updateChat(int id, const QString &name, const QString &avatar, 
 
     ui->chat_list->insertItem(0, itemN);
     ui->chat_list->setItemWidget(itemN, widget);
+    chatMap[id] = itemN;
 
     ui->chat_list->takeItem(rowNumber + 1);
 
-    if (name != nullptr)
-        widget->setName(name);
-    if (avatar != nullptr)
-        widget->setAvatar(avatar);
-    if (role != UNCHANGED)
-        widget->setRole(role);
+    widget->setName(name);
+    if (id == currentChat->getId())
+        ui->chat_avatar->setPixmap(getCircularPixmap(avatar, 30)); // TODO define
+    widget->setAvatar(avatar);
 
-    if (currentChat->getId() == id && ui->chat_name_label->text() != name)
-        ui->chat_name_label->setText(name);
+    widget->setRole(role);
+
+    ui->chat_name_label->setText(name);
 }
 
 void MainWindow::openChat() {
@@ -201,7 +204,7 @@ void MainWindow::messageTextChanged(QSizeF docSize) {
     }
 }
 
-void MainWindow::addMessage(int id, const QString &username, const QString &time, const QString &avatar,
+void MainWindow::addMessage(int id, const QString &username, const QString &time, const QImage &avatar,
                             const QString &content) {
     auto *item = new QListWidgetItem;
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
@@ -210,10 +213,7 @@ void MainWindow::addMessage(int id, const QString &username, const QString &time
 
     widget->setId(id);
     // TODO image of message widget
-    if (avatar == nullptr)
-        widget->setAvatar(":chatDefaultImage");
-    else
-        widget->setAvatar(avatar);
+    widget->setAvatar(avatar);
     widget->setName(username);
     widget->setTime(time);
     widget->setContent(content);
@@ -283,3 +283,4 @@ void MainWindow::sendMessage() {
             ui->messageList->scrollToBottom();
     }
 }
+

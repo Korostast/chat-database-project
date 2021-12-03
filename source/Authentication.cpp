@@ -49,11 +49,7 @@ void MainWindow::sign_in_button_released() {
     // Loading data from database: user, account, chats, friends, requests TODO
     int id = 0;
     QString username = "Korostast";
-    QString avatar = nullptr;
-    QString phoneNumber = nullptr;
-    QString firstName = nullptr;
-    QString lastName = nullptr;
-    currentUser = new UserInfo(id, username, email, avatar, phoneNumber, firstName, lastName);
+    currentUser = new UserInfo(id, username);
     currentState = CHATS;
 
     // Change screen to chat list

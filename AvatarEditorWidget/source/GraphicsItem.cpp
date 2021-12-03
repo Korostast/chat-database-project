@@ -1,4 +1,5 @@
 #include "../include/AvatarEditor.h"
+#include <QGraphicsWidget>
 
 GraphicsItem::GraphicsItem(const QPixmap &pixmap, QGraphicsItem *parent)
         : QGraphicsPixmapItem(pixmap, parent) {}

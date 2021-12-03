@@ -15,7 +15,7 @@ Q_OBJECT
 private:
     int id;
 
-    QString avatar;
+    QImage avatar;
 
     QString name;
 
@@ -27,9 +27,9 @@ public:
 
     void setId(int id);
 
-    const QString &getAvatar() const;
+    const QImage & getAvatar() const;
 
-    void setAvatar(const QString &pathToImage);
+    void setAvatar(const QImage &image);
 
     const QString &getName() const;
 

@@ -9,7 +9,7 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent) {}
 
 // Zoom
 void GraphicsView::wheelEvent(QWheelEvent *event) {
-    auto *avatarEditor = qobject_cast<AvatarEditor *>(this->parentWidget());
+    auto *avatarEditor = qobject_cast<AvatarEditor *>(this->window());
 
     // Determine which way the mouse wheel has turned
     int angle = event->angleDelta().y();
