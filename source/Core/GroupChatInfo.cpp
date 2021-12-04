@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "ChatDialog.h"
 #include "ui_chatdialog.h"
+#include "Defines.h"
+#include "ChatMemberWidget.h"
 
 // It will show ui of the chat info window only WORK FOR GROUP CHAT
 void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
@@ -14,6 +16,32 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
         ui->chat_dialog_name->setReadOnly(true);
         ui->chat_dialog_avatar->setCursor(Qt::ArrowCursor);
     }
+
+    // Load members list TODO database
+    // TEST
+    QList<UserChatMember> members;
+    members.push_back(UserChatMember(1, "Korostast", QImage(":chatDefaultImage"), ADMIN));
+    members.push_back(UserChatMember(2, "Kriper2002", QImage(":chatDefaultImage"), PARTICIPANT));
+    members.push_back(UserChatMember(3, "Nya", QImage(":chatDefaultImage"), VIEWER));
+
+    // Cleaning
+    ui->chat_dialog_members_list->clear();
+
+    for (const auto& user : members) {
+        auto *item = new QListWidgetItem;
+        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+
+        auto *widget = new ChatMemberWidget(this);
+        widget->setId(user.id);
+        widget->setName(user.username);
+        widget->setAvatar(user.avatar);
+        widget->setRole(user.role);
+
+        item->setSizeHint(widget->sizeHint());
+        ui->chat_dialog_members_list->addItem(item);
+        ui->chat_dialog_members_list->setItemWidget(item, widget);
+    }
+
 }
 
 void ChatDialog::changeChatName() {
@@ -39,5 +67,18 @@ void ChatDialog::openFileChooser() {
         mainWindow->avatarEditor->setChooseFilePage();
         hide();
         mainWindow->avatarEditor->show();
+    }
+}
+
+void ChatDialog::removeMemberFromUi(ChatMemberWidget *member) {
+    int size = ui->chat_dialog_members_list->count();
+    for (int i = 0; i < size; ++i) {
+        auto *currentRow = ui->chat_dialog_members_list->item(i);
+        auto *user = qobject_cast<ChatMemberWidget *>(ui->chat_dialog_members_list->itemWidget(currentRow));
+        if (user->getId() == member->getId()) {
+            auto *item = ui->chat_dialog_members_list->takeItem(i);
+            delete item;
+            break;
+        }
     }
 }

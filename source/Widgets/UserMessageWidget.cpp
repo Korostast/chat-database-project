@@ -51,6 +51,7 @@ const QString &UserMessageWidget::getContent() const {
 
 void UserMessageWidget::setContent(const QString &content) {
     UserMessageWidget::content = content;
+    ui->message_content->setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
     ui->message_content->setPlainText(content);
     qDebug() << "Doc size:" << ui->message_content->document()->size().toSize();
 

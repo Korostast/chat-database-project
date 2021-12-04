@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     int defaultRowNumber = 1;
     ui->message_text_edit->setFixedHeight(getNewEditTextHeight(ui->message_text_edit->document()->size(),
                                                                ui->message_text_edit, defaultRowNumber));
-    ui->messageList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->messageList->verticalScrollBar()->setSingleStep(10);
 
     QSizePolicy sp_retain = ui->listWidget_4->sizePolicy(); // TODO refactor

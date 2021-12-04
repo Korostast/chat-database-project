@@ -45,7 +45,8 @@ void MainWindow::putOnTop(int id) {
     ui->chat_list->setItemWidget(itemN, widget);
     chatMap[id] = itemN;
 
-    ui->chat_list->takeItem(rowNumber + 1);
+    auto *item = ui->chat_list->takeItem(rowNumber + 1);
+    delete item;
 }
 
 // Change chat's attributes and move chat at the top of the list
@@ -74,6 +75,7 @@ void MainWindow::openChat() {
     // Clear all previous messages from list
     //ui->messageList->clear();
 
+    ui->messageList->scrollToBottom();
     ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(currentChat->getAvatar(), AVATAR_IN_CHAT_IMAGE_SIZE));
     ui->chat_name_label->setText(currentChat->getName());
     if (currentChat->isGroup()) {
@@ -208,6 +210,12 @@ bool MainWindow::checkMessage(QString &content) { // TODO delete 2+ spaces and n
 // User press enter
 void MainWindow::sendMessage() {
     QString messageText = ui->message_text_edit->toPlainText();
+    bool isBottom = false;
+    auto *scrollBar = ui->messageList->verticalScrollBar();
+    qDebug() << "Current scroll bar value:" << scrollBar->value() << " and Max value:" << scrollBar->maximum();
+    if (scrollBar->value() == scrollBar->maximum())
+        isBottom = true;
+
     if (checkMessage(messageText)) {
         addMessage(currentChat->getId(), currentUser->getUsername(),
                    QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"), currentUser->getAvatar(),
@@ -216,13 +224,9 @@ void MainWindow::sendMessage() {
         ui->message_text_edit->clear();
 
         // Update scrollbar value
-        auto *scrollBar = ui->messageList->verticalScrollBar();
-        qDebug() << "Current scroll bar value:" << scrollBar->value() << " and Max value:" << scrollBar->maximum();
-        if (scrollBar->maximum() == scrollBar->value() + 1) {
+        if (isBottom)
             ui->messageList->scrollToBottom();
-        }
 
         // TODO sendMessage database
     }
 }
-

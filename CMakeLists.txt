@@ -53,7 +53,7 @@ add_executable(${TARGET_NAME}
         AvatarEditorWidget/include/Defines.h source/Core/Chats.cpp
         source/Core/Friends.cpp
         source/Core/Profile.cpp
-        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp)
+        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp source/Widgets/ChatMemberWidget.cpp include/ChatMemberWidget.h)
 
 #Copy required libraries into work directory
 if (WIN32)

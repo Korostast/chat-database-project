@@ -5,6 +5,7 @@
 #define USER_MESSAGE_IMAGE_SIZE 40
 #define AVATAR_IN_CHAT_IMAGE_SIZE 30
 #define CHAT_DIALOG_AVATAR_IMAGE_SIZE 100
+#define CHAT_MEMBER_IMAGE_SIZE 40
 
 #define APP_PAGE 1
 
@@ -26,15 +27,33 @@
 
 #define MESSAGE_LINE_WIDTH 435
 
+#include <QImage>
+#include <utility>
+
 enum ROLE {
-    ADMIN,
+    VIEWER,
     PARTICIPANT,
-    VIEWER
+    MODERATOR,
+    ADMIN
 };
 
 enum MESSAGE_TYPE {
     USER_MESSAGE,
     SYSTEM_MESSAGE
+};
+
+struct UserChatMember {
+    UserChatMember(int i, const QString& string, QImage image, ROLE role) {
+        this->id = i;
+        this->username = string;
+        this->avatar = std::move(image);
+        this->role = role;
+    }
+
+    int id;
+    QString username;
+    QImage avatar;
+    ROLE role;
 };
 
 #endif //CHATDATABASEPROJECT_DEFINES_H

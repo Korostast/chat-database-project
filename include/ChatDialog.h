@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "ChatWidget.h"
+#include "ChatMemberWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,10 +21,13 @@ public:
 
     void setupCurrentChatUi(ChatWidget *chat);
 
+    void removeMemberFromUi(ChatMemberWidget *member);
+
 private:
     Ui::ChatDialog *ui;
 
 private slots:
+
     void changeChatName();
 
     void openFileChooser();
