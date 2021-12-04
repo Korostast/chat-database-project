@@ -2,7 +2,7 @@
 #define CHATDATABASEPROJECT_CHATDIALOG_H
 
 #include <QDialog>
-#include "ChatForm.h"
+#include "ChatWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,7 +18,7 @@ public:
 
     ~ChatDialog() override;
 
-    void setupCurrentChatUi(ChatForm *chat);
+    void setupCurrentChatUi(ChatWidget *chat);
 
 private:
     Ui::ChatDialog *ui;

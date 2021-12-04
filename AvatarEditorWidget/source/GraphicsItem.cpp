@@ -5,14 +5,13 @@ GraphicsItem::GraphicsItem(const QPixmap &pixmap, QGraphicsItem *parent)
         : QGraphicsPixmapItem(pixmap, parent) {}
 
 GraphicsEllipseItem::GraphicsEllipseItem(const QRectF &rect, QGraphicsItem *parent, qreal rightBound, qreal bottomBound)
-        : QGraphicsEllipseItem(rect, parent) {
-    this->rightBound = rightBound;
-    this->bottomBound = bottomBound;
-    this->oldRightBound = rightBound;
-    this->oldBottomBound = bottomBound;
+        : QGraphicsEllipseItem(rect, parent), rightBound(rightBound), bottomBound(bottomBound) {
+    this->originalRightBound = rightBound;
+    this->originalBottomBound = bottomBound;
 }
 
-void GraphicsEllipseItem::renderCroppedImage() {
+// Update ellipse position according to boundaries of the image
+void GraphicsEllipseItem::updateEllipsePosition() {
     if (x() < 0)
         setPos(0, y());
     else if (x() > rightBound)
@@ -22,9 +21,12 @@ void GraphicsEllipseItem::renderCroppedImage() {
         setPos(x(), 0);
     else if (y() > bottomBound)
         setPos(x(), bottomBound);
+}
 
-    auto *avatarEditor = qobject_cast<AvatarEditor *>(this->scene()->parent());
-    avatarEditor->putImage();
+void GraphicsEllipseItem::renderCroppedImage() {
+    updateEllipsePosition();
+    auto *avatarEditor = qobject_cast<AvatarEditor *>(this->scene()->parent()); // TODO can I do something with this?
+    avatarEditor->updatePreview();
 }
 
 void GraphicsEllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {

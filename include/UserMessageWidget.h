@@ -1,15 +1,15 @@
-#ifndef CHATDATABASEPROJECT_USERMESSAGEFORM_H
-#define CHATDATABASEPROJECT_USERMESSAGEFORM_H
+#ifndef CHATDATABASEPROJECT_USERMESSAGEWIDGET_H
+#define CHATDATABASEPROJECT_USERMESSAGEWIDGET_H
 
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-    class UserMessageForm;
+    class UserMessageWidget;
 }
 QT_END_NAMESPACE
 
-class UserMessageForm : public QWidget {
+class UserMessageWidget : public QWidget {
 Q_OBJECT
 
 private:
@@ -44,12 +44,13 @@ public:
     void setContent(const QString &content);
 
 public:
-    Ui::UserMessageForm *ui;
+    Ui::UserMessageWidget *ui;
 
-    explicit UserMessageForm(QWidget *parent = nullptr);
+    explicit UserMessageWidget(QWidget *parent = nullptr);
 
-    ~UserMessageForm() override;
+    ~UserMessageWidget() override;
 
+    static int countRows(const QString &text);
 };
 
-#endif //CHATDATABASEPROJECT_USERMESSAGEFORM_H
+#endif //CHATDATABASEPROJECT_USERMESSAGEWIDGET_H

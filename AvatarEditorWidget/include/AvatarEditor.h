@@ -13,35 +13,41 @@ QT_END_NAMESPACE
 class AvatarEditor : public QDialog {
 Q_OBJECT
 
-public:
-    explicit AvatarEditor(QWidget *parent = nullptr);
+private:
 
-    ~AvatarEditor() override;
+    friend class GraphicsView;
+
+    friend class GraphicsEllipseItem;
+
+    Ui::AvatarEditor *ui;
 
     qreal scaleFactor;
-
-    QGraphicsScene *scene;
-
-    GraphicsItem *imageItem;
 
     QImage *image;
 
     GraphicsEllipseItem *ellipseItem;
 
-    Ui::AvatarEditor *ui;
+    void loadImageIntoScene(const QString &pathToImage);
+
+    void updatePreview() const;
+
+    void closeEvent(QCloseEvent *e) override;
 
 public:
-    void putImage() const;
 
-    void loadImageIntoScene(const QString &pathToImage);
+    explicit AvatarEditor(QWidget *parent = nullptr);
+
+    ~AvatarEditor() override;
+
+    static QPixmap getCircularPixmap(const QImage &targetImage, int size);
 
     void setChooseFilePage() const;
 
 private slots:
 
-    void saveImage();
+    void editorFileChooserOpen();
 
-    void avatar_editor_choose_file_released();
+    void saveImage();
 };
 
 #endif //UNTITLED13_AVATAREDITOR_H

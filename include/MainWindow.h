@@ -1,38 +1,22 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define APP_PAGE 1
-
-#define AUTHENTICATION_PAGE 0
-
-#define AUTHORIZATION_PAGE 0
-
-#define REGISTRATION_PAGE 1
-
-#define CHAT_LIST_PAGE 0
-
-#define MESSAGES_PAGE 1
-
-#define CHOOSE_FILE_PAGE_WIDTH 705
-#define CHOOSE_FILE_PAGE_HEIGHT 325
-
-#define EDITOR_PAGE_WIDTH 900
-#define EDITOR_PAGE_HEIGHT 700
-
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QPlainTextEdit>
 #include "UserInfo.h"
-#include "ChatForm.h"
+#include "ChatWidget.h"
 #include "ChatDialog.h"
 #include "AvatarEditor.h"
+#include "Defines.h"
 
 enum STATE {
     AUTHORIZATION,
     REGISTRATION,
     CHATS,
     MESSAGES,
-    FRIENDS
+    FRIENDS,
+    PROFILE
 };
 
 QT_BEGIN_NAMESPACE
@@ -51,7 +35,7 @@ public:
 
     static STATE currentState;
 
-    static ChatForm *currentChat;
+    static ChatWidget *currentChat;
 
     static UserInfo *currentUser;
 
@@ -59,15 +43,20 @@ public:
 
     ~MainWindow() override;
 
-    static QPixmap getCircularPixmap(const QImage &image, int size);
-
     void openChat();
-
-    bool eventFilter(QObject *object, QEvent *event) override;
 
     void updateChat(int id, const QString &name, const QImage &avatar, ROLE role);
 
+    void putOnTop(int id);
+
+    void addMessage(int id, const QString &username, const QString &time, const QImage &avatar,
+                    const QString &content, MESSAGE_TYPE type);
+
+    int getNewEditTextHeight(const QSizeF &docSize, const QPlainTextEdit *textEdit, int &countLines);
+
 private:
+
+    bool eventFilter(QObject *object, QEvent *event) override;
 
     Ui::MainWindow *ui;
 
@@ -75,13 +64,9 @@ private:
 
     QMap<int, QListWidgetItem *> chatMap;
 
-    void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role);
-
-    void addMessage(int id, const QString &username, const QString &time, const QImage &avatar, const QString &content);
-
     static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
 
-    int getNewEditTextHeight(const QSizeF &docSize, const QPlainTextEdit *textEdit, int &countLines);
+    void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role);
 
     static bool checkMessage(QString &content);
 

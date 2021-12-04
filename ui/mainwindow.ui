@@ -903,6 +903,12 @@
                   <property name="styleSheet">
                    <string notr="true">padding: 4px 4px;</string>
                   </property>
+                  <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+                  </property>
+                  <property name="horizontalScrollBarPolicy">
+                   <enum>Qt::ScrollBarAlwaysOff</enum>
+                  </property>
                   <property name="sizeAdjustPolicy">
                    <enum>QAbstractScrollArea::AdjustIgnored</enum>
                   </property>

@@ -1,7 +1,5 @@
 #include "UserInfo.h"
 
-#include <utility>
-
 int UserInfo::getId() const {
     return id;
 }

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
-    <height>648</height>
+    <width>1012</width>
+    <height>712</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,13 +23,16 @@
    <string>AvatarEditor</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(56, 56, 56);</string>
+   <string notr="true"/>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="1">
     <widget class="QStackedWidget" name="avatar_editor_stacked_widget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="choose_file_page">
       <property name="sizePolicy">
@@ -135,7 +138,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: white;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Сохранить изображение</string>
@@ -157,7 +160,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: white;</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Превью</string>
@@ -203,7 +206,7 @@
         <enum>QGraphicsView::AnchorUnderMouse</enum>
        </property>
       </widget>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="preview_label">
        <property name="geometry">
         <rect>
          <x>390</x>

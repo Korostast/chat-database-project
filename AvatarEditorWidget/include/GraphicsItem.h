@@ -13,10 +13,10 @@ class GraphicsEllipseItem : public QGraphicsEllipseItem {
 public:
     qreal rightBound;
     qreal bottomBound;
-    qreal oldRightBound;
-    qreal oldBottomBound;
+    qreal originalRightBound;
+    qreal originalBottomBound;
 
-    explicit GraphicsEllipseItem(const QRectF &rect, QGraphicsItem *parent = nullptr,
+    explicit GraphicsEllipseItem(const QRectF &rect = QRectF(0, 0, 0, 0), QGraphicsItem *parent = nullptr,
                                  qreal rightBound = 0, qreal bottomBound = 0);
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
@@ -26,6 +26,10 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     void renderCroppedImage();
+
+private:
+    void updateEllipsePosition();
+
 };
 
 #endif //UNTITLED13_GRAPHICSITEM_H

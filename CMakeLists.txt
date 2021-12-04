@@ -28,29 +28,32 @@ find_package(Qt${QT_MAJOR_VERSION} COMPONENTS Widgets REQUIRED PATHS $ENV{Qt${QT
 
 #Add every file into this list, otherwise moc don't find the classes
 add_executable(${TARGET_NAME}
-        source/main.cpp
-        source/MainWindow.cpp
+        source/Core/main.cpp
+        source/Widgets/MainWindow.cpp
         include/MainWindow.h
-        include/ChatForm.h
-        source/ChatForm.cpp
+        include/ChatWidget.h
+        source/Widgets/ChatWidget.cpp
         resources/image.qrc
-        source/UserInfo.cpp
-        include/UserInfo.h include/UserMessageForm.h
-        source/UserMessageForm.cpp
+        source/Widgets/UserInfo.cpp
+        include/UserInfo.h include/UserMessageWidget.h
+        source/Widgets/UserMessageWidget.cpp
         include/ClickableLabel.h
-        source/ClickableLabel.cpp
+        source/Widgets/ClickableLabel.cpp
         include/ChatDialog.h
-        source/ChatDialog.cpp
+        source/Widgets/ChatDialog.cpp
         include/CustomPlainTextEdit.h
-        source/CustomPlainTextEdit.cpp
-        source/Authentication.cpp
+        source/Widgets/CustomPlainTextEdit.cpp
+        source/Core/Authentication.cpp
         AvatarEditorWidget/source/AvatarEditor.cpp
         AvatarEditorWidget/include/AvatarEditor.h
         AvatarEditorWidget/source/GraphicsItem.cpp
         AvatarEditorWidget/include/GraphicsItem.h
         AvatarEditorWidget/source/GraphicsView.cpp
         AvatarEditorWidget/include/GraphicsView.h
-        AvatarEditorWidget/include/Defines.h)
+        AvatarEditorWidget/include/Defines.h source/Core/Chats.cpp
+        source/Core/Friends.cpp
+        source/Core/Profile.cpp
+        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp)
 
 #Copy required libraries into work directory
 if (WIN32)

@@ -4,23 +4,23 @@
 #include "MainWindow.h"
 
 AvatarEditor::AvatarEditor(QWidget *parent)
-        : QDialog(parent), ui(new Ui::AvatarEditor) {
+        : QDialog(parent), ui(new Ui::AvatarEditor), scaleFactor(0), image(new QImage),
+          ellipseItem(new GraphicsEllipseItem) {
+
     ui->setupUi(this);
-    //loadImageIntoScene(":chatDefaultImage.png");
-    scene = new QGraphicsScene(this);   // TODO refactor this? Replace public variables with local ones
-    image = new QImage;
-    scaleFactor = 0;
+    ui->graphicsView->setScene(new QGraphicsScene(this));
 
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(saveImage()));
-    connect(ui->avatar_editor_choose_file_button, SIGNAL(clicked()), this, SLOT(avatar_editor_choose_file_released()));
+    connect(ui->avatar_editor_choose_file_button, SIGNAL(clicked()), this, SLOT(editorFileChooserOpen()));
 }
 
-void AvatarEditor::loadImageIntoScene(const QString &pathToImage) {// Set graphics view scene
-    {
-        //scene = new QGraphicsScene(this);
-        ui->graphicsView->setScene(scene);
-        image = new QImage(pathToImage);    // TODO do it in constructor? Memory leak here
-    }
+AvatarEditor::~AvatarEditor() {
+    delete ui;
+}
+
+// Set graphics view scene: upload an image and selecting ellipse to the scene
+void AvatarEditor::loadImageIntoScene(const QString &pathToImage) {
+    image->load(pathToImage);
 
     // Calculate scale factor
     {
@@ -37,71 +37,73 @@ void AvatarEditor::loadImageIntoScene(const QString &pathToImage) {// Set graphi
         qDebug() << "Scale factor =" << scaleFactor;
     }
 
-    // Image item in the scene
+    // Convert image into GraphicsItem and upload it to the scene
     {
-        imageItem = new GraphicsItem(QPixmap::fromImage(*image), nullptr);  // TODO leak memory
+        auto *imageItem = new GraphicsItem(QPixmap::fromImage(*image), nullptr);
         imageItem->setScale(scaleFactor);
         // Accurate smooth scaling, high quality
         imageItem->setTransformationMode(Qt::SmoothTransformation);
-        scene->addItem(imageItem);
+        ui->graphicsView->scene()->addItem(imageItem);
     }
 
-    // Ellipse item in the scene
+    // Draw an ellipse and display it
     {
-        // TODO leak memory here
+        // TODO leak memory here probably
         ellipseItem = new GraphicsEllipseItem(QRect(0, 0, RESULT_IMAGE_SIZE, RESULT_IMAGE_SIZE), nullptr,
                                               image->width() * scaleFactor - RESULT_IMAGE_SIZE,
                                               image->height() * scaleFactor - RESULT_IMAGE_SIZE);
         ellipseItem->setAcceptHoverEvents(true);
+        ellipseItem->setFlag(QGraphicsItem::ItemIsMovable);
 
         // Construct a black semi-transparent circle
         QPen blackPen(Qt::black);
         blackPen.setWidth(6);
-        ellipseItem->setFlag(QGraphicsItem::ItemIsMovable);
         ellipseItem->setPen(blackPen);
         ellipseItem->setOpacity(0.5);
-        scene->addItem(ellipseItem);
+        ui->graphicsView->scene()->addItem(ellipseItem);
         ellipseItem->renderCroppedImage();
     }
 }
 
-AvatarEditor::~AvatarEditor() {
-    delete ui;
+// Round the picture and scale it to size 'size'
+QPixmap AvatarEditor::getCircularPixmap(const QImage &targetImage, const int size) {
+    QPixmap currentPixmap(QPixmap::fromImage(targetImage));
+    currentPixmap = currentPixmap.scaled(size, size, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+    QPixmap resultPixmap(QSize(size, size));
+    resultPixmap.fill(Qt::transparent);
+
+    QPainter painter(&resultPixmap);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    QPainterPath p = QPainterPath();
+    p.addRoundedRect(0, 0, size, size, size / 2.0, size / 2.0);
+    painter.setClipPath(p);
+    painter.drawPixmap(0, 0, currentPixmap);
+    return resultPixmap;
 }
 
 // Place image into preview label
-void AvatarEditor::putImage() const {
+void AvatarEditor::updatePreview() const {
     qreal reversedScaleFactor = 1 / scaleFactor;
     QRect rect((int) (ellipseItem->x() * reversedScaleFactor), (int) (ellipseItem->y() * reversedScaleFactor),
                (int) (ellipseItem->rect().width() * reversedScaleFactor * ellipseItem->scale()),
                (int) (ellipseItem->rect().height() * reversedScaleFactor * ellipseItem->scale()));
 
-    QImage result = image->copy(rect);
-    QPixmap resultPixmap = QPixmap::fromImage(result).scaled(RESULT_IMAGE_SIZE, RESULT_IMAGE_SIZE,
-                                                             Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QImage result = image->copy(rect).scaled(RESULT_IMAGE_SIZE, RESULT_IMAGE_SIZE,
+                                             Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    // Draw circular image
-    QSize size(RESULT_IMAGE_SIZE, RESULT_IMAGE_SIZE);
-    QBitmap mask(size);
-    QPainter painter(&mask);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform);
-    painter.fillRect(0, 0, size.width(), size.height(), Qt::white);
-    painter.setBrush(QColor(0, 0, 0));
-    painter.drawRoundedRect(0, 0, size.width(), size.height(), size.width() / 2.0, size.height() / 2.0);
-    resultPixmap.setMask(mask);
-
-    ui->label->setPixmap(resultPixmap);
+    ui->preview_label->setPixmap(getCircularPixmap(result, RESULT_IMAGE_SIZE));
 }
 
+// Cut image and update avatar
 void AvatarEditor::saveImage() {
+    qDebug() << "Saving image";
     qreal reversedScaleFactor = 1 / scaleFactor;
     qDebug() << reversedScaleFactor << ellipseItem->scale();
     QRect rect((int) (ellipseItem->x() * reversedScaleFactor), (int) (ellipseItem->y() * reversedScaleFactor),
                (int) (ellipseItem->rect().width() * reversedScaleFactor * ellipseItem->scale()),
                (int) (ellipseItem->rect().height() * reversedScaleFactor * ellipseItem->scale()));
-
-    qDebug() << rect;
 
     QImage result = image->copy(rect).scaled(RESULT_IMAGE_SIZE, RESULT_IMAGE_SIZE,
                                              Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -111,32 +113,36 @@ void AvatarEditor::saveImage() {
     auto *mainWindow = qobject_cast<MainWindow *>(this->parentWidget());
 
     if (MainWindow::currentState == MESSAGES) {
-        if (!result.save(QString("../resources/images/chats/%1.png").arg(MainWindow::currentChat->getId()),"png")) {    //TODO path to image
+        QString path("../resources/images/chats/%1.png");
+        if (!result.save(QString(path).arg(MainWindow::currentChat->getId()), "png")) {
             qDebug() << "Error: can't save image";
         }
         mainWindow->updateChat(MainWindow::currentChat->getId(), MainWindow::currentChat->getName(),
                                result, MainWindow::currentChat->getRole());
-    }
-    else {  // if (currentState == USER)
+        QString content = QString("Пользователь %1 изменил аватарку беседы").arg(MainWindow::currentUser->getUsername());
+        mainWindow->addMessage(MainWindow::currentChat->getId(), "", "", QImage(), content, SYSTEM_MESSAGE);
+    } else {  // if (currentState == USER)
         // TODO user avatar
-        if (!result.save(QString("../resources/images/users/%1.png").arg(MainWindow::currentUser->getId()),"png")) {    //TODO path to image
+        QString path("../resources/images/users/%1.png");
+        if (!result.save(QString(path).arg(MainWindow::currentUser->getId()), "png")) {
             qDebug() << "Error: can't save image";
         }
     }
 
-    scene->clear();
-    hide();
+    close();
 }
 
+// Switch stacked widget to file choosing page
 void AvatarEditor::setChooseFilePage() const {
     ui->avatar_editor_stacked_widget->setCurrentIndex(0);
 }
 
-void AvatarEditor::avatar_editor_choose_file_released() {
-    qDebug() << "Open chooser";
+// Let user choose an image
+void AvatarEditor::editorFileChooserOpen() {
+    qDebug() << "Open file chooser";
     QString fileName = QFileDialog::getOpenFileName(this, "Open a file", "/", "Image Files (*.png)");
     if (fileName != nullptr) { // TODO refactor
-        qDebug() << "File chosen: " << fileName;
+        qDebug() << "File chosen:" << fileName;
         loadImageIntoScene(fileName);
         auto *mainWindow = qobject_cast<MainWindow *>(this->parentWidget());
         auto windowCentreX = mainWindow->x() + mainWindow->width() / 2 - EDITOR_PAGE_WIDTH / 2;
@@ -149,4 +155,11 @@ void AvatarEditor::avatar_editor_choose_file_released() {
         qDebug() << "Cancel choosing";
     }
 
+}
+
+// Clear scene when we have finished
+void AvatarEditor::closeEvent(QCloseEvent *e) {
+    QDialog::closeEvent(e);
+    ui->graphicsView->scene()->clear();
+    qDebug() << "Editor closed";
 }

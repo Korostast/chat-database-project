@@ -1,23 +1,16 @@
-#ifndef CHATDATABASEPROJECT_CHATFORM_H
-#define CHATDATABASEPROJECT_CHATFORM_H
-
-#define CHAT_IMAGE_SIZE 50
+#ifndef CHATDATABASEPROJECT_CHATWIDGET_H
+#define CHATDATABASEPROJECT_CHATWIDGET_H
 
 #include <QWidget>
-
-enum ROLE {
-    ADMIN,
-    PARTICIPANT,
-    VIEWER
-};
+#include "Defines.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-    class ChatForm;
+    class ChatWidget;
 }
 QT_END_NAMESPACE
 
-class ChatForm : public QWidget {
+class ChatWidget : public QWidget {
 Q_OBJECT
 
 private:
@@ -58,15 +51,15 @@ public:
     void setName(const QString &name);
 
 public:
-    Ui::ChatForm *ui;
+    Ui::ChatWidget *ui;
 
-    explicit ChatForm(QWidget *parent = nullptr);
+    explicit ChatWidget(QWidget *parent = nullptr);
 
-    ~ChatForm() override;
+    ~ChatWidget() override;
 
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     void setAvatar(const QImage &image);
 };
 
-#endif //CHATDATABASEPROJECT_CHATFORM_H
+#endif //CHATDATABASEPROJECT_CHATWIDGET_H

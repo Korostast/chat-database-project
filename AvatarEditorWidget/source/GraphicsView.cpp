@@ -7,7 +7,7 @@ qreal GraphicsView::zoomFactor = 1;
 
 GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent) {}
 
-// Zoom
+// Mouse wheel zoom
 void GraphicsView::wheelEvent(QWheelEvent *event) {
     auto *avatarEditor = qobject_cast<AvatarEditor *>(this->window());
 
@@ -38,10 +38,10 @@ void GraphicsView::wheelEvent(QWheelEvent *event) {
 
     // Recalculate ellipse scale and bounds of image
     avatarEditor->ellipseItem->setScale(1 / zoomFactor);
-    avatarEditor->ellipseItem->rightBound = avatarEditor->ellipseItem->oldRightBound -
+    avatarEditor->ellipseItem->rightBound = avatarEditor->ellipseItem->originalRightBound -
                                             avatarEditor->ellipseItem->rect().width() *
                                             (avatarEditor->ellipseItem->scale() - 1);
-    avatarEditor->ellipseItem->bottomBound = avatarEditor->ellipseItem->oldBottomBound -
+    avatarEditor->ellipseItem->bottomBound = avatarEditor->ellipseItem->originalBottomBound -
                                              avatarEditor->ellipseItem->rect().height() *
                                              (avatarEditor->ellipseItem->scale() - 1);
 

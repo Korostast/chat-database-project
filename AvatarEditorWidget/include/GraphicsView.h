@@ -4,12 +4,13 @@
 #include <QGraphicsView>
 
 class GraphicsView : public QGraphicsView {
+private:
+    static qreal zoomFactor;
+
 public:
     explicit GraphicsView(QWidget *parent = nullptr);
 
     void wheelEvent(QWheelEvent *event) override;
-
-    static qreal zoomFactor;
 };
 
 #endif //UNTITLED13_GRAPHICSVIEW_H
