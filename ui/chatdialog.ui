@@ -99,7 +99,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="chat_dialog_members_list"/>
+    <widget class="QListWidget" name="chat_dialog_members_list">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QPushButton" name="chat_dialog_leave_button">

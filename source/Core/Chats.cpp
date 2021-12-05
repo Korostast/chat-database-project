@@ -69,7 +69,7 @@ void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, R
 // Load chat ui
 void MainWindow::openChat() {
     qDebug() << "OPENED";
-    qDebug() << "Chat id: " << currentChat->getId();
+    qDebug() << "Chat messageId: " << currentChat->getId();
 
     // TODO load messages database
     // Clear all previous messages from list
@@ -119,23 +119,64 @@ void MainWindow::messageTextChanged(QSizeF docSize) {
     static int countLines = 0;
 
     if (textEdit->height() < textEdit->baseSize().height() || int(round(docSize.height())) < countLines) {
-        qreal newHeight = getNewEditTextHeight(docSize, textEdit, countLines);
+        qreal newHeight = std::min(getNewEditTextHeight(docSize, textEdit, countLines), textEdit->baseSize().height());
         textEdit->setFixedHeight(int(round(newHeight)));
         qDebug() << "Text edit height has changed, countLines =" << countLines;
     }
 }
 
-// Add message to the message list
-void MainWindow::addMessage(int id, const QString &username, const QString &time, const QImage &avatar,
-                            const QString &content, MESSAGE_TYPE type) {
+void MainWindow::insertMessage(UserMessageWidget *message, int row) {
+    // If we need scroll message list to the bottom
+    bool isBottom = false;
+    auto *scrollBar = ui->messageList->verticalScrollBar();
+    qDebug() << "Current scroll bar value:" << scrollBar->value() << " and Max value:" << scrollBar->maximum();
+    if (scrollBar->value() == scrollBar->maximum())
+        isBottom = true;
+
     auto *item = new QListWidgetItem;
-    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+    //item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+
+    auto *widget = new UserMessageWidget(this);
+
+    widget->setChatId(message->getChatId());
+    widget->setMessageId(message->getMessageId());
+    // TODO image of message widget
+    widget->setAvatar(message->getAvatar());
+    widget->setName(message->getName());
+    widget->setTime(message->getTime());
+    widget->setContent(message->getContent());
+
+
+    item->setSizeHint(widget->sizeHint());
+    ui->messageList->insertItem(row, item);
+    //ui->messageList->addItem(item);
+    ui->messageList->setItemWidget(item, widget);
+
+    // Update scrollbar value
+    if (currentState == MESSAGES && isBottom)
+        ui->messageList->scrollToBottom();
+}
+
+// Add message to the message list
+void
+MainWindow::addMessage(int chatId, int messageId, const QString &username, const QString &time, const QImage &avatar,
+                       const QString &content, MESSAGE_TYPE type) {
+    // If we need scroll message list to the bottom
+    bool isBottom = false;
+    auto *scrollBar = ui->messageList->verticalScrollBar();
+    qDebug() << "Current scroll bar value:" << scrollBar->value() << " and Max value:" << scrollBar->maximum();
+    if (scrollBar->value() == scrollBar->maximum())
+        isBottom = true;
+
+    auto *item = new QListWidgetItem;
+    //item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
     switch (type) {
         case USER_MESSAGE: {
             auto *widget = new UserMessageWidget(this);
 
-            widget->setId(id);
+            widget->setChatId(chatId);
+            widget->setMessageId(messageId);
             // TODO image of message widget
             widget->setAvatar(avatar);
             widget->setName(username);
@@ -152,7 +193,7 @@ void MainWindow::addMessage(int id, const QString &username, const QString &time
         case SYSTEM_MESSAGE: {
             auto *widget = new SystemMessageWidget(this);
 
-            widget->setId(id);
+            widget->setId(messageId);
             widget->setContent(content);
 
             item->setSizeHint(widget->sizeHint());
@@ -167,10 +208,11 @@ void MainWindow::addMessage(int id, const QString &username, const QString &time
         }
     }
 
+    // Update scrollbar value
+    if (currentState == MESSAGES && isBottom)
+        ui->messageList->scrollToBottom();
 
-    //auto *widget = qobject_cast<ChatWidget *>(ui->chat_list->itemWidget(chatMap[id]));
-    //updateChat(id, widget->getName(), widget->getAvatar(), widget->getRole());
-    putOnTop(id);
+    putOnTop(chatId); // TODO message chat ID
 }
 
 // Click on name of the chat in the chat ui (open information about chat OR user profile)
@@ -210,23 +252,41 @@ bool MainWindow::checkMessage(QString &content) { // TODO delete 2+ spaces and n
 // User press enter
 void MainWindow::sendMessage() {
     QString messageText = ui->message_text_edit->toPlainText();
-    bool isBottom = false;
-    auto *scrollBar = ui->messageList->verticalScrollBar();
-    qDebug() << "Current scroll bar value:" << scrollBar->value() << " and Max value:" << scrollBar->maximum();
-    if (scrollBar->value() == scrollBar->maximum())
-        isBottom = true;
 
-    if (checkMessage(messageText)) {
-        addMessage(currentChat->getId(), currentUser->getUsername(),
+    static int messageId = 10;
+
+    if (checkMessage(messageText)) { // TODO MESSAGE ID!!!
+        addMessage(currentChat->getId(), messageId++, currentUser->getUsername(),
                    QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"), currentUser->getAvatar(),
                    messageText, USER_MESSAGE);
 
         ui->message_text_edit->clear();
 
-        // Update scrollbar value
-        if (isBottom)
-            ui->messageList->scrollToBottom();
-
         // TODO sendMessage database
     }
+}
+
+void MainWindow::removeChat(int id) {
+    int rowNumber = ui->chat_list->row(chatMap[id]);
+    auto *item = ui->chat_list->takeItem(rowNumber);
+    delete item;
+    chatMap.remove(id);
+    chats_button_released();
+}
+
+CustomPlainTextEdit *MainWindow::getMessageTextEdit() {
+    return ui->message_text_edit;
+}
+
+int MainWindow::deleteMessage(UserMessageWidget *message) {
+    int size = ui->messageList->count();
+    for (int i = 0; i < size; ++i) {
+        auto *widget = qobject_cast<UserMessageWidget *>(ui->messageList->itemWidget(ui->messageList->item(i)));
+        if (message->getMessageId() == widget->getMessageId()) {
+            auto *item = ui->messageList->takeItem(i);
+            delete item;
+            return i;
+        }
+    }
+    return -1;
 }

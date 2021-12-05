@@ -9,6 +9,8 @@
 #include "ChatDialog.h"
 #include "AvatarEditor.h"
 #include "Defines.h"
+#include "CustomPlainTextEdit.h"
+#include "UserMessageWidget.h"
 
 enum STATE {
     AUTHORIZATION,
@@ -49,10 +51,18 @@ public:
 
     void putOnTop(int id);
 
-    void addMessage(int id, const QString &username, const QString &time, const QImage &avatar,
+    void addMessage(int chatId, int messageId, const QString &username, const QString &time, const QImage &avatar,
                     const QString &content, MESSAGE_TYPE type);
 
+    void insertMessage(UserMessageWidget *message, int row);
+
+    int deleteMessage(UserMessageWidget *message);
+
     int getNewEditTextHeight(const QSizeF &docSize, const QPlainTextEdit *textEdit, int &countLines);
+
+    void removeChat(int id);
+
+    CustomPlainTextEdit *getMessageTextEdit();
 
 private:
 

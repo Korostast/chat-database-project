@@ -13,7 +13,10 @@ class UserMessageWidget : public QWidget {
 Q_OBJECT
 
 private:
-    int id;
+
+    int chatId;
+
+    int messageId;
 
     QImage avatar;
 
@@ -22,10 +25,18 @@ private:
     QString time;
 
     QString content;
-public:
-    int getId() const;
 
-    void setId(int id);
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
+public:
+
+    int getChatId() const;
+
+    void setChatId(int chatId);
+
+    int getMessageId() const;
+
+    void setMessageId(int id);
 
     const QImage & getAvatar() const;
 

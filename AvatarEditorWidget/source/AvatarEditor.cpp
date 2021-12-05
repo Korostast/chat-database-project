@@ -120,7 +120,8 @@ void AvatarEditor::saveImage() {
         mainWindow->updateChat(MainWindow::currentChat->getId(), MainWindow::currentChat->getName(),
                                result, MainWindow::currentChat->getRole());
         QString content = QString("Пользователь %1 изменил аватарку беседы").arg(MainWindow::currentUser->getUsername());
-        mainWindow->addMessage(MainWindow::currentChat->getId(), "", "", QImage(), content, SYSTEM_MESSAGE);
+        // TODO MESSAGE ID
+        mainWindow->addMessage(MainWindow::currentChat->getId(), 11, "", "", QImage(), content, SYSTEM_MESSAGE);
     } else {  // if (currentState == USER)
         // TODO user avatar
         QString path("../resources/images/users/%1.png");

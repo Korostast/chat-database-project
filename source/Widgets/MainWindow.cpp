@@ -71,8 +71,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 
     // Test
-    addMessage(0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
-    addMessage(1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
+    addMessage(0, 0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
+    addMessage(0, 1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
     QString test("Он белый\n"
                  "Пушистый\n"
                  "Мягкий\n"
@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                  "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими\n"
                  "Он безумно красивый\n"
                  "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
+    addMessage(0, 2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
                USER_MESSAGE);
 
     QString test2("Он белый"
@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                   "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими"
                   "Он безумно красивый"
                   "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
+    addMessage(0, 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
                USER_MESSAGE);
 
     QString test3(
@@ -99,7 +99,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             "aaaaaaaaaaaaaaaaaaaaaaa");
-    addMessage(3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
+    addMessage(0, 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
                USER_MESSAGE);
 }
 

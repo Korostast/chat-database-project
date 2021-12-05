@@ -1,5 +1,8 @@
 #include "CustomPlainTextEdit.h"
+#include "UserMessageWidget.h"
+#include "MainWindow.h"
 #include <QApplication>
+#include <QMenu>
 
 CustomPlainTextEdit::CustomPlainTextEdit(QWidget *parent)
         : QPlainTextEdit(parent) {}

@@ -82,3 +82,15 @@ void ChatDialog::removeMemberFromUi(ChatMemberWidget *member) {
         }
     }
 }
+
+void ChatDialog::leaveChat() {
+    // TODO database
+    auto *mainWindow = qobject_cast<MainWindow *>(parent());
+    QString content("%1 покинул беседу");
+    content = content.arg(MainWindow::currentUser->getUsername());
+    mainWindow->addMessage(0, MainWindow::currentChat->getId(), "", "", QImage(), content, SYSTEM_MESSAGE);
+    close();
+
+    // Remove chat from chats list and back to chat list
+    mainWindow->removeChat(MainWindow::currentChat->getId());
+}
