@@ -102,13 +102,13 @@ private:
 
 private slots:
 
-    void sign_in_button_released();
+    void sign_in_button_released() const;
 
-    void register_button_released();
+    void register_button_released() const;
 
-    void switch_auth_button_released();
+    void switch_auth_button_released() const;
 
-    void switch_register_button_released();
+    void switch_register_button_released() const;
 
     void messageTextChanged(QSizeF docSize);
 

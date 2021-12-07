@@ -1,27 +1,27 @@
-#include <QtCore/QtCore>
 #include "sqlFunctions.h"
 
-UserInfo sqlAuthenticate(QString &handle, QString &password) {
-    QSqlQuery q;
-    q.prepare("call existsUser(:handle)");
-    q.bindValue(":handle", handle);
-    q.exec();
-    if (q.size() == 0)
-        throw "User with such username/email does not exist";
+#include <utility>
 
-    q.next();
+QSqlException::QSqlException(std::string message) : msg(std::move(message)) {}
+
+const char *QSqlException::what() const noexcept {
+    return msg.c_str();
+}
+
+UserInfo sqlAuthenticate(QString &handle, QString &password_hash) {
+    QSqlQuery q;
+
+    q.exec("call existsUser('" + handle + "')");
+    if (!q.next())
+        throw QSqlException("User with such username/email does not exist");
+
     int id = q.value(0).toInt();
 
-    q.prepare("call authenticateUser(:id,:password)");
-    q.bindValue(":id", id);
-    q.bindValue(":password", password);
-    q.exec();
-    if (q.size() == 0)
-        throw "Incorrect password";
+    q.exec("call authenticateUser(" + QString::number(id) + ", '" + password_hash + "')");
+    if (!q.next())
+        throw QSqlException("Incorrect password_hash");
 
-    q.next();
     QString username = q.value("username").toString();
-    QString status = q.value("profile_status").toString();
     int friend_count = q.value("friend_count").toInt();
     QString first_name = q.value("first_name").toString();
     QString last_name = q.value("last_name").toString();

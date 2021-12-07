@@ -98,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->message_text_edit->document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
             this, SLOT(messageTextChanged(QSizeF)));
 
-    tests();
+    //tests();
 }
 
 MainWindow::~MainWindow() {

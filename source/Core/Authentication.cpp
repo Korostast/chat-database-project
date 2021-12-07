@@ -25,7 +25,7 @@ QString MainWindow::checkAuthInput(const QString &username, const QString &passw
     return nullptr;
 }
 
-void MainWindow::sign_in_button_released() {
+void MainWindow::sign_in_button_released() const {
     qDebug() << "AUTH BUTTON CLICKED";
 
     QString password = ui->auth_password_edit->text();
@@ -37,32 +37,22 @@ void MainWindow::sign_in_button_released() {
         return;
     }
 
-
-    // Call a function that send request to database and return string about error TODO
-    //error = "User doesn't exist";
-//    if (!error.isEmpty()) {
-//        ui->auth_register_error_label->setText(error);
-//        ui->auth_register_error_label->show();
-//        return;
-//    }
-
     try {
         currentUser = new UserInfo(sqlAuthenticate(email, password));
-    } catch (QString &error) {
-        ui->auth_register_error_label->setText(error);
+
+        // Loading data from database: user, account, chats, friends, requests TODO
+        currentState = CHATS;
+    } catch (QSqlException &error) {
+        ui->auth_register_error_label->setText(error.what());
         ui->auth_register_error_label->show();
         return;
     }
-
-    // Success
-    // Loading data from database: user, account, chats, friends, requests TODO
-    currentState = CHATS;
 
     // Change screen to chat list
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
 }
 
-void MainWindow::register_button_released() {
+void MainWindow::register_button_released() const {
     qDebug() << "REGISTER BUTTON CLICKED";
 
     QString username = ui->register_username_edit->text();
@@ -91,7 +81,7 @@ void MainWindow::register_button_released() {
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
 }
 
-void MainWindow::switch_auth_button_released() {
+void MainWindow::switch_auth_button_released() const {
     if (currentState == REGISTRATION) {
         qDebug() << "SWITCH TO AUTH";
         ui->switch_auth_button->setChecked(true);
@@ -106,7 +96,7 @@ void MainWindow::switch_auth_button_released() {
     }
 }
 
-void MainWindow::switch_register_button_released() {
+void MainWindow::switch_register_button_released() const {
     if (currentState == AUTHORIZATION) {
         qDebug() << "SWITCH TO REGISTER";
         ui->switch_register_button->setChecked(true);
