@@ -30,7 +30,7 @@
     <item row="1" column="0">
      <widget class="QStackedWidget" name="app_stacked_widget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0" columnstretch="0,0,0,0,0,0">
@@ -575,7 +575,7 @@
              <number>6</number>
             </property>
             <item>
-             <widget class="QListWidget" name="listWidget_4">
+             <widget class="QListWidget" name="additional_info_list">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -623,7 +623,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="0">
@@ -1130,26 +1130,38 @@
               <item>
                <widget class="QStackedWidget" name="friends_stacked_widget">
                 <property name="currentIndex">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="actual_friends_page">
                  <layout class="QGridLayout" name="gridLayout_10">
                   <item row="0" column="0">
-                   <widget class="QListWidget" name="actual_friends_list"/>
+                   <widget class="QListWidget" name="actual_friends_list">
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::NoSelection</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
                 <widget class="QWidget" name="incoming_requests_page">
                  <layout class="QGridLayout" name="gridLayout_11">
                   <item row="0" column="0">
-                   <widget class="QListWidget" name="incoming_requests_list"/>
+                   <widget class="QListWidget" name="incoming_requests_list">
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::NoSelection</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
                 <widget class="QWidget" name="outcoming_requests_page">
                  <layout class="QGridLayout" name="gridLayout_12">
                   <item row="0" column="0">
-                   <widget class="QListWidget" name="outcoming_requests_list"/>
+                   <widget class="QListWidget" name="outcoming_requests_list">
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::NoSelection</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1174,7 +1186,11 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QListWidget" name="search_people_list"/>
+                   <widget class="QListWidget" name="search_people_list">
+                    <property name="selectionMode">
+                     <enum>QAbstractItemView::NoSelection</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1245,7 +1261,7 @@ color: rgb(231, 231, 231);</string>
   <tabstop>chat_list</tabstop>
   <tabstop>chats_button</tabstop>
   <tabstop>profile_button</tabstop>
-  <tabstop>listWidget_4</tabstop>
+  <tabstop>additional_info_list</tabstop>
  </tabstops>
  <resources/>
  <connections/>

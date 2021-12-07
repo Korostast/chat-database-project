@@ -54,25 +54,39 @@ void ChatMemberWidget::setRole(ROLE role) {
         ui->chat_members_remove_button->hide();
 }
 
+// Admin click to the remove member button
 void ChatMemberWidget::removeMember() {
-    // TODO database
+    // TODO database remove chat member
     // TODO remove yourself from the chat
+
     auto *sender = qobject_cast<QPushButton *>(QObject::sender());
-    QString content("%1 исключил %2");
-    content = content.arg(MainWindow::currentUser->getUsername());
     if (sender == ui->chat_members_remove_button) {
+        QString content("%1 исключил %2");
+        content = content.arg(MainWindow::currentUser->getUsername());
         auto *chatMemberWidget = qobject_cast<ChatMemberWidget *>(sender->parent());
         content = content.arg(chatMemberWidget->getName());
         auto *chatDialog = qobject_cast<ChatDialog *>(sender->window());
+
+        qInfo() << QString("Admin remove user with id - %1, username - %2, role - %3 from chat with id - %4, name - %5")
+                .arg(chatMemberWidget->getId()).arg(chatMemberWidget->getName()).arg(chatMemberWidget->getRole())
+                .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName());
+
         chatDialog->removeMemberFromUi(chatMemberWidget);
 
         auto *mainWindow = qobject_cast<MainWindow *>(chatDialog->parent());
-        mainWindow->addMessage(0, MainWindow::currentChat->getId(), "", "", QImage(), content, SYSTEM_MESSAGE);
+        // TODO change message id
+        mainWindow->addMessage(MainWindow::currentChat->getId(), 0, "", "", QImage(), content, SYSTEM_MESSAGE);
     }
 }
 
+// Admin change chat member role
 void ChatMemberWidget::changeMemberRole(int index) const {
-    // TODO database
+    // TODO database change chat member role
+    // getId()
+    qInfo() << QString("Admin change role of user with id - %1, username - %2. Old role - %3, new role - %4")
+            .arg(getId()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
+                              ui->chat_members_roles_combobox->itemText(index));
+
     ui->chat_members_roles_combobox->setCurrentIndex(index);
     ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());
 }

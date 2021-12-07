@@ -72,6 +72,7 @@ void UserInfo::setStatus(const QString &status) {
     UserInfo::status = status;
 }
 
+// Just why not
 UserInfo &UserInfo::operator=(const UserInfo &user) {
     if (this == &user)
         return *this;

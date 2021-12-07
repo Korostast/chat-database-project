@@ -6,7 +6,8 @@
 
 // It will show ui of the chat info window only WORK FOR GROUP CHAT
 void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
-    ui->chat_dialog_avatar->setPixmap(AvatarEditor::getCircularPixmap(chat->getAvatar(), CHAT_DIALOG_AVATAR_IMAGE_SIZE));
+    ui->chat_dialog_avatar->setPixmap(
+            AvatarEditor::getCircularPixmap(chat->getAvatar(), CHAT_DIALOG_AVATAR_IMAGE_SIZE));
     ui->chat_dialog_name->setText(chat->getName());
     ui->chat_dialog_count_members->setText(QString::number(chat->getCountMembers()));
     if (chat->getRole() == ADMIN) {
@@ -17,7 +18,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
         ui->chat_dialog_avatar->setCursor(Qt::ArrowCursor);
     }
 
-    // Load members list TODO database
+    // TODO database load members list
     // TEST
     QList<UserChatMember> members;
     members.push_back(UserChatMember(1, "Korostast", QImage(":chatDefaultImage"), ADMIN));
@@ -27,7 +28,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
     // Cleaning
     ui->chat_dialog_members_list->clear();
 
-    for (const auto& user : members) {
+    for (const auto &user: members) {
         auto *item = new QListWidgetItem;
         item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
@@ -44,20 +45,23 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
 
 }
 
+// Admin change chat name
 void ChatDialog::changeChatName() {
-    qDebug() << "editingFinished";
+    qInfo() << QString("Name of chat with id - %1 changed from %2 to %3")
+            .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName(), ui->chat_dialog_name->text());
     setFocus();
     MainWindow::currentChat->setName(ui->chat_dialog_name->text());
-    auto *mainWindow = qobject_cast<MainWindow *>(this->parentWidget());
+    auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
     mainWindow->updateChat(MainWindow::currentChat->getId(), ui->chat_dialog_name->text(),
                            MainWindow::currentChat->getAvatar(), MainWindow::currentChat->getRole());
 
-    // Send to db new chat name
+    // TODO database send to a new chat name
 }
 
+// Admin want to change avatar of the chat
 void ChatDialog::openFileChooser() {
     if (MainWindow::currentChat->getRole() == ADMIN) {
-        qDebug() << "Open file chooser";
+        qInfo() << "File chooser opened";
         auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
         auto windowCentreX = mainWindow->x() + mainWindow->width() / 2 - CHOOSE_FILE_PAGE_WIDTH / 2;
         auto windowCentreY = mainWindow->y() + mainWindow->height() / 2 - CHOOSE_FILE_PAGE_HEIGHT / 2;
@@ -70,25 +74,27 @@ void ChatDialog::openFileChooser() {
     }
 }
 
+// Searching for widget of the chat member in the list
 void ChatDialog::removeMemberFromUi(ChatMemberWidget *member) {
     int size = ui->chat_dialog_members_list->count();
     for (int i = 0; i < size; ++i) {
         auto *currentRow = ui->chat_dialog_members_list->item(i);
         auto *user = qobject_cast<ChatMemberWidget *>(ui->chat_dialog_members_list->itemWidget(currentRow));
         if (user->getId() == member->getId()) {
-            auto *item = ui->chat_dialog_members_list->takeItem(i);
-            delete item;
+            delete ui->chat_dialog_members_list->takeItem(i);
             break;
         }
     }
 }
 
+// You leave the chat
 void ChatDialog::leaveChat() {
-    // TODO database
+    // TODO database leave chat
     auto *mainWindow = qobject_cast<MainWindow *>(parent());
     QString content("%1 покинул беседу");
     content = content.arg(MainWindow::currentUser->getUsername());
-    mainWindow->addMessage(0, MainWindow::currentChat->getId(), "", "", QImage(), content, SYSTEM_MESSAGE);
+    // TODO change message id
+    mainWindow->addMessage(MainWindow::currentChat->getId(), 0, "", "", QImage(), content, SYSTEM_MESSAGE);
     close();
 
     // Remove chat from chats list and back to chat list

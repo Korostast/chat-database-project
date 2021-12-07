@@ -53,10 +53,9 @@ void UserMessageWidget::setContent(const QString &content) {
     UserMessageWidget::content = content;
     ui->message_content->setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
     ui->message_content->setPlainText(content);
-    qDebug() << "Doc size:" << ui->message_content->document()->size().toSize();
-
     int nRows = countRows(content);
-    qDebug() << "Rows:" << nRows;
+
+    // Don't delete it
     /*QMargins margins = ui->message_content->contentsMargins ();
     QTextDocument *pdoc = ui->message_content->document();
     QFontMetrics fm (pdoc->defaultFont ());
@@ -84,9 +83,6 @@ int UserMessageWidget::countRows(const QString &text) {
     for (const auto& line : lines) {
         QTextDocument document(line);
         document.setDefaultFont(QFont("Segoe UI", 12)); // TODO hardcoded font
-        qDebug() << "+ answer:" << (int) document.size().width() / MESSAGE_LINE_WIDTH;
-        qDebug() << "+ answer:" << (int) document.size().width();
-        qDebug() << "+ answer:" << MESSAGE_LINE_WIDTH;
         answer += (int) document.size().width() / MESSAGE_LINE_WIDTH;
     }
     return answer;
@@ -94,7 +90,7 @@ int UserMessageWidget::countRows(const QString &text) {
 
 void UserMessageWidget::contextMenuEvent(QContextMenuEvent *event) {
     QWidget::contextMenuEvent(event);
-    qDebug() << "Context menu called";
+    qInfo() << "Context menu called";
 }
 
 int UserMessageWidget::getChatId() const {

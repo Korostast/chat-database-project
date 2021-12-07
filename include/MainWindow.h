@@ -12,17 +12,7 @@
 #include "CustomPlainTextEdit.h"
 #include "UserMessageWidget.h"
 
-enum STATE {
-    AUTHORIZATION,
-    REGISTRATION,
-    CHATS,
-    MESSAGES,
-    PROFILE,
-    FRIENDS,
-    INCOMING_REQUESTS,
-    OUTCOMING_REQUESTS,
-    SEARCH_PEOPLE
-};
+void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,7 +25,6 @@ class MainWindow : public QMainWindow {
 Q_OBJECT
 
 public:
-    //TODO
     AvatarEditor *avatarEditor;
 
     static STATE currentState;
@@ -59,15 +48,13 @@ public:
 
     void insertMessage(UserMessageWidget *message, int row);
 
-    int deleteMessage(UserMessageWidget *message);
+    int deleteMessage(UserMessageWidget *message) const;
 
     int getNewEditTextHeight(const QSizeF &docSize, const QPlainTextEdit *textEdit, int &countLines);
 
     void removeChat(int id);
 
-    CustomPlainTextEdit *getMessageTextEdit();
-
-    void setFocusToTextEdit();
+    void setFocusToTextEdit() const;
 
     template <typename T>
     void addToList(int friendId, const QString &username, const QImage &avatar, QListWidget *list);
@@ -77,7 +64,7 @@ public:
 
     void addPersonInSearch(int personId, const QString &username, const QImage &avatar);
 
-    void loadProfile(const UserInfo *user);
+    void loadProfile(const UserInfo *user) const;
 
     Ui::MainWindow *ui;
 
@@ -101,21 +88,21 @@ private:
 
 private slots:
 
-    void sign_in_button_released();
+    void sign_in_button_released() const;
 
-    void register_button_released();
+    void register_button_released() const;
 
-    void switch_auth_button_released();
+    void switch_auth_button_released() const;
 
-    void switch_register_button_released();
+    void switch_register_button_released() const;
 
     void messageTextChanged(QSizeF docSize);
 
     void chat_name_label_released();
 
-    void chats_button_released();
+    void chats_button_released() const;
 
-    void profile_button_released();
+    void profile_button_released() const;
 
     void friends_button_released() const;
 

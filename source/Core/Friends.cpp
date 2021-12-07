@@ -5,17 +5,17 @@
 #include "OutcomingRequestWidget.h"
 #include "SearchPeopleWidget.h"
 
+// Templated function for friend widget and incoming, outcoming requests
 template<typename T>
 void MainWindow::addToList(int friendId, const QString &username, const QImage &avatar, QListWidget *list) {
     auto *item = new QListWidgetItem;
-    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
     auto *widget = new T(this);
     widget->setFriendId(friendId);
     widget->setUsername(username);
 
-    // TODO avatars
-    widget->setAvatar(avatar);
+    // TODO avatars | done ?
+    widget->setAvatar(avatar.isNull() ? QImage("chatDefaultImage") : avatar);
 
     item->setSizeHint(widget->sizeHint());
 
@@ -23,6 +23,7 @@ void MainWindow::addToList(int friendId, const QString &username, const QImage &
     list->setItemWidget(item, widget);
 }
 
+// Templated function for friend widget and incoming, outcoming requests
 template<typename T>
 void MainWindow::removeFromList(int requestId, QListWidget *list) {
     for (int i = 0; i < list->count(); ++i) {
@@ -35,9 +36,9 @@ void MainWindow::removeFromList(int requestId, QListWidget *list) {
     }
 }
 
+// Add person widget to the search list
 void MainWindow::addPersonInSearch(int personId, const QString &username, const QImage &avatar) {
     auto *item = new QListWidgetItem;
-    item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
     auto *widget = new SearchPeopleWidget(this);
     widget->setFriendId(personId);
@@ -52,19 +53,6 @@ void MainWindow::addPersonInSearch(int personId, const QString &username, const 
 
     ui->search_people_list->insertItem(0, item);
     ui->search_people_list->setItemWidget(item, widget);
-}
-
-void MainWindow::friends_button_released() const {
-    ui->main_stacked_widget->setCurrentIndex(FRIENDS_PAGE);
-    ui->friends_stacked_widget->setCurrentIndex(ACTUAL_FRIENDS_PAGE);
-    ui->switch_actual_friends->setChecked(true);
-
-    ui->switch_incoming_requests->setChecked(false);
-    ui->switch_outcoming_requests->setChecked(false);
-    ui->switch_search_people->setChecked(false);
-
-    currentChat = nullptr;
-    currentState = FRIENDS;
 }
 
 void MainWindow::switch_friends_page(int page) const {
@@ -117,6 +105,21 @@ void MainWindow::search_people() {
     for (const auto &user : users) {
         addPersonInSearch(user.getId(), user.getUsername(), user.getAvatar());
     }
+}
+
+void MainWindow::friends_button_released() const {
+    ui->main_stacked_widget->setCurrentIndex(FRIENDS_PAGE);
+    ui->friends_stacked_widget->setCurrentIndex(ACTUAL_FRIENDS_PAGE);
+    ui->switch_actual_friends->setChecked(true);
+
+    ui->switch_incoming_requests->setChecked(false);
+    ui->switch_outcoming_requests->setChecked(false);
+    ui->switch_search_people->setChecked(false);
+
+    currentChat = nullptr;
+    currentState = FRIENDS;
+
+    qDebug() << "Current state changed to FRIENDS";
 }
 
 // TODO remove it

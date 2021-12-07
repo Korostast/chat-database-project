@@ -15,8 +15,6 @@ public:
 
     explicit MessageTextEdit(QWidget *parent);
 
-    const QString &getContent() const;
-
 private slots:
     void showContextMenu(const QPoint &pos);
 

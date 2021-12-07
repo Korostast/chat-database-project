@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "./ui_mainwindow.h"
+#include "ui_mainwindow.h"
 
 // If data is correct
 QString MainWindow::checkAuthInput(const QString &username, const QString &password, const QString &email) {
@@ -25,7 +25,7 @@ QString MainWindow::checkAuthInput(const QString &username, const QString &passw
     return nullptr;
 }
 
-void MainWindow::sign_in_button_released() {
+void MainWindow::sign_in_button_released() const {
     qDebug() << "AUTH BUTTON CLICKED";
 
     QString password = ui->auth_password_edit->text();
@@ -57,7 +57,7 @@ void MainWindow::sign_in_button_released() {
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
 }
 
-void MainWindow::register_button_released() {
+void MainWindow::register_button_released() const {
     qDebug() << "REGISTER BUTTON CLICKED";
 
     QString username = ui->register_username_edit->text();
@@ -86,7 +86,7 @@ void MainWindow::register_button_released() {
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
 }
 
-void MainWindow::switch_auth_button_released() {
+void MainWindow::switch_auth_button_released() const {
     if (currentState == REGISTRATION) {
         qDebug() << "SWITCH TO AUTH";
         ui->switch_auth_button->setChecked(true);
@@ -101,7 +101,7 @@ void MainWindow::switch_auth_button_released() {
     }
 }
 
-void MainWindow::switch_register_button_released() {
+void MainWindow::switch_register_button_released() const {
     if (currentState == AUTHORIZATION) {
         qDebug() << "SWITCH TO REGISTER";
         ui->switch_register_button->setChecked(true);

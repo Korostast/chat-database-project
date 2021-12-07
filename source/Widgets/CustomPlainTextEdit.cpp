@@ -7,7 +7,7 @@
 CustomPlainTextEdit::CustomPlainTextEdit(QWidget *parent)
         : QPlainTextEdit(parent) {}
 
-void CustomPlainTextEdit::keyPressEvent(QKeyEvent *event) {  // TODO eventFilter??
+void CustomPlainTextEdit::keyPressEvent(QKeyEvent *event) {  // TODO eventFilter?? | I guess, no
     if (event->key() == Qt::Key_Return && event->modifiers() == Qt::NoModifier) {
         emit returnKeyPressedEvent();
         event->accept();

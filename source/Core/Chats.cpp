@@ -12,18 +12,19 @@
 // Add chat to the chats list
 void
 MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role) {
+    qInfo() << QString("Chat added: id - %1, name - %2, isGroup - %3, countMembers - %4 and your role - %5")
+            .arg(id).arg(name).arg(isGroup).arg(countMembers).arg(role);
+
     auto *item = new QListWidgetItem;
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
     auto *widget = new ChatWidget(this);
     widget->setId(id);
     widget->setName(name);
+    widget->setAvatar(avatar);
     widget->setGroup(isGroup);
     widget->setCountMembers(countMembers);
     widget->setRole(role);
-
-    // TODO avatars
-    widget->setAvatar(avatar);
 
     item->setSizeHint(widget->sizeHint());
 
@@ -33,6 +34,8 @@ MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGr
     chatMap[id] = item;
 }
 
+// Brings the dialog to the top of the chats list
+// This function is useless without caching system. However, don't delete it
 void MainWindow::putOnTop(int id) {
     int rowNumber = ui->chat_list->row(chatMap[id]);
     if (rowNumber == 0)
@@ -45,33 +48,31 @@ void MainWindow::putOnTop(int id) {
     ui->chat_list->setItemWidget(itemN, widget);
     chatMap[id] = itemN;
 
-    auto *item = ui->chat_list->takeItem(rowNumber + 1);
-    delete item;
+    delete ui->chat_list->takeItem(rowNumber + 1);
 }
 
 // Change chat's attributes and move chat at the top of the list
 void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, ROLE role) {
-    qDebug() << id;
+    qInfo() << QString("Chat updated, new parameters: id - %1, name - %2 and your role - %3")
+            .arg(id).arg(name).arg(role);
+
     putOnTop(id);
     auto *widget = qobject_cast<ChatWidget *>(ui->chat_list->itemWidget(chatMap[id]));
-    //qDebug() << widget->getName();
 
     widget->setName(name);
     if (id == currentChat->getId())
         ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(avatar, AVATAR_IN_CHAT_IMAGE_SIZE));
     widget->setAvatar(avatar);
-
     widget->setRole(role);
-
     ui->chat_name_label->setText(name);
 }
 
 // Load chat ui
 void MainWindow::openChat() {
-    qDebug() << "OPENED";
-    qDebug() << "Chat id: " << currentChat->getId();
+    qInfo() << QString("Opened chat: id - %1, name - %2, isGroup - %3, countMembers - %4 and your role - %5")
+    .arg(currentChat->getId()).arg(currentChat->getName()).arg(currentChat->isGroup()).arg(currentChat->getCountMembers()).arg(currentChat->getRole());
 
-    // TODO load messages database
+    // TODO database load messages
     // Clear all previous messages from list
     //ui->messageList->clear();
 
@@ -121,27 +122,26 @@ void MainWindow::messageTextChanged(QSizeF docSize) {
     if (textEdit->height() < textEdit->baseSize().height() || int(round(docSize.height())) < countLines) {
         qreal newHeight = std::min(getNewEditTextHeight(docSize, textEdit, countLines), textEdit->baseSize().height());
         textEdit->setFixedHeight(int(round(newHeight)));
-        qDebug() << "Text edit height has changed, countLines =" << countLines;
     }
 }
 
+// Function for editing messages. When we finished editing, original message replace with new one. I do it because Qt
+// doesn't want to change size of the original widget for some reason
 void MainWindow::insertMessage(UserMessageWidget *message, int row) {
     // If we need scroll message list to the bottom
     bool isBottom = false;
     auto *scrollBar = ui->messageList->verticalScrollBar();
-    qDebug() << "Current scroll bar value:" << scrollBar->value() << " and Max value:" << scrollBar->maximum();
     if (scrollBar->value() == scrollBar->maximum())
         isBottom = true;
 
     auto *item = new QListWidgetItem;
-    //item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
-
     auto *widget = new UserMessageWidget(this);
 
     widget->setChatId(message->getChatId());
     widget->setMessageId(message->getMessageId());
-    // TODO image of message widget
-    widget->setAvatar(message->getAvatar());
+    // TODO image of message widget | upd. Done ?
+    const auto& avatar = message->getAvatar();
+    widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
     widget->setName(message->getName());
     widget->setTime(message->getTime());
     widget->setContent(message->getContent());
@@ -149,7 +149,6 @@ void MainWindow::insertMessage(UserMessageWidget *message, int row) {
 
     item->setSizeHint(widget->sizeHint());
     ui->messageList->insertItem(row, item);
-    //ui->messageList->addItem(item);
     ui->messageList->setItemWidget(item, widget);
 
     // Update scrollbar value
@@ -164,12 +163,13 @@ MainWindow::addMessage(int chatId, int messageId, const QString &username, const
     // If we need scroll message list to the bottom
     bool isBottom = false;
     auto *scrollBar = ui->messageList->verticalScrollBar();
-    qDebug() << "Current scroll bar value:" << scrollBar->value() << " and Max value:" << scrollBar->maximum();
+
+    qDebug() << QString("Current scroll bar value - %1; max value - %2").arg(scrollBar->value(), scrollBar->maximum());
+
     if (scrollBar->value() == scrollBar->maximum())
         isBottom = true;
 
     auto *item = new QListWidgetItem;
-    //item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
     switch (type) {
         case USER_MESSAGE: {
@@ -177,8 +177,8 @@ MainWindow::addMessage(int chatId, int messageId, const QString &username, const
 
             widget->setChatId(chatId);
             widget->setMessageId(messageId);
-            // TODO image of message widget
-            widget->setAvatar(avatar);
+            // TODO image of message widget | upd. Done ?
+            widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
             widget->setName(username);
             widget->setTime(time);
             widget->setContent(content);
@@ -212,11 +212,11 @@ MainWindow::addMessage(int chatId, int messageId, const QString &username, const
     if (currentState == MESSAGES && isBottom)
         ui->messageList->scrollToBottom();
 
-    putOnTop(chatId); // TODO message chat ID
+    putOnTop(chatId); // TODO message chat ID | I don't remember what does it means
 }
 
 // Click on name of the chat in the chat ui (open information about chat OR user profile)
-// TODO user profile
+// TODO user profile | almost done
 void MainWindow::chat_name_label_released() {
     qDebug() << "ChatDialog opened";
 
@@ -229,7 +229,7 @@ void MainWindow::chat_name_label_released() {
         loadProfile(&user);
     }
 
-    // TODO it doesn't work properly
+    // TODO it doesn't work properly | but don't remove it, maybe this will be helpful in the future
 //    QGraphicsBlurEffect *effect = new QGraphicsBlurEffect;
 //    effect->setBlurRadius(5);
 //    this->setGraphicsEffect(effect);
@@ -249,32 +249,29 @@ bool MainWindow::checkMessage(QString &content) { // TODO delete 2+ spaces and n
 void MainWindow::sendMessage() {
     QString messageText = ui->message_text_edit->toPlainText();
 
-    static int messageId = 10;
+    static int messageId = 10; // TODO MESSAGE ID!!! It's a test
 
-    if (checkMessage(messageText)) { // TODO MESSAGE ID!!!
+    if (checkMessage(messageText)) {
         addMessage(currentChat->getId(), messageId++, currentUser->getUsername(),
                    QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"), currentUser->getAvatar(),
                    messageText, USER_MESSAGE);
 
         ui->message_text_edit->clear();
 
-        // TODO sendMessage database
+        // TODO database sendMessage
     }
 }
 
+// Obvious
 void MainWindow::removeChat(int id) {
     int rowNumber = ui->chat_list->row(chatMap[id]);
-    auto *item = ui->chat_list->takeItem(rowNumber);
-    delete item;
+    delete ui->chat_list->takeItem(rowNumber);
     chatMap.remove(id);
     chats_button_released();
 }
 
-CustomPlainTextEdit *MainWindow::getMessageTextEdit() {
-    return ui->message_text_edit;
-}
-
-int MainWindow::deleteMessage(UserMessageWidget *message) {
+// It is used in editing message. But now there is no delete message implementation
+int MainWindow::deleteMessage(UserMessageWidget *message) const {
     int size = ui->messageList->count();
     for (int i = 0; i < size; ++i) {
         auto *widget = qobject_cast<UserMessageWidget *>(ui->messageList->itemWidget(ui->messageList->item(i)));
@@ -287,13 +284,14 @@ int MainWindow::deleteMessage(UserMessageWidget *message) {
     return -1;
 }
 
-void MainWindow::setFocusToTextEdit() {
+void MainWindow::setFocusToTextEdit() const {
     ui->message_text_edit->setFocus();
 }
 
 // Return to chat list
-void MainWindow::chats_button_released() {
+void MainWindow::chats_button_released() const {
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
     currentChat = nullptr;
     currentState = CHATS;
+    qDebug() << "Current state changed to CHATS";
 }

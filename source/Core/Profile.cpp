@@ -1,10 +1,11 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
-void MainWindow::loadProfile(const UserInfo *user) {
+// We opened a profile of the user. Awful code.
+void MainWindow::loadProfile(const UserInfo *user) const {
     // TODO define
     ui->profile_avatar->setPixmap(QPixmap::fromImage(user->getAvatar())
-                                          .scaled(150, 150, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+                                          .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     ui->profile_username->setText(user->getUsername());
     ui->profile_status->setText(user->getStatus());
     if (!user->getFirstName().isEmpty()) {
@@ -37,9 +38,11 @@ void MainWindow::loadProfile(const UserInfo *user) {
     currentChat = nullptr;
     currentState = PROFILE;
     ui->main_stacked_widget->setCurrentIndex(PROFILE_PAGE);
+    
+    qDebug() << "Current state changed to PROFILE";
 }
 
 
-void MainWindow::profile_button_released() {
+void MainWindow::profile_button_released() const {
     loadProfile(currentUser);
 }

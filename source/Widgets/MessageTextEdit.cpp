@@ -4,11 +4,11 @@
 #include "MainWindow.h"
 
 MessageTextEdit::MessageTextEdit(QWidget *parent) : CustomPlainTextEdit(parent) {
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)),
-            this, SLOT(showContextMenu(QPoint)));
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
     connect(this, SIGNAL(returnKeyPressedEvent()), this, SLOT(editingFinish()));
 }
 
+// When we right-click on the message, context menu show
 void MessageTextEdit::showContextMenu(const QPoint &pos) {
     qDebug() << "Context menu called";
 
@@ -27,12 +27,14 @@ void MessageTextEdit::showContextMenu(const QPoint &pos) {
     }
 }
 
+// We clicked 'edit'
 void MessageTextEdit::editMessage() {
     qDebug() << "Editing message";
     setTextInteractionFlags(Qt::TextEditable | Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     selectAll();
 }
 
+// If we clicked somewhere else, we should cancel editing
 void MessageTextEdit::focusOutEvent(QFocusEvent *event) {
     QPlainTextEdit::focusOutEvent(event);
     if (textInteractionFlags() & Qt::TextEditable) {
@@ -43,13 +45,14 @@ void MessageTextEdit::focusOutEvent(QFocusEvent *event) {
     }
 }
 
+// We coped with editing functionality!
 void MessageTextEdit::editingFinish() {
     if (textInteractionFlags() & Qt::TextEditable) {
         // If text is unchanged
         auto *userMessageWidget = qobject_cast<UserMessageWidget *>(parentWidget());
         auto *mainWindow = qobject_cast<MainWindow *>(window());
         if (toPlainText() == userMessageWidget->getContent()) {
-            qDebug() << "Text edit is not changed";
+            qInfo() << "Text edit is not changed";
             setTextInteractionFlags(textInteractionFlags() & ~Qt::TextEditable);
 
             QTextCursor cursor = textCursor();
@@ -60,13 +63,12 @@ void MessageTextEdit::editingFinish() {
             return;
         }
 
-        // TODO database
-        qDebug() << "Text edit focusOutEvent";
+        qInfo() << QString("Edited message with id - %1. Old content: %2. New content: %3")
+                .arg(userMessageWidget->getMessageId()).arg(userMessageWidget->getContent(), toPlainText());
+
+        // TODO database message is edited
         setTextInteractionFlags(textInteractionFlags() & ~Qt::TextEditable);
-        //setPlainText(QString("%1\n\t\t\t\t[изменено]").arg(toPlainText()));
-        //int defaultRowNumber = 0;
-        //auto newHeight = mainWindow->getNewEditTextHeight(document()->size(), this, defaultRowNumber);
-        // TODO constructor
+
         UserMessageWidget message;
         message.setChatId(userMessageWidget->getChatId());
         message.setMessageId(userMessageWidget->getMessageId());
@@ -75,15 +77,9 @@ void MessageTextEdit::editingFinish() {
         message.setAvatar(userMessageWidget->getAvatar());
         message.setContent(QString("%1\n%2").arg(toPlainText(), "[изменено]"));
         userMessageWidget->setContent(message.getContent());
-        //setFixedHeight(300);
-        //mainWindow->deleteMessage()
+
         int rowNumber = mainWindow->deleteMessage(userMessageWidget);
         qDebug() << userMessageWidget->getContent();
         mainWindow->insertMessage(&message, rowNumber);
     }
 }
-
-const QString &MessageTextEdit::getContent() const {
-    return content;
-}
-
