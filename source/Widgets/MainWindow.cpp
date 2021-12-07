@@ -1,5 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+#include "FriendWidget.h"
+#include "IncomingRequestWidget.h"
 #include <QScrollBar>
 
 STATE MainWindow::currentState = AUTHORIZATION;
@@ -11,13 +13,10 @@ UserInfo *MainWindow::currentUser = nullptr;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     //TODO
     avatarEditor = new AvatarEditor(this);
-    //avatarEditor->loadImageIntoScene(":chatDefaultImage.png");
-    //avatarEditor->show();
 
     currentState = AUTHORIZATION;
     currentUser = new UserInfo();
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
-    //currentChat->hide();
     chatDialog = new ChatDialog(this);
     chatDialog->installEventFilter(this);
 
@@ -42,22 +41,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->auth_register_error_label->setSizePolicy(retain);
     ui->auth_register_error_label->hide();
 
-
-    // Test
-    for (int i = 0; i < 5; ++i) {
-        addChat(i, QString::fromStdString(std::to_string(i)), QImage(":chatDefaultImage"), true, 0, PARTICIPANT);
-    }
-    addChat(5, "5", QImage(":chatDefaultImage"), true, 0, VIEWER);
-    addChat(6, "6", QImage(":chatDefaultImage"), true, 0, ADMIN);
-    //updateChat(2, nullptr, QImage(":chatDefaultImage"), PARTICIPANT);
-
-
     connect(ui->sign_in_button, SIGNAL(released()), this, SLOT(sign_in_button_released()));
     connect(ui->register_button, SIGNAL(released()), this, SLOT(register_button_released()));
     connect(ui->switch_auth_button, SIGNAL(released()), this, SLOT(switch_auth_button_released()));
     connect(ui->switch_register_button, SIGNAL(released()), this, SLOT(switch_register_button_released()));
     connect(ui->chat_name_label, SIGNAL(released()), this, SLOT(chat_name_label_released()));
     connect(ui->chats_button, SIGNAL(released()), this, SLOT(chats_button_released()));
+    connect(ui->profile_button, SIGNAL(released()), this, SLOT(profile_button_released()));
+    connect(ui->friends_button, SIGNAL(released()), this, SLOT(friends_button_released()));
+
+    connect(ui->switch_actual_friends, &QPushButton::released, this, [this]() {
+        switch_friends_page(ACTUAL_FRIENDS_PAGE);
+    });
+    connect(ui->switch_incoming_requests, &QPushButton::released, this, [this]() {
+        switch_friends_page(INCOMING_REQUESTS_PAGE);
+    });
+    connect(ui->switch_outcoming_requests, &QPushButton::released, this, [this]() {
+        switch_friends_page(OUTCOMING_REQUESTS_PAGE);
+    });
+    connect(ui->switch_search_people, &QPushButton::released, this, [this]() {
+        switch_friends_page(SEARCH_PEOPLE_PAGE);
+    });
+
     connect(ui->chat_back_button, SIGNAL(released()), this, SLOT(chats_button_released()));
     connect(ui->message_text_edit, SIGNAL(returnKeyPressedEvent()), this, SLOT(sendMessage()));
     connect(ui->send_message_button, SIGNAL(released()), this, SLOT(sendMessage()));
@@ -66,41 +71,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->register_username_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
     connect(ui->register_password_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
     connect(ui->register_email_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
+    connect(ui->search_people_button, SIGNAL(released()), this, SLOT(search_people()));
+    connect(ui->search_people_line, SIGNAL(returnPressed()), this, SLOT(search_people()));
     connect(ui->message_text_edit->document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
             this, SLOT(messageTextChanged(QSizeF)));
 
-
-    // Test
-    addMessage(0, 0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
-    addMessage(0, 1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
-    QString test("Он белый\n"
-                 "Пушистый\n"
-                 "Мягкий\n"
-                 "Падает красиво\n"
-                 "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими\n"
-                 "Он безумно красивый\n"
-                 "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, 2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
-               USER_MESSAGE);
-
-    QString test2("Он белый"
-                  "Пушистый"
-                  "Мягкий"
-                  "Падает красиво"
-                  "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими"
-                  "Он безумно красивый"
-                  "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
-               USER_MESSAGE);
-
-    QString test3(
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaa");
-    addMessage(0, 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
-               USER_MESSAGE);
+    tests();
 }
 
 MainWindow::~MainWindow() {

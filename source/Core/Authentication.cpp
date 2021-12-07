@@ -80,7 +80,7 @@ void MainWindow::register_button_released() {
 
     // Success
     int id = 0; // from db
-    currentUser = new UserInfo(id, username, email);
+    currentUser = new UserInfo(id, username, QImage(":chatDefaultImage"), email);
 
     // Change screen to chat list
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);

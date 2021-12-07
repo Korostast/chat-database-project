@@ -45,14 +45,27 @@ void MessageTextEdit::focusOutEvent(QFocusEvent *event) {
 
 void MessageTextEdit::editingFinish() {
     if (textInteractionFlags() & Qt::TextEditable) {
+        // If text is unchanged
+        auto *userMessageWidget = qobject_cast<UserMessageWidget *>(parentWidget());
+        auto *mainWindow = qobject_cast<MainWindow *>(window());
+        if (toPlainText() == userMessageWidget->getContent()) {
+            qDebug() << "Text edit is not changed";
+            setTextInteractionFlags(textInteractionFlags() & ~Qt::TextEditable);
+
+            QTextCursor cursor = textCursor();
+            cursor.clearSelection();
+            setTextCursor(cursor);
+
+            mainWindow->setFocusToTextEdit();
+            return;
+        }
+
         // TODO database
         qDebug() << "Text edit focusOutEvent";
         setTextInteractionFlags(textInteractionFlags() & ~Qt::TextEditable);
         //setPlainText(QString("%1\n\t\t\t\t[изменено]").arg(toPlainText()));
-        auto *mainWindow = qobject_cast<MainWindow *>(window());
         //int defaultRowNumber = 0;
         //auto newHeight = mainWindow->getNewEditTextHeight(document()->size(), this, defaultRowNumber);
-        auto *userMessageWidget = qobject_cast<UserMessageWidget *>(parentWidget());    // TODO LOCAL VARIABLE COPY
         // TODO constructor
         UserMessageWidget message;
         message.setChatId(userMessageWidget->getChatId());
@@ -74,6 +87,3 @@ const QString &MessageTextEdit::getContent() const {
     return content;
 }
 
-void MessageTextEdit::setContent(const QString &content) {
-    MessageTextEdit::content = content;
-}

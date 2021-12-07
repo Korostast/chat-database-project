@@ -48,7 +48,7 @@ public:
 private slots:
     void removeMember();
 
-    void changeMemberRole(int index);
+    void changeMemberRole(int index) const;
 };
 
 #endif //CHATDATABASEPROJECT_CHATMEMBERWIDGET_H

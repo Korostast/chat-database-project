@@ -103,7 +103,7 @@
         <enum>QAbstractScrollArea::AdjustIgnored</enum>
        </property>
        <property name="textInteractionFlags">
-        <set>Qt::TextSelectableByMouse</set>
+        <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
        </property>
       </widget>
      </item>

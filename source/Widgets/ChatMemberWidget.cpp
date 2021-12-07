@@ -71,7 +71,7 @@ void ChatMemberWidget::removeMember() {
     }
 }
 
-void ChatMemberWidget::changeMemberRole(int index) {
+void ChatMemberWidget::changeMemberRole(int index) const {
     // TODO database
     ui->chat_members_roles_combobox->setCurrentIndex(index);
     ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());

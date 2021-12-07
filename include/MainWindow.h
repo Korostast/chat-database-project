@@ -17,8 +17,11 @@ enum STATE {
     REGISTRATION,
     CHATS,
     MESSAGES,
+    PROFILE,
     FRIENDS,
-    PROFILE
+    INCOMING_REQUESTS,
+    OUTCOMING_REQUESTS,
+    SEARCH_PEOPLE
 };
 
 QT_BEGIN_NAMESPACE
@@ -34,7 +37,6 @@ Q_OBJECT
 public:
     //TODO
     AvatarEditor *avatarEditor;
-
     static STATE currentState;
 
     static ChatWidget *currentChat;
@@ -64,11 +66,23 @@ public:
 
     CustomPlainTextEdit *getMessageTextEdit();
 
+    void setFocusToTextEdit();
+
+    template <typename T>
+    void addToList(int friendId, const QString &username, const QImage &avatar, QListWidget *list);
+
+    template<typename T>
+    static void removeFromList(int requestId, QListWidget *list);
+
+    void addPersonInSearch(int personId, const QString &username, const QImage &avatar);
+
+    Ui::MainWindow *ui;
+
+    void tests();
+
 private:
 
     bool eventFilter(QObject *object, QEvent *event) override;
-
-    Ui::MainWindow *ui;
 
     ChatDialog *chatDialog;
 
@@ -79,6 +93,8 @@ private:
     void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role);
 
     static bool checkMessage(QString &content);
+
+    void switch_friends_page(int page) const;
 
 private slots:
 
@@ -95,6 +111,12 @@ private slots:
     void chat_name_label_released();
 
     void chats_button_released();
+
+    void profile_button_released();
+
+    void friends_button_released() const;
+
+    void search_people();
 
     void sendMessage();
 };

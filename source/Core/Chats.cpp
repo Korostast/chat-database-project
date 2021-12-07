@@ -94,7 +94,7 @@ void MainWindow::openChat() {
 
     currentState = MESSAGES;
     ui->main_stacked_widget->setCurrentIndex(MESSAGES_PAGE);
-    ui->message_text_edit->setFocus();
+    setFocusToTextEdit();
 }
 
 // Return new size of text edit
@@ -232,13 +232,6 @@ void MainWindow::chat_name_label_released() {
 //    this->setGraphicsEffect(effect);
 }
 
-// Return to chat list
-void MainWindow::chats_button_released() {
-    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
-    currentChat = nullptr;
-    currentState = CHATS;
-}
-
 // If message is correct
 bool MainWindow::checkMessage(QString &content) { // TODO delete 2+ spaces and new lines
     QString tempString(content);
@@ -289,4 +282,15 @@ int MainWindow::deleteMessage(UserMessageWidget *message) {
         }
     }
     return -1;
+}
+
+void MainWindow::setFocusToTextEdit() {
+    ui->message_text_edit->setFocus();
+}
+
+// Return to chat list
+void MainWindow::chats_button_released() {
+    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
+    currentChat = nullptr;
+    currentState = CHATS;
 }

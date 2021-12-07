@@ -56,8 +56,8 @@ void UserInfo::setLastName(const QString &lastName) {
     UserInfo::lastName = lastName;
 }
 
-UserInfo::UserInfo(int id, QString username, QString email, QImage avatar,
-                   QString phoneNumber, QString firstName, QString lastName)
+UserInfo::UserInfo(int id, QString username, QImage avatar, QString email, QString phoneNumber, QString firstName,
+                   QString lastName)
                    : id(id), username(std::move(username)), email(std::move(email)), avatar(std::move(avatar)),
                    phoneNumber(std::move(phoneNumber)), firstName(std::move(firstName)), lastName(std::move(lastName))
                    {}

@@ -17,8 +17,6 @@ public:
 
     const QString &getContent() const;
 
-    void setContent(const QString &content);
-
 private slots:
     void showContextMenu(const QPoint &pos);
 
