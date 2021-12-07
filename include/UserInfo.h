@@ -3,21 +3,26 @@
 
 #include <QObject>
 #include <QImage>
+#include <QDate>
 
 class UserInfo {
 private:
     int id;
     QString username;
     QImage avatar;
+    QString status;
     QString email;
     QString phoneNumber;
     QString firstName;
     QString lastName;
+    int friend_count;
+    QDate created_date;
 
 public:
     explicit UserInfo(int id = -1, QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"),
+                      QString status = nullptr,
                       QString email = nullptr, QString phoneNumber = nullptr, QString firstName = nullptr,
-                      QString lastName = nullptr);
+                      QString lastName = nullptr, int friend_count = -1, QDate created_date = QDate());
 
     int getId() const;
 
@@ -31,7 +36,7 @@ public:
 
     void setEmail(const QString &email);
 
-    const QImage & getAvatar() const;
+    const QImage &getAvatar() const;
 
     void setAvatar(const QImage &avatar);
 

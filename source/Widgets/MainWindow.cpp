@@ -3,6 +3,7 @@
 #include "FriendWidget.h"
 #include "IncomingRequestWidget.h"
 #include <QScrollBar>
+#include <QFile>
 
 STATE MainWindow::currentState = AUTHORIZATION;
 
@@ -11,6 +12,27 @@ ChatWidget *MainWindow::currentChat = nullptr;
 UserInfo *MainWindow::currentUser = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+    // Open the file containing connection data
+    QFile qFile("db_access.txt");
+    qFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream qTextStream(&qFile);
+
+    // Set connection parameters from the file
+    db = QSqlDatabase::addDatabase(qTextStream.readLine());
+    db.setHostName(qTextStream.readLine());
+    db.setDatabaseName(qTextStream.readLine());
+    db.setUserName(qTextStream.readLine());
+    db.setPassword(qTextStream.readLine());
+
+    // Attempt connection
+    if (!db.open()) {
+        qCritical() << "Cannot connect to database\n";
+        exit(1);
+    }
+    qDebug() << "Succesfully connected to the database\n";
+
+
+
     //TODO
     avatarEditor = new AvatarEditor(this);
 
@@ -22,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Setting up interface and show default page (authorization)
     ui->setupUi(this);
-    ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
+    ui->app_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
 
@@ -80,6 +102,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 MainWindow::~MainWindow() {
+    db.close();
+    qDebug() << "Database connection closed\n";
     delete ui;
 }
 

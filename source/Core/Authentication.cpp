@@ -40,7 +40,15 @@ void MainWindow::sign_in_button_released() {
 
     // Call a function that send request to database and return string about error TODO
     //error = "User doesn't exist";
-    if (!error.isEmpty()) {
+//    if (!error.isEmpty()) {
+//        ui->auth_register_error_label->setText(error);
+//        ui->auth_register_error_label->show();
+//        return;
+//    }
+
+    try {
+        currentUser = new UserInfo(sqlAuthenticate(email, password));
+    } catch (QString &error) {
         ui->auth_register_error_label->setText(error);
         ui->auth_register_error_label->show();
         return;
@@ -48,9 +56,6 @@ void MainWindow::sign_in_button_released() {
 
     // Success
     // Loading data from database: user, account, chats, friends, requests TODO
-    int id = 0;
-    QString username = "Korostast";
-    currentUser = new UserInfo(id, username);
     currentState = CHATS;
 
     // Change screen to chat list

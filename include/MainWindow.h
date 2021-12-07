@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QPlainTextEdit>
+#include <QDate>
 #include "UserInfo.h"
 #include "ChatWidget.h"
 #include "ChatDialog.h"
@@ -11,6 +12,7 @@
 #include "Defines.h"
 #include "CustomPlainTextEdit.h"
 #include "UserMessageWidget.h"
+#include "sqlFunctions.h"
 
 enum STATE {
     AUTHORIZATION,
@@ -33,6 +35,8 @@ QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
+private:
+    QSqlDatabase db;
 
 public:
     //TODO
