@@ -58,6 +58,11 @@ void MainWindow::friends_button_released() const {
     ui->main_stacked_widget->setCurrentIndex(FRIENDS_PAGE);
     ui->friends_stacked_widget->setCurrentIndex(ACTUAL_FRIENDS_PAGE);
     ui->switch_actual_friends->setChecked(true);
+
+    ui->switch_incoming_requests->setChecked(false);
+    ui->switch_outcoming_requests->setChecked(false);
+    ui->switch_search_people->setChecked(false);
+
     currentChat = nullptr;
     currentState = FRIENDS;
 }
@@ -104,10 +109,10 @@ void MainWindow::search_people() {
     QList<UserInfo> users;
 
     // TEST
-    users.push_back(UserInfo(0, "Lalala", QImage(":chatDefaultImage")));
-    users.push_back(UserInfo(1, "Another one", QImage(":chatDefaultImage")));
-    users.push_back(UserInfo(2, "Second", QImage(":chatDefaultImage")));
-    users.push_back(UserInfo(4, "Kriper2003", QImage(":chatDefaultImage")));
+    users.push_back(UserInfo(0, "Lalala", QImage(":chatDefaultImage"), nullptr, nullptr));
+    users.push_back(UserInfo(1, "Another one", QImage(":chatDefaultImage"), nullptr, nullptr));
+    users.push_back(UserInfo(2, "Second", QImage(":chatDefaultImage"), nullptr, nullptr));
+    users.push_back(UserInfo(4, "Kriper2003", QImage(":chatDefaultImage"), nullptr, nullptr));
 
     for (const auto &user : users) {
         addPersonInSearch(user.getId(), user.getUsername(), user.getAvatar());

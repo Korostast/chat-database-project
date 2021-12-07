@@ -51,7 +51,7 @@ enum MESSAGE_TYPE {
 };
 
 struct UserChatMember {
-    UserChatMember(int i, const QString& string, QImage image, ROLE role) {
+    UserChatMember(int i, const QString &string, QImage image, ROLE role) {
         this->id = i;
         this->username = string;
         this->avatar = std::move(image);

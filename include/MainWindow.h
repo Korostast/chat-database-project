@@ -37,6 +37,7 @@ Q_OBJECT
 public:
     //TODO
     AvatarEditor *avatarEditor;
+
     static STATE currentState;
 
     static ChatWidget *currentChat;
@@ -75,6 +76,8 @@ public:
     static void removeFromList(int requestId, QListWidget *list);
 
     void addPersonInSearch(int personId, const QString &username, const QImage &avatar);
+
+    void loadProfile(const UserInfo *user);
 
     Ui::MainWindow *ui;
 

@@ -69,7 +69,7 @@ void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, R
 // Load chat ui
 void MainWindow::openChat() {
     qDebug() << "OPENED";
-    qDebug() << "Chat messageId: " << currentChat->getId();
+    qDebug() << "Chat id: " << currentChat->getId();
 
     // TODO load messages database
     // Clear all previous messages from list
@@ -220,11 +220,14 @@ MainWindow::addMessage(int chatId, int messageId, const QString &username, const
 void MainWindow::chat_name_label_released() {
     qDebug() << "ChatDialog opened";
 
-    if (MainWindow::currentChat->isGroup())
+    if (MainWindow::currentChat->isGroup()) {
         chatDialog->setupCurrentChatUi(currentChat);
-    //else
-    //  open user profile
-    chatDialog->show();
+        chatDialog->show();
+    } else {
+        // TODO database load profile
+        UserInfo user(1, "lasdlfasd", QImage(":chatDefaultImage"), nullptr);
+        loadProfile(&user);
+    }
 
     // TODO it doesn't work properly
 //    QGraphicsBlurEffect *effect = new QGraphicsBlurEffect;

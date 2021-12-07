@@ -30,10 +30,10 @@
     <item row="1" column="0">
      <widget class="QStackedWidget" name="app_stacked_widget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
-       <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0">
+       <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0" columnstretch="0,0,0,0,0,0">
         <item row="5" column="1">
          <spacer name="verticalSpacer">
           <property name="orientation">
@@ -102,7 +102,7 @@
         <item row="3" column="1">
          <widget class="QStackedWidget" name="authentification_stacked_widget">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="page_3">
            <layout class="QGridLayout" name="gridLayout_8">
@@ -163,7 +163,7 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
+                  <width>320</width>
                   <height>48</height>
                  </size>
                 </property>
@@ -179,7 +179,7 @@
                  </font>
                 </property>
                 <property name="placeholderText">
-                 <string>Электронный адрес</string>
+                 <string>Электронный адрес или имя пользователя</string>
                 </property>
                </widget>
               </item>
@@ -623,7 +623,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="0">

@@ -9,15 +9,19 @@ private:
     int id;
     QString username;
     QImage avatar;
+    QString status;
     QString email;
     QString phoneNumber;
     QString firstName;
     QString lastName;
 
 public:
+
     explicit UserInfo(int id = -1, QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"),
-                      QString email = nullptr, QString phoneNumber = nullptr, QString firstName = nullptr,
-                      QString lastName = nullptr);
+                      QString status = nullptr, QString email = nullptr, QString phoneNumber = nullptr,
+                      QString firstName = nullptr, QString lastName = nullptr);
+
+    UserInfo &operator=(const UserInfo &user);
 
     int getId() const;
 
@@ -28,6 +32,10 @@ public:
     void setUsername(const QString &username);
 
     const QString &getEmail() const;
+
+    const QString &getStatus() const;
+
+    void setStatus(const QString &status);
 
     void setEmail(const QString &email);
 

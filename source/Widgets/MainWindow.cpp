@@ -8,21 +8,23 @@ STATE MainWindow::currentState = AUTHORIZATION;
 
 ChatWidget *MainWindow::currentChat = nullptr;
 
-UserInfo *MainWindow::currentUser = nullptr;
+UserInfo *MainWindow::currentUser;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     //TODO
     avatarEditor = new AvatarEditor(this);
 
     currentState = AUTHORIZATION;
-    currentUser = new UserInfo();
+
+    currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
+
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
     chatDialog = new ChatDialog(this);
     chatDialog->installEventFilter(this);
 
     // Setting up interface and show default page (authorization)
     ui->setupUi(this);
-    ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
+    ui->app_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
 
@@ -81,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
 MainWindow::~MainWindow() {
     delete ui;
+    delete currentUser;
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event) {
