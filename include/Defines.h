@@ -45,10 +45,7 @@ enum STATE {
     CHATS,
     MESSAGES,
     PROFILE,
-    FRIENDS,
-    INCOMING_REQUESTS,
-    OUTCOMING_REQUESTS,
-    SEARCH_PEOPLE
+    FRIENDS
 };
 
 enum ROLE {
@@ -64,17 +61,45 @@ enum MESSAGE_TYPE {
 };
 
 struct UserChatMember {
-    UserChatMember(int i, const QString &string, QImage image, ROLE role) {
-        this->id = i;
-        this->username = string;
-        this->avatar = std::move(image);
-        this->role = role;
-    }
+    UserChatMember(int id, QString username, QImage avatar, ROLE role)
+            : id(id), username(std::move(username)),
+              avatar(std::move(avatar)), role(role) {}
 
     int id;
     QString username;
     QImage avatar;
     ROLE role;
+};
+
+struct ChatInfo {
+    ChatInfo(int id, QString name, QImage avatar = QImage(":chatDefaultImage"), bool group = false,
+             int countMembers = 2, ROLE role = PARTICIPANT)
+            : id(id), name(std::move(name)), avatar(std::move(avatar)), group(group), countMembers(countMembers),
+              role(role) {}
+
+    int id;
+    QString name;
+    QImage avatar;
+    bool group;
+    int countMembers;
+    ROLE role;
+};
+
+struct MessageInfo {
+    MessageInfo(int messageId, QString content, QString time, MESSAGE_TYPE type, int chatId, int userId,
+                int replyId = -1, QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"))
+            : chatId(chatId), userId(userId), replyId(replyId), messageId(messageId), username(std::move(username)),
+              time(std::move(time)), avatar(std::move(avatar)), content(std::move(content)), type(type) {}
+
+    int messageId;
+    QString content;
+    QString time;
+    MESSAGE_TYPE type;
+    int chatId;
+    int userId;
+    int replyId;
+    QString username;
+    QImage avatar;
 };
 
 #endif //CHATDATABASEPROJECT_DEFINES_H

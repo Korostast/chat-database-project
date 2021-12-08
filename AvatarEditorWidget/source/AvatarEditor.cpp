@@ -2,6 +2,7 @@
 #include "../include/AvatarEditor.h"
 #include "ui_avatareditor.h"
 #include "MainWindow.h"
+#include "../../source/SqlInterface.h"
 
 AvatarEditor::AvatarEditor(QWidget *parent)
         : QDialog(parent), ui(new Ui::AvatarEditor), scaleFactor(0), image(new QImage),
@@ -115,18 +116,28 @@ void AvatarEditor::saveImage() {
     if (MainWindow::currentState == MESSAGES) {
         QString path("../resources/images/chats/%1.png");
         if (!result.save(QString(path).arg(MainWindow::currentChat->getId()), "png")) {
-            qDebug() << "Error: can't save image";
+            qCritical() << "Error: can't save image";
+            return;
         }
+        // TODO database update chat avatar
+        sqlUpdateChatAvatar(MainWindow::currentChat->getId(), result);
+
         mainWindow->updateChat(MainWindow::currentChat->getId(), MainWindow::currentChat->getName(),
                                result, MainWindow::currentChat->getRole());
-        QString content = QString("Пользователь %1 изменил аватарку беседы").arg(MainWindow::currentUser->getUsername());
-        // TODO MESSAGE ID
+        QString content = QString("Пользователь %1 изменил аватарку беседы").arg(
+                MainWindow::currentUser->getUsername());
+
+        // TODO database send message
+        MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
+                            MainWindow::currentUser->getId());
+        sqlSendMessage(message);
+
         mainWindow->addMessage(MainWindow::currentChat->getId(), 11, "", "", QImage(), content, SYSTEM_MESSAGE);
     } else {  // if (currentState == USER)
         // TODO user avatar
         QString path("../resources/images/users/%1.png");
         if (!result.save(QString(path).arg(MainWindow::currentUser->getId()), "png")) {
-            qDebug() << "Error: can't save image";
+            qCritical() << "Error: can't save image";
         }
     }
 

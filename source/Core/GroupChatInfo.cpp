@@ -3,6 +3,7 @@
 #include "ui_chatdialog.h"
 #include "Defines.h"
 #include "ChatMemberWidget.h"
+#include "../SqlInterface.h"
 
 // It will show ui of the chat info window only WORK FOR GROUP CHAT
 void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
@@ -55,7 +56,10 @@ void ChatDialog::changeChatName() {
     mainWindow->updateChat(MainWindow::currentChat->getId(), ui->chat_dialog_name->text(),
                            MainWindow::currentChat->getAvatar(), MainWindow::currentChat->getRole());
 
-    // TODO database send to a new chat name
+    // TODO database new chat name
+    sqlChangeChatName(MainWindow::currentChat->getId(), ui->chat_dialog_name->text());
+
+    // TODO system message
 }
 
 // Admin want to change avatar of the chat
@@ -90,11 +94,17 @@ void ChatDialog::removeMemberFromUi(ChatMemberWidget *member) {
 // You leave the chat
 void ChatDialog::leaveChat() {
     // TODO database leave chat
+    sqlLeaveChat(MainWindow::currentUser->getId(), MainWindow::currentChat->getId());
+
     auto *mainWindow = qobject_cast<MainWindow *>(parent());
     QString content("%1 покинул беседу");
     content = content.arg(MainWindow::currentUser->getUsername());
-    // TODO change message id
-    mainWindow->addMessage(MainWindow::currentChat->getId(), 0, "", "", QImage(), content, SYSTEM_MESSAGE);
+
+    MessageInfo systemMessage(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
+                              MainWindow::currentUser->getId());
+    // TODO database send message
+    int messageId = sqlSendMessage(systemMessage);
+    mainWindow->addMessage(MainWindow::currentChat->getId(), messageId, "", "", QImage(), content, SYSTEM_MESSAGE);
     close();
 
     // Remove chat from chats list and back to chat list

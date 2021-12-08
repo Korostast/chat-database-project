@@ -4,6 +4,7 @@
 #include <QPlainTextEdit>
 #include <QWidget>
 #include "CustomPlainTextEdit.h"
+#include "UserMessageWidget.h"
 
 class MessageTextEdit : public CustomPlainTextEdit {
 Q_OBJECT
@@ -19,6 +20,8 @@ private slots:
     void showContextMenu(const QPoint &pos);
 
     void editMessage();
+
+    void removeMessage(UserMessageWidget *message);
 
     void focusOutEvent(QFocusEvent *event) override;
 

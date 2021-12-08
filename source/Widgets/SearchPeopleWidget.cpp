@@ -2,6 +2,7 @@
 #include "ui_searchpeoplewidget.h"
 #include "AvatarEditor.h"
 #include "MainWindow.h"
+#include "../SqlInterface.h"
 
 SearchPeopleWidget::SearchPeopleWidget(QWidget *parent) : ui(new Ui::SearchPeopleWidget) {
     ui->setupUi(this);
@@ -25,5 +26,8 @@ void SearchPeopleWidget::setAvatar(const QImage &avatar) {
 
 void SearchPeopleWidget::add_friend_button_released() {
     // TODO database send friend request
+    sqlSendFriendRequest(MainWindow::currentUser->getId(), getFriendId());
 
+    // TODO change ui of search people widget
+    ui->search_people_add->hide();
 }

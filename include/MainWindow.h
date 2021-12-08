@@ -56,15 +56,31 @@ public:
 
     void setFocusToTextEdit() const;
 
+    // Templated function for friend widget and incoming, outcoming requests
+    // FRIENDS FOO
     template <typename T>
-    void addToList(int friendId, const QString &username, const QImage &avatar, QListWidget *list);
+    void addToList(int friendId, const QString &username, const QImage &avatar, QListWidget *list){
+        auto *item = new QListWidgetItem;
+
+        auto *widget = new T(this);
+        widget->setFriendId(friendId);
+        widget->setUsername(username);
+
+        // TODO avatars | done ?
+        widget->setAvatar(avatar.isNull() ? QImage("chatDefaultImage") : avatar);
+
+        item->setSizeHint(widget->sizeHint());
+
+        list->insertItem(0, item);
+        list->setItemWidget(item, widget);
+    }
 
     template<typename T>
     static void removeFromList(int requestId, QListWidget *list);
 
     void addPersonInSearch(int personId, const QString &username, const QImage &avatar);
 
-    void loadProfile(const UserInfo *user) const;
+    void showProfile(const UserInfo *user) const;
 
     Ui::MainWindow *ui;
 
@@ -100,11 +116,11 @@ private slots:
 
     void chat_name_label_released();
 
-    void chats_button_released() const;
+    void chats_button_released();
 
     void profile_button_released() const;
 
-    void friends_button_released() const;
+    void friends_button_released();
 
     void search_people();
 

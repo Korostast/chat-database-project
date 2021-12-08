@@ -2,8 +2,7 @@
 #include "ui_mainwindow.h"
 
 // We opened a profile of the user. Awful code.
-void MainWindow::loadProfile(const UserInfo *user) const {
-    // TODO define
+void MainWindow::showProfile(const UserInfo *user) const {
     ui->profile_avatar->setPixmap(QPixmap::fromImage(user->getAvatar())
                                           .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     ui->profile_username->setText(user->getUsername());
@@ -44,5 +43,5 @@ void MainWindow::loadProfile(const UserInfo *user) const {
 
 
 void MainWindow::profile_button_released() const {
-    loadProfile(currentUser);
+    showProfile(currentUser);
 }

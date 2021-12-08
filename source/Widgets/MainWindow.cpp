@@ -24,7 +24,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Setting up interface and show default page (authorization)
     ui->setupUi(this);
-    ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
+    // TODO test
+    chats_button_released();
+
+    //ui->app_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
 
@@ -86,11 +89,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->switch_search_people, &QPushButton::released, this, [this]() {
         switch_friends_page(SEARCH_PEOPLE_PAGE);
     });
-
-    // TODO tests
-    // tests begin
-    tests(/*tests*/); // tests
-    // tests end
 }
 
 MainWindow::~MainWindow() {

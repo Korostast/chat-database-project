@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-#Project name
+#Project username
 set(TARGET_NAME chatDatabaseProject)
 project(${TARGET_NAME})
 
@@ -53,7 +53,7 @@ add_executable(${TARGET_NAME}
         AvatarEditorWidget/include/Defines.h source/Core/Chats.cpp
         source/Core/Friends.cpp
         source/Core/Profile.cpp
-        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp source/Widgets/ChatMemberWidget.cpp include/ChatMemberWidget.h include/MessageTextEdit.h source/Widgets/MessageTextEdit.cpp source/Widgets/FriendWidget.cpp include/FriendWidget.h include/IncomingRequestWidget.h source/Widgets/IncomingRequestWidget.cpp include/AbstractFriendWidget.h include/OutcomingRequestWidget.h source/Widgets/OutcomingRequestWidget.cpp include/SearchPeopleWidget.h source/Widgets/SearchPeopleWidget.cpp)
+        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp source/Widgets/ChatMemberWidget.cpp include/ChatMemberWidget.h include/MessageTextEdit.h source/Widgets/MessageTextEdit.cpp source/Widgets/FriendWidget.cpp include/FriendWidget.h include/IncomingRequestWidget.h source/Widgets/IncomingRequestWidget.cpp include/AbstractFriendWidget.h include/OutcomingRequestWidget.h source/Widgets/OutcomingRequestWidget.cpp include/SearchPeopleWidget.h source/Widgets/SearchPeopleWidget.cpp source/SqlInterface.h source/SqlInterface.cpp)
 
 #Copy required libraries into work directory
 if (WIN32)

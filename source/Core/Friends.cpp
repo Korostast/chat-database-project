@@ -4,24 +4,7 @@
 #include "IncomingRequestWidget.h"
 #include "OutcomingRequestWidget.h"
 #include "SearchPeopleWidget.h"
-
-// Templated function for friend widget and incoming, outcoming requests
-template<typename T>
-void MainWindow::addToList(int friendId, const QString &username, const QImage &avatar, QListWidget *list) {
-    auto *item = new QListWidgetItem;
-
-    auto *widget = new T(this);
-    widget->setFriendId(friendId);
-    widget->setUsername(username);
-
-    // TODO avatars | done ?
-    widget->setAvatar(avatar.isNull() ? QImage("chatDefaultImage") : avatar);
-
-    item->setSizeHint(widget->sizeHint());
-
-    list->insertItem(0, item);
-    list->setItemWidget(item, widget);
-}
+#include "../SqlInterface.h"
 
 // Templated function for friend widget and incoming, outcoming requests
 template<typename T>
@@ -47,7 +30,7 @@ void MainWindow::addPersonInSearch(int personId, const QString &username, const 
     // TODO avatars
     widget->setAvatar(avatar);
 
-    // Check if this person is already in the list of outcoming_requests_list and friends list and incoming_requests_list ?
+    // TODO Check if this person is already in the list of outcoming_requests_list and friends list and incoming_requests_list ?
 
     item->setSizeHint(widget->sizeHint());
 
@@ -67,25 +50,33 @@ void MainWindow::switch_friends_page(int page) const {
 }
 
 void FriendWidget::friend_remove_button_released() {
-    // TODO database
+    // TODO database remove friend
+    sqlRemoveFriend(MainWindow::currentUser->getId(), getFriendId());
+
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<FriendWidget>(getFriendId(), mainWindow->ui->actual_friends_list);
 }
 
 void IncomingRequestWidget::accept_request_button_released() {
-    // TODO database
+    // TODO database add friend (accept request)
+    sqlAcceptFriendRequest(MainWindow::currentUser->getId(), getFriendId());
+
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<IncomingRequestWidget>(getFriendId(), mainWindow->ui->incoming_requests_list);
 }
 
 void IncomingRequestWidget::decline_request_button_released() {
     // TODO database
+    sqlDeclineFriendRequest(MainWindow::currentUser->getId(), getFriendId());
+
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<IncomingRequestWidget>(getFriendId(), mainWindow->ui->incoming_requests_list);
 }
 
 void OutcomingRequestWidget::remove_request_button_released() {
     // TODO database
+    sqlCancelFriendRequest(MainWindow::currentUser->getId(), getFriendId());
+
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<OutcomingRequestWidget>(getFriendId(), mainWindow->ui->outcoming_requests_list);
 }
@@ -93,31 +84,38 @@ void OutcomingRequestWidget::remove_request_button_released() {
 void MainWindow::search_people() {
     QString input(ui->search_people_line->text());
 
-    // TODO database request
-    QList<UserInfo> users;
+    // TODO database search people
+    QList<UserInfo> users = peopleInSearch(input);
 
-    // TEST
-    users.push_back(UserInfo(0, "Lalala", QImage(":chatDefaultImage"), nullptr, nullptr));
-    users.push_back(UserInfo(1, "Another one", QImage(":chatDefaultImage"), nullptr, nullptr));
-    users.push_back(UserInfo(2, "Second", QImage(":chatDefaultImage"), nullptr, nullptr));
-    users.push_back(UserInfo(4, "Kriper2003", QImage(":chatDefaultImage"), nullptr, nullptr));
+    ui->search_people_list->clear();
 
-    for (const auto &user : users) {
+    for (const auto &user: users)
         addPersonInSearch(user.getId(), user.getUsername(), user.getAvatar());
-    }
 }
 
-void MainWindow::friends_button_released() const {
+void MainWindow::friends_button_released() {
+    // TODO database load requests / friends
+    int currentId = currentUser->getId();
+    QList<UserInfo> friends = loadFriends(currentId);
+    QList<UserInfo> incomingRequests = loadIncomingRequests(currentId);
+    QList<UserInfo> outcomingRequests = loadOutcomingRequests(currentId);
+
+    ui->actual_friends_list->clear();
+    ui->incoming_requests_list->clear();
+    ui->outcoming_requests_list->clear();
+
+    for (const auto& fr: friends)
+        addToList<FriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(), ui->actual_friends_list);
+    for (const auto& in: incomingRequests)
+        addToList<IncomingRequestWidget>(in.getId(), in.getUsername(), in.getAvatar(), ui->incoming_requests_list);
+    for (const auto& out: outcomingRequests)
+        addToList<OutcomingRequestWidget>(out.getId(), out.getUsername(), out.getAvatar(), ui->outcoming_requests_list);
+
     ui->main_stacked_widget->setCurrentIndex(FRIENDS_PAGE);
-    ui->friends_stacked_widget->setCurrentIndex(ACTUAL_FRIENDS_PAGE);
-    ui->switch_actual_friends->setChecked(true);
-
-    ui->switch_incoming_requests->setChecked(false);
-    ui->switch_outcoming_requests->setChecked(false);
-    ui->switch_search_people->setChecked(false);
-
     currentChat = nullptr;
     currentState = FRIENDS;
+
+    switch_friends_page(ACTUAL_FRIENDS_PAGE);
 
     qDebug() << "Current state changed to FRIENDS";
 }
@@ -130,6 +128,7 @@ void MainWindow::tests() {
     }
     addChat(5, "5", QImage(":chatDefaultImage"), true, 0, VIEWER);
     addChat(6, "6", QImage(":chatDefaultImage"), true, 0, ADMIN);
+    addChat(7, "Личная беседа", QImage(":chatDefaultImage"), false, 0, PARTICIPANT);
     //updateChat(2, nullptr, QImage(":chatDefaultImage"), PARTICIPANT);
 
     // Test
@@ -174,9 +173,9 @@ void MainWindow::tests() {
     addToList<OutcomingRequestWidget>(5, "Masha", QImage(":chatDefaultImage"), ui->outcoming_requests_list);
     addToList<OutcomingRequestWidget>(6, "Java", QImage(":chatDefaultImage"), ui->outcoming_requests_list);
 
-    /*addPersonInSearch(0, "Lalala", QImage(":chatDefaultImage"));
+    addPersonInSearch(0, "Lalala", QImage(":chatDefaultImage"));
     addPersonInSearch(1, "Another one", QImage(":chatDefaultImage"));
     addPersonInSearch(2, "Second", QImage(":chatDefaultImage"));
     addPersonInSearch(3, "This_is_request", QImage(":chatDefaultImage"));
-    addPersonInSearch(4, "Kriper2003", QImage(":chatDefaultImage"));*/
+    addPersonInSearch(4, "Kriper2003", QImage(":chatDefaultImage"));
 }

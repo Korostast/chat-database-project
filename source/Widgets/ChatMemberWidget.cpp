@@ -2,6 +2,7 @@
 #include "AvatarEditor.h"
 #include "MainWindow.h"
 #include "ui_chatmemberwidget.h"
+#include "../SqlInterface.h"
 
 ChatMemberWidget::ChatMemberWidget(QWidget *parent)
         : QWidget(parent), ui(new Ui::ChatMemberWidget), id(-1), role(VIEWER) {
@@ -65,16 +66,24 @@ void ChatMemberWidget::removeMember() {
         content = content.arg(MainWindow::currentUser->getUsername());
         auto *chatMemberWidget = qobject_cast<ChatMemberWidget *>(sender->parent());
         content = content.arg(chatMemberWidget->getName());
+
+        sqlRemoveChatMember(chatMemberWidget->getId(), MainWindow::currentChat->getId());
+
         auto *chatDialog = qobject_cast<ChatDialog *>(sender->window());
 
-        qInfo() << QString("Admin remove user with id - %1, username - %2, role - %3 from chat with id - %4, name - %5")
+        qInfo() << QString(
+                "Admin remove user with id - %1, username - %2, role - %3 from chat with id - %4, username - %5")
                 .arg(chatMemberWidget->getId()).arg(chatMemberWidget->getName()).arg(chatMemberWidget->getRole())
                 .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName());
 
         chatDialog->removeMemberFromUi(chatMemberWidget);
 
         auto *mainWindow = qobject_cast<MainWindow *>(chatDialog->parent());
-        // TODO change message id
+        // TODO database send message
+        MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
+                            chatMemberWidget->getId());
+        sqlSendMessage(message);
+
         mainWindow->addMessage(MainWindow::currentChat->getId(), 0, "", "", QImage(), content, SYSTEM_MESSAGE);
     }
 }
@@ -82,7 +91,8 @@ void ChatMemberWidget::removeMember() {
 // Admin change chat member role
 void ChatMemberWidget::changeMemberRole(int index) const {
     // TODO database change chat member role
-    // getId()
+    sqlChangeRole(getId(), MainWindow::currentChat->getId(), index);
+
     qInfo() << QString("Admin change role of user with id - %1, username - %2. Old role - %3, new role - %4")
             .arg(getId()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
                               ui->chat_members_roles_combobox->itemText(index));
