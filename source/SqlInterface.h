@@ -9,9 +9,14 @@ QList<ChatInfo> sqlLoadChats(int userId);
 
 QList<MessageInfo> sqlLoadMessages(int chatId);
 
+// Юзер открыл информацию о беседе, загружается список участников. Используется структура UserChatMember, потому что
+// она содержит роль участника. Можно объединить с UserInfo, но вроде смысла нет
 QList<UserChatMember> sqlLoadChatMembers(int chatId);
 
-UserInfo sqlLoadProfile(const QString &username);
+// Юзер открыл личную беседу. Нужно вернуть ID юзера, с которым он общается
+int sqlGetPersonId(int chatId, int userId);
+
+UserInfo sqlLoadProfile(int userId);
 
 QList<UserInfo> sqlLoadFriends(int userId);
 
