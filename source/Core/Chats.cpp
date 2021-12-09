@@ -98,6 +98,9 @@ void MainWindow::openChat() {
         ui->chat_online_or_members_label->show();
     } else {
         ui->chat_online_or_members_label->hide();
+        // TODO database load person id
+        int friendId = sqlGetPersonId(currentChat->getId(), currentUser->getId());
+        ui->chat_name_label->setPersonalChatUserId(friendId);
     }
     if (currentChat->getRole() == VIEWER) {
         ui->message_text_edit->hide();
@@ -243,7 +246,7 @@ void MainWindow::chat_name_label_released() {
         chatDialog->show();
     } else {
         // TODO database load profile
-        UserInfo user = sqlLoadProfile(currentChat->getName());
+        UserInfo user = sqlLoadProfile(ui->chat_name_label->getPersonalChatUserId());
         showProfile(&user);
     }
 

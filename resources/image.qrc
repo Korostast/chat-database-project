@@ -1,5 +1,6 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource>
         <file alias="chatDefaultImage.png">images/testImage.png</file>
+        <file alias="Roboto font">fonts/Roboto-Regular.ttf</file>
     </qresource>
 </RCC>

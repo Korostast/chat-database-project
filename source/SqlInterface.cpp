@@ -56,7 +56,11 @@ QList<UserChatMember> sqlLoadChatMembers(int chatId) {
     return QList<UserChatMember>({user1, user2, user3});
 }
 
-UserInfo sqlLoadProfile(const QString &username) {
+int sqlGetPersonId(int chatId, int userId) {
+    return 0;
+}
+
+UserInfo sqlLoadProfile(int userId) {
     return UserInfo(10, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
 }
 
