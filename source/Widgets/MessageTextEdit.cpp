@@ -53,7 +53,7 @@ void MessageTextEdit::removeMessage(UserMessageWidget *message) {
     // TODO database delete message
     sqlDeleteMessage(message->getMessageId());
 
-    qDebug() << QString("Removing message with id").arg(message->getMessageId());
+    qDebug() << QString("Removing message with messageId").arg(message->getMessageId());
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     mainWindow->deleteMessage(message);
 }
@@ -87,7 +87,7 @@ void MessageTextEdit::editingFinish() {
             return;
         }
 
-        qInfo() << QString("Edited message with id - %1. Old content: %2. New content: %3")
+        qInfo() << QString("Edited message with messageId - %1. Old content: %2. New content: %3")
                 .arg(userMessageWidget->getMessageId()).arg(userMessageWidget->getContent(), toPlainText());
 
         setTextInteractionFlags(textInteractionFlags() & ~Qt::TextEditable);

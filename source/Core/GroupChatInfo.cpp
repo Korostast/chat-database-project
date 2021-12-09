@@ -20,11 +20,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
     }
 
     // TODO database load members list
-    // TEST
-    QList<UserChatMember> members;
-    members.push_back(UserChatMember(1, "Korostast", QImage(":chatDefaultImage"), ADMIN));
-    members.push_back(UserChatMember(2, "Kriper2002", QImage(":chatDefaultImage"), PARTICIPANT));
-    members.push_back(UserChatMember(3, "Nya", QImage(":chatDefaultImage"), VIEWER));
+    QList<UserChatMember> members = sqlLoadChatMembers(MainWindow::currentChat->getId());
 
     // Cleaning
     ui->chat_dialog_members_list->clear();
@@ -48,7 +44,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
 
 // Admin change chat name
 void ChatDialog::changeChatName() {
-    qInfo() << QString("Name of chat with id - %1 changed from %2 to %3")
+    qInfo() << QString("Name of chat with messageId - %1 changed from %2 to %3")
             .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName(), ui->chat_dialog_name->text());
     setFocus();
     MainWindow::currentChat->setName(ui->chat_dialog_name->text());
@@ -104,7 +100,8 @@ void ChatDialog::leaveChat() {
                               MainWindow::currentUser->getId());
     // TODO database send message
     int messageId = sqlSendMessage(systemMessage);
-    mainWindow->addMessage(MainWindow::currentChat->getId(), messageId, "", "", QImage(), content, SYSTEM_MESSAGE);
+    mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "", QImage(), content,
+                           SYSTEM_MESSAGE);
     close();
 
     // Remove chat from chats list and back to chat list

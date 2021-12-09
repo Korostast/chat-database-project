@@ -2,7 +2,7 @@
 #include "MainWindow.h"
 #include "Defines.h"
 
-QList<ChatInfo> loadChats(int userId) {
+QList<ChatInfo> sqlLoadChats(int userId) {
     ChatInfo chat1(0, "Самая первая обычная беседа", QImage(":chatDefaultImage"), true, 0);
     ChatInfo chat2(1, "Админская", QImage(":chatDefaultImage"), true, 0, ADMIN);
     ChatInfo chat3(2, "Зрительская", QImage(":chatDefaultImage"), true, 0, VIEWER);
@@ -13,7 +13,7 @@ QList<ChatInfo> loadChats(int userId) {
     return QList<ChatInfo>({chat1, chat2, chat3, chat4, chat5, chat6});
 }
 
-QList<MessageInfo> loadMessages(int chatId) {
+QList<MessageInfo> sqlLoadMessages(int chatId) {
     MessageInfo message1(0, "Hello world!", "2021-03-31 22:10",
                          USER_MESSAGE, 0, 10, -1, "Korostast");
     MessageInfo message2(1, "Hello world!", "2021-03-31 22:10",
@@ -48,11 +48,19 @@ QList<MessageInfo> loadMessages(int chatId) {
     return QList<MessageInfo>({message1, message2, message3, message4, message5});
 }
 
-UserInfo loadProfile(const QString& username) {
+QList<UserChatMember> sqlLoadChatMembers(int chatId) {
+    UserChatMember user1(0, "Lalala", QImage(":chatDefaultImage"), PARTICIPANT);
+    UserChatMember user2(1, "Another one", QImage(":chatDefaultImage"), VIEWER);
+    UserChatMember user3(2, "Second", QImage(":chatDefaultImage"), MODERATOR);
+
+    return QList<UserChatMember>({user1, user2, user3});
+}
+
+UserInfo sqlLoadProfile(const QString &username) {
     return UserInfo(10, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
 }
 
-QList<UserInfo> loadFriends(int userId) {
+QList<UserInfo> sqlLoadFriends(int userId) {
     UserInfo user1(0, "Lalala", QImage(":chatDefaultImage"));
     UserInfo user2(1, "Another one", QImage(":chatDefaultImage"));
     UserInfo user3(2, "Second", QImage(":chatDefaultImage"));
@@ -60,21 +68,21 @@ QList<UserInfo> loadFriends(int userId) {
     return QList<UserInfo>({user1, user2, user3});
 }
 
-QList<UserInfo> loadIncomingRequests(int userId) {
+QList<UserInfo> sqlLoadIncomingRequests(int userId) {
     UserInfo user1(3, "This_is_request", QImage(":chatDefaultImage"));
     UserInfo user2(4, "Kriper2003", QImage(":chatDefaultImage"));
 
     return QList<UserInfo>({user1, user2});
 }
 
-QList<UserInfo> loadOutcomingRequests(int userId) {
+QList<UserInfo> sqlLoadOutcomingRequests(int userId) {
     UserInfo user1(5, "Masha", QImage(":chatDefaultImage"));
     UserInfo user2(6, "Java", QImage(":chatDefaultImage"));
 
     return QList<UserInfo>({user1, user2});
 }
 
-QList<UserInfo> peopleInSearch(const QString& substring) {
+QList<UserInfo> sqlPeopleInSearch(const QString& substring) {
     UserInfo user1(0, "Lalala", QImage(":chatDefaultImage"));
     UserInfo user2(1, "Another one", QImage(":chatDefaultImage"));
     UserInfo user3(2, "Second", QImage(":chatDefaultImage"));

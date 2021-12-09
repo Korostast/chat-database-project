@@ -623,7 +623,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="0">
@@ -1130,7 +1130,7 @@
               <item>
                <widget class="QStackedWidget" name="friends_stacked_widget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <widget class="QWidget" name="actual_friends_page">
                  <layout class="QGridLayout" name="gridLayout_10">

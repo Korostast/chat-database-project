@@ -5,19 +5,21 @@
 #include "Defines.h"
 
 // Функции отправляющие GET запросы в БД
-QList<ChatInfo> loadChats(int userId);
+QList<ChatInfo> sqlLoadChats(int userId);
 
-QList<MessageInfo> loadMessages(int chatId);
+QList<MessageInfo> sqlLoadMessages(int chatId);
 
-UserInfo loadProfile(const QString& username);
+QList<UserChatMember> sqlLoadChatMembers(int chatId);
 
-QList<UserInfo> loadFriends(int userId);
+UserInfo sqlLoadProfile(const QString &username);
 
-QList<UserInfo> loadIncomingRequests(int userId);
+QList<UserInfo> sqlLoadFriends(int userId);
 
-QList<UserInfo> loadOutcomingRequests(int userId);
+QList<UserInfo> sqlLoadIncomingRequests(int userId);
 
-QList<UserInfo> peopleInSearch(const QString& substring);
+QList<UserInfo> sqlLoadOutcomingRequests(int userId);
+
+QList<UserInfo> sqlPeopleInSearch(const QString& substring);
 
 // TODO удалить комментарии. А лучше на англ перевести. А лучше теорвер поучить и дз сделать
 // Функции, отправляющие POST запросы в БД

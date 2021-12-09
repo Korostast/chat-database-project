@@ -16,6 +16,8 @@ private:
 
     int chatId;
 
+    int userId;
+
     int messageId;
 
     QImage avatar;
@@ -33,6 +35,10 @@ public:
     int getChatId() const;
 
     void setChatId(int chatId);
+
+    int getUserId() const;
+
+    void setUserId(int userId);
 
     int getMessageId() const;
 
