@@ -100,3 +100,11 @@ int UserMessageWidget::getChatId() const {
 void UserMessageWidget::setChatId(int chatId) {
     UserMessageWidget::chatId = chatId;
 }
+
+int UserMessageWidget::getUserId() const {
+    return userId;
+}
+
+void UserMessageWidget::setUserId(int userId) {
+    UserMessageWidget::userId = userId;
+}

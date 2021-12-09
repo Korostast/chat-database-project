@@ -130,9 +130,10 @@ void AvatarEditor::saveImage() {
         // TODO database send message
         MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
                             MainWindow::currentUser->getId());
-        sqlSendMessage(message);
+        int messageId = sqlSendMessage(message);
 
-        mainWindow->addMessage(MainWindow::currentChat->getId(), 11, "", "", QImage(), content, SYSTEM_MESSAGE);
+        mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "", QImage(), content,
+                               SYSTEM_MESSAGE);
     } else {  // if (currentState == USER)
         // TODO user avatar
         QString path("../resources/images/users/%1.png");

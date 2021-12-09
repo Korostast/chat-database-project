@@ -43,8 +43,8 @@ public:
 
     void putOnTop(int id);
 
-    void addMessage(int chatId, int messageId, const QString &username, const QString &time, const QImage &avatar,
-                    const QString &content, MESSAGE_TYPE type);
+    void addMessage(int chatId, int userId, int messageId, const QString &username, const QString &time,
+                    const QImage &avatar, const QString &content, MESSAGE_TYPE type);
 
     void insertMessage(UserMessageWidget *message, int row);
 

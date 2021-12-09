@@ -85,7 +85,7 @@ void MainWindow::search_people() {
     QString input(ui->search_people_line->text());
 
     // TODO database search people
-    QList<UserInfo> users = peopleInSearch(input);
+    QList<UserInfo> users = sqlPeopleInSearch(input);
 
     ui->search_people_list->clear();
 
@@ -96,9 +96,9 @@ void MainWindow::search_people() {
 void MainWindow::friends_button_released() {
     // TODO database load requests / friends
     int currentId = currentUser->getId();
-    QList<UserInfo> friends = loadFriends(currentId);
-    QList<UserInfo> incomingRequests = loadIncomingRequests(currentId);
-    QList<UserInfo> outcomingRequests = loadOutcomingRequests(currentId);
+    QList<UserInfo> friends = sqlLoadFriends(currentId);
+    QList<UserInfo> incomingRequests = sqlLoadIncomingRequests(currentId);
+    QList<UserInfo> outcomingRequests = sqlLoadOutcomingRequests(currentId);
 
     ui->actual_friends_list->clear();
     ui->incoming_requests_list->clear();
@@ -132,8 +132,10 @@ void MainWindow::tests() {
     //updateChat(2, nullptr, QImage(":chatDefaultImage"), PARTICIPANT);
 
     // Test
-    addMessage(0, 0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
-    addMessage(0, 1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!", USER_MESSAGE);
+    addMessage(0, currentUser->getId(), 0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!",
+               USER_MESSAGE);
+    addMessage(0, currentUser->getId(), 1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!",
+               USER_MESSAGE);
     QString test("Он белый\n"
                  "Пушистый\n"
                  "Мягкий\n"
@@ -141,7 +143,7 @@ void MainWindow::tests() {
                  "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими\n"
                  "Он безумно красивый\n"
                  "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, 2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
+    addMessage(0, currentUser->getId(), 2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
                USER_MESSAGE);
 
     QString test2("Он белый"
@@ -151,7 +153,7 @@ void MainWindow::tests() {
                   "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими"
                   "Он безумно красивый"
                   "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
+    addMessage(0, currentUser->getId(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
                USER_MESSAGE);
 
     QString test3(
@@ -160,7 +162,7 @@ void MainWindow::tests() {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             "aaaaaaaaaaaaaaaaaaaaaaa");
-    addMessage(0, 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
+    addMessage(0, currentUser->getId(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
                USER_MESSAGE);
 
     addToList<FriendWidget>(0, "Lalala", QImage(":chatDefaultImage"), ui->actual_friends_list);
