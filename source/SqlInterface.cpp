@@ -151,3 +151,7 @@ void sqlRemoveFriend(int userId, int friendId) {
 int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, const std::vector<int> &participants) {
     return 99;
 }
+
+void sqlAddMembers(int chatId, std::vector<int> &newParticipants) {
+
+}

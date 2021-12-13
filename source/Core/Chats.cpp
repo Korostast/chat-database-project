@@ -350,7 +350,7 @@ void MainWindow::group_chat_create() {
     if (chatName.isEmpty())
         return;
 
-    // Check if more than one user selected
+    // Check if at least one user is selected
     int countMembers = (int) ui->chat_creation_friends_list->selectedItems().size();
     if (countMembers < 1)
         return;

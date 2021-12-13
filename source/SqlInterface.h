@@ -72,4 +72,7 @@ void sqlRemoveFriend(int userId, int friendId);
 // Функция возвращает id беседы. Это нужно для того, чтобы лишний раз не загружать заново список диалогов после создания
 int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, const std::vector<int> &participants);
 
+// Админ беседы с id = chatId добавил новых участников в беседу. Id новых участников перечислены в newParticipants
+void sqlAddMembers(int chatId, std::vector<int> &newParticipants);
+
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

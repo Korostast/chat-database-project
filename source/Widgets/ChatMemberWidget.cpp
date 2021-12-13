@@ -91,13 +91,22 @@ void ChatMemberWidget::removeMember() {
 
 // Admin change chat member role
 void ChatMemberWidget::changeMemberRole(int index) const {
-    // TODO database change chat member role
-    sqlChangeRole(getId(), MainWindow::currentChat->getId(), index);
+    if (ui->chat_members_roles_combobox->hasFocus()) {// TODO database change chat member role
+        sqlChangeRole(getId(), MainWindow::currentChat->getId(), index);
 
-    qInfo() << QString("Admin change role of user with messageId - %1, username - %2. Old role - %3, new role - %4")
-            .arg(getId()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
-                              ui->chat_members_roles_combobox->itemText(index));
+        qInfo() << QString("Admin change role of user with messageId - %1, username - %2. Old role - %3, new role - %4")
+                .arg(getId()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
+                                  ui->chat_members_roles_combobox->itemText(index));
 
-    ui->chat_members_roles_combobox->setCurrentIndex(index);
-    ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());
+        ui->chat_members_roles_combobox->setCurrentIndex(index);
+        ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());
+    }
+}
+
+void ChatMemberWidget::hideRoleLabelFromAdmin() const {
+    ui->chat_members_role->hide();
+}
+
+void ChatMemberWidget::showRoleLabel() const {
+    ui->chat_members_role->show();
 }
