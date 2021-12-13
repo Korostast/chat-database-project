@@ -60,7 +60,7 @@ void ChatDialog::changeChatName() {
 
 // Admin want to change avatar of the chat
 void ChatDialog::openFileChooser() {
-    if (MainWindow::currentChat->getRole() == ADMIN) {
+    if (MainWindow::currentChat == nullptr || MainWindow::currentChat->getRole() == ADMIN) {
         qInfo() << "File chooser opened";
         auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
         auto windowCentreX = mainWindow->x() + mainWindow->width() / 2 - CHOOSE_FILE_PAGE_WIDTH / 2;

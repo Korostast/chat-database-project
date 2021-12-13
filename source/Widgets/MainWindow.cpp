@@ -64,7 +64,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->chats_button, SIGNAL(released()), this, SLOT(chats_button_released()));
     connect(ui->profile_button, SIGNAL(released()), this, SLOT(profile_button_released()));
     connect(ui->friends_button, SIGNAL(released()), this, SLOT(friends_button_released()));
-
+    connect(ui->chat_creation_button, SIGNAL(released()), this, SLOT(chat_creation_open_ui()));
+    connect(ui->chat_creation_create_button, SIGNAL(released()), this, SLOT(group_chat_create()));
+    connect(ui->chat_creation_avatar, &ClickableLabel::released, this, [this]() {
+        chatDialog->openFileChooser();
+    });
 
     // Chat interface
     connect(ui->chat_name_label, SIGNAL(released()), this, SLOT(chat_name_label_released()));
@@ -105,6 +109,11 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
         return true;
     }
     return false;
+}
+
+void MainWindow::setChatCreationAvatar(const QImage &avatar) const {
+    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(avatar, CHAT_CREATION_CHAT_IMAGE_SIZE);
+    ui->chat_creation_avatar->setPixmap(resultPixmap);
 }
 
 // Debug functions behavior

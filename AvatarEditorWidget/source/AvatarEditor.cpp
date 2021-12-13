@@ -134,6 +134,8 @@ void AvatarEditor::saveImage() {
 
         mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "", QImage(), content,
                                SYSTEM_MESSAGE);
+    } else if (MainWindow::currentState == CHAT_CREATION) {
+        mainWindow->setChatCreationAvatar(result);
     } else {  // if (currentState == USER)
         // TODO user avatar
         QString path("../resources/images/users/%1.png");
