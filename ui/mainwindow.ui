@@ -647,7 +647,7 @@
              </size>
             </property>
             <property name="currentIndex">
-             <number>4</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0" columnstretch="0">
@@ -782,8 +782,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>10</width>
-                        <height>0</height>
+                        <width>0</width>
+                        <height>20</height>
                        </size>
                       </property>
                       <property name="font">

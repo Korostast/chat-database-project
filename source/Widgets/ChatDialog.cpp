@@ -8,6 +8,8 @@ ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog
         openFileChooser();
     });
     connect(ui->chat_dialog_leave_button, SIGNAL(released()), this, SLOT(leaveChat()));
+    connect(ui->chat_dialog_add_member_button, SIGNAL(released()), this, SLOT(loadAddMemberUi()));
+    connect(ui->chat_dialog_add_members_button, SIGNAL(released()), this, SLOT(addMembers()));
 }
 
 ChatDialog::~ChatDialog() {

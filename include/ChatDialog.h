@@ -34,6 +34,10 @@ private slots:
     void changeChatName();
 
     void leaveChat();
+
+    void loadAddMemberUi();
+
+    void addMembers();
 };
 
 #endif //CHATDATABASEPROJECT_CHATDIALOG_H

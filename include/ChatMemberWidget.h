@@ -38,6 +38,10 @@ public:
 
     void setRole(ROLE role);
 
+    void hideRoleLabelFromAdmin() const;
+
+    void showRoleLabel() const;
+
 public:
     Ui::ChatMemberWidget *ui;
 
