@@ -9,6 +9,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "../SqlInterface.h"
+#include "ChatCreationFriendWidget.h"
 
 // Add chat to the chats list
 void
@@ -85,7 +86,7 @@ void MainWindow::openChat() {
     // Clear all previous messages from list
     ui->messageList->clear();
 
-    for (const auto &message : messages)
+    for (const auto &message: messages)
         addMessage(message.chatId, message.userId, message.messageId, message.username, message.time,
                    message.avatar, message.content,
                    message.type);
@@ -311,17 +312,63 @@ void MainWindow::setFocusToTextEdit() const {
 }
 
 // Return to chat list
-void MainWindow::chats_button_released()  {
+void MainWindow::chats_button_released() {
     // TODO database load chats
     QList<ChatInfo> chats = sqlLoadChats(currentUser->getId());
 
     ui->chat_list->clear();
 
-    for (const auto &chat : chats)
+    for (const auto &chat: chats)
         addChat(chat.id, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role);
 
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
     currentChat = nullptr;
     currentState = CHATS;
     qDebug() << "Current state changed to CHATS";
+}
+
+void MainWindow::chat_creation_open_ui() {
+    // TODO database load friends
+    QList<UserInfo> friends = sqlLoadFriends(currentUser->getId());
+    ui->chat_creation_friends_list->clear();
+    ui->chat_creation_name_edit->clear();
+    ui->chat_creation_avatar->setPixmap(AvatarEditor::getCircularPixmap(QImage(":chatDefaultImage"),
+                                                                        CHAT_CREATION_CHAT_IMAGE_SIZE));
+    for (const auto &fr: friends)
+        addToList<ChatCreationFriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(),
+                                            ui->chat_creation_friends_list);
+
+    ui->main_stacked_widget->setCurrentIndex(CHAT_CREATION_PAGE);
+    currentChat = nullptr;
+    currentState = CHAT_CREATION;
+    qDebug() << "Current state changed to CHAT_CREATION";
+}
+
+void MainWindow::group_chat_create() {
+    // TODO database create chat
+    QString chatName(ui->chat_creation_name_edit->text());
+    if (chatName.isEmpty())
+        return;
+
+    // Check if more than one user selected
+    int countMembers = (int) ui->chat_creation_friends_list->selectedItems().size();
+    if (countMembers < 1)
+        return;
+
+    // Success
+    std::vector<int> users;
+    for (const auto &user: ui->chat_creation_friends_list->selectedItems())
+        users.push_back(qobject_cast<ChatCreationFriendWidget *>(
+                ui->chat_creation_friends_list->itemWidget(user))->getFriendId());
+
+    int chatId = sqlCreateChat(currentUser->getId(), chatName, ui->chat_creation_avatar->pixmap().toImage(), users);
+    addChat(chatId, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN);
+
+    // Debug information
+    for (auto userId: users)
+        printf("%d ", userId);
+
+    // Return to chat list ui
+    currentState = CHATS;
+    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
 }

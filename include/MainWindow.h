@@ -82,6 +82,8 @@ public:
 
     void showProfile(const UserInfo *user) const;
 
+    void setChatCreationAvatar(const QImage &avatar) const;
+
     Ui::MainWindow *ui;
 
     void tests();
@@ -125,6 +127,11 @@ private slots:
     void search_people();
 
     void sendMessage();
+
+    void chat_creation_open_ui();
+
+    void group_chat_create();
+
 };
 
 #endif // MAINWINDOW_H

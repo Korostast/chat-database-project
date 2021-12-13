@@ -68,4 +68,8 @@ void sqlSendFriendRequest(int userId, int targetUser);
 // Юзер удалил друга
 void sqlRemoveFriend(int userId, int friendId);
 
+// Юзер с id = adminId создаёт групповой диалог. participants - список id участников (т.е. по умолчанию роль PARTICIPANT)
+// Функция возвращает id беседы. Это нужно для того, чтобы лишний раз не загружать заново список диалогов после создания
+int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, const std::vector<int> &participants);
+
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

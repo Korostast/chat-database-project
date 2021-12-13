@@ -147,3 +147,7 @@ void sqlSendFriendRequest(int userId, int targetUser) {
 void sqlRemoveFriend(int userId, int friendId) {
 
 }
+
+int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, const std::vector<int> &participants) {
+    return 99;
+}
