@@ -3,7 +3,7 @@
 #include "ui_chatdialog.h"
 #include "Defines.h"
 #include "ChatMemberWidget.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 
 // It will show ui of the chat info window only WORK FOR GROUP CHAT
 void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {

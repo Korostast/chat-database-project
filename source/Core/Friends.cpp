@@ -4,7 +4,7 @@
 #include "IncomingRequestWidget.h"
 #include "OutcomingRequestWidget.h"
 #include "SearchPeopleWidget.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 
 // Templated function for friend widget and incoming, outcoming requests
 template<typename T>
@@ -85,7 +85,7 @@ void MainWindow::search_people() {
     QString input(ui->search_people_line->text());
 
     // TODO database search people
-    QList<UserInfo> users = peopleInSearch(input);
+    QList<UserInfo> users = sqlPeopleInSearch(input);
 
     ui->search_people_list->clear();
 
@@ -96,9 +96,9 @@ void MainWindow::search_people() {
 void MainWindow::friends_button_released() {
     // TODO database load requests / friends
     int currentId = currentUser->getId();
-    QList<UserInfo> friends = loadFriends(currentId);
-    QList<UserInfo> incomingRequests = loadIncomingRequests(currentId);
-    QList<UserInfo> outcomingRequests = loadOutcomingRequests(currentId);
+    QList<UserInfo> friends = sqlLoadFriends(currentId);
+    QList<UserInfo> incomingRequests = sqlLoadIncomingRequests(currentId);
+    QList<UserInfo> outcomingRequests = sqlLoadOutgoingRequests(currentId);
 
     ui->actual_friends_list->clear();
     ui->incoming_requests_list->clear();

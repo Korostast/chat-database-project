@@ -24,7 +24,7 @@ set(CMAKE_PREFIX_PATH $ENV{Qt${QT_MAJOR_VERSION}_HOME})
 
 #find_package should find everything fine so long as the ENV Variable is set or, for linux systems,
 #it is in the default install path.
-find_package(Qt${QT_MAJOR_VERSION} COMPONENTS Widgets REQUIRED PATHS $ENV{Qt${QT_MAJOR_VERSION}_HOME})
+find_package(Qt${QT_MAJOR_VERSION} COMPONENTS Widgets Sql REQUIRED PATHS $ENV{Qt${QT_MAJOR_VERSION}_HOME})
 
 #Add every file into this list, otherwise moc don't find the classes
 add_executable(${TARGET_NAME}
@@ -53,7 +53,7 @@ add_executable(${TARGET_NAME}
         AvatarEditorWidget/include/Defines.h source/Core/Chats.cpp
         source/Core/Friends.cpp
         source/Core/Profile.cpp
-        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp source/Widgets/ChatMemberWidget.cpp include/ChatMemberWidget.h include/MessageTextEdit.h source/Widgets/MessageTextEdit.cpp source/Widgets/FriendWidget.cpp include/FriendWidget.h include/IncomingRequestWidget.h source/Widgets/IncomingRequestWidget.cpp include/AbstractFriendWidget.h include/OutcomingRequestWidget.h source/Widgets/OutcomingRequestWidget.cpp include/SearchPeopleWidget.h source/Widgets/SearchPeopleWidget.cpp source/SqlInterface.h source/SqlInterface.cpp)
+        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp source/Widgets/ChatMemberWidget.cpp include/ChatMemberWidget.h include/MessageTextEdit.h source/Widgets/MessageTextEdit.cpp source/Widgets/FriendWidget.cpp include/FriendWidget.h include/IncomingRequestWidget.h source/Widgets/IncomingRequestWidget.cpp include/AbstractFriendWidget.h include/OutcomingRequestWidget.h source/Widgets/OutcomingRequestWidget.cpp include/SearchPeopleWidget.h source/Widgets/SearchPeopleWidget.cpp include/SqlInterface.h source/Core/SqlInterface.cpp)
 
 #Copy required libraries into work directory
 if (WIN32)
@@ -80,4 +80,4 @@ target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/AvatarEditorWidget/include)
 
 #Add any extra libs to link also.
-target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_MAJOR_VERSION}::Widgets)
+target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::Sql)

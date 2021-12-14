@@ -8,7 +8,7 @@
 #include <QScrollBar>
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 
 // Add chat to the chats list
 void
@@ -80,7 +80,7 @@ void MainWindow::openChat() {
             .arg(currentChat->getCountMembers()).arg(currentChat->getRole());
 
     // TODO database load messages
-    QList<MessageInfo> messages = loadMessages(currentChat->getId());
+    QList<MessageInfo> messages = sqlLoadMessages(currentChat->getId());
 
     // Clear all previous messages from list
     ui->messageList->clear();
@@ -226,7 +226,7 @@ MainWindow::addMessage(int chatId, int messageId, const QString &username, const
     if (currentState == MESSAGES && isBottom)
         ui->messageList->scrollToBottom();
 
-    putOnTop(chatId); // TODO message chat ID | I don't remember what does it means
+    //putOnTop(chatId); // TODO message chat ID | I don't remember what does it means
 }
 
 // Click on username of the chat in the chat ui (open information about chat OR user profile)
@@ -240,7 +240,7 @@ void MainWindow::chat_name_label_released() {
     } else {
         // TODO database load profile
         //UserInfo user(1, "lasdlfasd", QImage(":chatDefaultImage"), nullptr);
-        UserInfo user = loadProfile(currentChat->getName());
+        UserInfo user = sqlLoadProfile(currentChat->getName());
         showProfile(&user);
     }
 
@@ -309,7 +309,7 @@ void MainWindow::setFocusToTextEdit() const {
 // Return to chat list
 void MainWindow::chats_button_released()  {
     // TODO database load chats
-    QList<ChatInfo> chats = loadChats(currentUser->getId());
+    QList<ChatInfo> chats = sqlLoadChats(currentUser->getId());
 
     ui->chat_list->clear();
 
