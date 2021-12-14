@@ -73,6 +73,11 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Error</string>
             </property>
@@ -139,7 +144,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>12</pointsize>
+                  <pointsize>11</pointsize>
                  </font>
                 </property>
                 <property name="layoutDirection">
@@ -175,7 +180,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>12</pointsize>
+                  <pointsize>11</pointsize>
                  </font>
                 </property>
                 <property name="placeholderText">
@@ -205,7 +210,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>13</pointsize>
+                  <pointsize>16</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -357,7 +362,7 @@
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>13</pointsize>
+                  <pointsize>16</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -392,7 +397,7 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>16</pointsize>
              </font>
             </property>
             <property name="text">
@@ -416,7 +421,7 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>12</pointsize>
+              <pointsize>16</pointsize>
              </font>
             </property>
             <property name="text">
@@ -491,6 +496,9 @@
           </item>
           <item row="0" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,1,0,20">
+            <property name="spacing">
+             <number>10</number>
+            </property>
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -511,6 +519,12 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <bold>false</bold>
+               </font>
+              </property>
               <property name="text">
                <string>Профиль</string>
               </property>
@@ -530,6 +544,11 @@
                 <height>30</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>Сообщения</string>
               </property>
@@ -548,6 +567,11 @@
                 <width>0</width>
                 <height>30</height>
                </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>Друзья</string>
@@ -626,7 +650,7 @@
              <number>1</number>
             </property>
             <widget class="QWidget" name="chats_page">
-             <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="0">
+             <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0" columnstretch="0">
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -639,7 +663,7 @@
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QListWidget" name="chat_list">
                 <property name="horizontalScrollBarPolicy">
                  <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -649,6 +673,13 @@
                 </property>
                 <property name="selectionRectVisible">
                  <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="chat_creation_button">
+                <property name="text">
+                 <string>Создать беседу</string>
                 </property>
                </widget>
               </item>
@@ -710,8 +741,13 @@
                       <height>60</height>
                      </size>
                     </property>
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
-                     <string>PushButton</string>
+                     <string>Назад</string>
                     </property>
                    </widget>
                   </item>
@@ -746,9 +782,14 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>10</width>
-                        <height>0</height>
+                        <width>0</width>
+                        <height>20</height>
                        </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                       </font>
                       </property>
                       <property name="cursor">
                        <cursorShape>PointingHandCursor</cursorShape>
@@ -774,6 +815,9 @@
                         <width>10</width>
                         <height>0</height>
                        </size>
+                      </property>
+                      <property name="font">
+                       <font/>
                       </property>
                       <property name="text">
                        <string>Count</string>
@@ -928,8 +972,13 @@
                 </item>
                 <item row="0" column="1">
                  <widget class="QPushButton" name="send_message_button">
+                  <property name="font">
+                   <font>
+                    <pointsize>10</pointsize>
+                   </font>
+                  </property>
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>Отправить</string>
                   </property>
                  </widget>
                 </item>
@@ -989,6 +1038,11 @@
                   </property>
                   <item>
                    <widget class="QLabel" name="profile_username">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>TextLabel</string>
                     </property>
@@ -996,6 +1050,11 @@
                   </item>
                   <item>
                    <widget class="QLabel" name="profile_status">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>TextLabel</string>
                     </property>
@@ -1026,6 +1085,11 @@
                   </property>
                   <item row="0" column="0">
                    <widget class="QLabel" name="profile_first_name_const">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>Имя</string>
                     </property>
@@ -1033,6 +1097,11 @@
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="profile_last_name_const">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>Фамилия</string>
                     </property>
@@ -1040,6 +1109,11 @@
                   </item>
                   <item row="2" column="0">
                    <widget class="QLabel" name="profile_phone_number_const">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>Телефон</string>
                     </property>
@@ -1047,6 +1121,11 @@
                   </item>
                   <item row="2" column="1">
                    <widget class="QLabel" name="profile_phone_number">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>TextLabel</string>
                     </property>
@@ -1057,6 +1136,11 @@
                   </item>
                   <item row="1" column="1">
                    <widget class="QLabel" name="profile_last_name">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>TextLabel</string>
                     </property>
@@ -1067,6 +1151,11 @@
                   </item>
                   <item row="0" column="1">
                    <widget class="QLabel" name="profile_first_name">
+                    <property name="font">
+                     <font>
+                      <pointsize>11</pointsize>
+                     </font>
+                    </property>
                     <property name="text">
                      <string>TextLabel</string>
                     </property>
@@ -1087,6 +1176,11 @@
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QPushButton" name="switch_actual_friends">
+                  <property name="font">
+                   <font>
+                    <pointsize>11</pointsize>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Друзья</string>
                   </property>
@@ -1097,6 +1191,11 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="switch_incoming_requests">
+                  <property name="font">
+                   <font>
+                    <pointsize>11</pointsize>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Входящие</string>
                   </property>
@@ -1107,6 +1206,11 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="switch_outcoming_requests">
+                  <property name="font">
+                   <font>
+                    <pointsize>11</pointsize>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Исходящие</string>
                   </property>
@@ -1117,6 +1221,11 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="switch_search_people">
+                  <property name="font">
+                   <font>
+                    <pointsize>11</pointsize>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>Поиск людей</string>
                   </property>
@@ -1130,7 +1239,7 @@
               <item>
                <widget class="QStackedWidget" name="friends_stacked_widget">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <widget class="QWidget" name="actual_friends_page">
                  <layout class="QGridLayout" name="gridLayout_10">
@@ -1178,6 +1287,11 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="search_people_button">
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
                       <property name="text">
                        <string>Искать</string>
                       </property>
@@ -1195,6 +1309,64 @@
                  </layout>
                 </widget>
                </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="chat_creation_page">
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="1" column="0">
+               <widget class="QListWidget" name="chat_creation_friends_list">
+                <property name="selectionMode">
+                 <enum>QAbstractItemView::MultiSelection</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item alignment="Qt::AlignHCenter">
+                 <widget class="QLabel" name="chat_creation_page_name">
+                  <property name="text">
+                   <string>Создание беседы</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <item>
+                 <widget class="ClickableLabel" name="chat_creation_avatar">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>50</height>
+                   </size>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="chat_creation_name_edit"/>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="chat_creation_create_button">
+                  <property name="text">
+                   <string>Создать</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>

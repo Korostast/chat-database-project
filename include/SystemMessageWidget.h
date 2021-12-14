@@ -15,7 +15,9 @@ Q_OBJECT
 private:
     Ui::SystemMessageWidget *ui;
 
-    int id;
+    int messageId;
+
+    int userId;
 
     QString content;
 
@@ -24,9 +26,13 @@ public:
 
     ~SystemMessageWidget() override;
 
-    int getId() const;
+    int getMessageId() const;
 
-    void setId(int id);
+    void setMessageId(int id);
+
+    int getUserId() const;
+
+    void setUserId(int userId);
 
     const QString &getContent() const;
 

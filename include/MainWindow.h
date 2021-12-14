@@ -43,8 +43,8 @@ public:
 
     void putOnTop(int id);
 
-    void addMessage(int chatId, int messageId, const QString &username, const QString &time, const QImage &avatar,
-                    const QString &content, MESSAGE_TYPE type);
+    void addMessage(int chatId, int userId, int messageId, const QString &username, const QString &time,
+                    const QImage &avatar, const QString &content, MESSAGE_TYPE type);
 
     void insertMessage(UserMessageWidget *message, int row);
 
@@ -81,6 +81,8 @@ public:
     void addPersonInSearch(int personId, const QString &username, const QImage &avatar);
 
     void showProfile(const UserInfo *user) const;
+
+    void setChatCreationAvatar(const QImage &avatar) const;
 
     Ui::MainWindow *ui;
 
@@ -125,6 +127,11 @@ private slots:
     void search_people();
 
     void sendMessage();
+
+    void chat_creation_open_ui();
+
+    void group_chat_create();
+
 };
 
 #endif // MAINWINDOW_H

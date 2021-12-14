@@ -32,6 +32,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>ArrowCursor</cursorShape>
          </property>
@@ -67,6 +73,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>TextLabel</string>
          </property>
@@ -81,7 +93,8 @@
       <widget class="MessageTextEdit" name="message_content">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <family>Roboto</family>
+         <pointsize>11</pointsize>
         </font>
        </property>
        <property name="contextMenuPolicy">

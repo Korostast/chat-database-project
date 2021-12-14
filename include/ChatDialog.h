@@ -23,16 +23,21 @@ public:
 
     void removeMemberFromUi(ChatMemberWidget *member);
 
+    void openFileChooser();
+
 private:
+
     Ui::ChatDialog *ui;
 
 private slots:
 
     void changeChatName();
 
-    void openFileChooser();
-
     void leaveChat();
+
+    void loadAddMemberUi();
+
+    void addMembers();
 };
 
 #endif //CHATDATABASEPROJECT_CHATDIALOG_H

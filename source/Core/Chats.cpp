@@ -9,11 +9,12 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "SqlInterface.h"
+#include "ChatCreationFriendWidget.h"
 
 // Add chat to the chats list
 void
 MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role) {
-    qInfo() << QString("Chat added: id - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
+    qInfo() << QString("Chat added: messageId - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
             .arg(id).arg(name).arg(isGroup).arg(countMembers).arg(role);
 
     auto *item = new QListWidgetItem;
@@ -59,7 +60,7 @@ void MainWindow::putOnTop(int id) {
 
 // Change chat's attributes and move chat at the top of the list
 void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, ROLE role) {
-    qInfo() << QString("Chat updated, new parameters: id - %1, username - %2 and your role - %3")
+    qInfo() << QString("Chat updated, new parameters: messageId - %1, username - %2 and your role - %3")
             .arg(id).arg(name).arg(role);
 
     putOnTop(id);
@@ -75,7 +76,7 @@ void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, R
 
 // Load chat ui
 void MainWindow::openChat() {
-    qInfo() << QString("Opened chat: id - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
+    qInfo() << QString("Opened chat: messageId - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
             .arg(currentChat->getId()).arg(currentChat->getName()).arg(currentChat->isGroup())
             .arg(currentChat->getCountMembers()).arg(currentChat->getRole());
 
@@ -85,8 +86,9 @@ void MainWindow::openChat() {
     // Clear all previous messages from list
     ui->messageList->clear();
 
-    for (const auto &message : messages)
-        addMessage(message.chatId, message.messageId, message.username, message.time, message.avatar, message.content,
+    for (const auto &message: messages)
+        addMessage(message.chatId, message.userId, message.messageId, message.username, message.time,
+                   message.avatar, message.content,
                    message.type);
 
     ui->messageList->scrollToBottom();
@@ -97,6 +99,9 @@ void MainWindow::openChat() {
         ui->chat_online_or_members_label->show();
     } else {
         ui->chat_online_or_members_label->hide();
+        // TODO database load person id
+        int friendId = sqlGetPersonId(currentChat->getId(), currentUser->getId());
+        ui->chat_name_label->setPersonalChatUserId(friendId);
     }
     if (currentChat->getRole() == VIEWER) {
         ui->message_text_edit->hide();
@@ -151,6 +156,7 @@ void MainWindow::insertMessage(UserMessageWidget *message, int row) {
     auto *widget = new UserMessageWidget(this);
 
     widget->setChatId(message->getChatId());
+    widget->setUserId(message->getUserId());
     widget->setMessageId(message->getMessageId());
     // TODO image of message widget | upd. Done ?
     const auto &avatar = message->getAvatar();
@@ -171,8 +177,8 @@ void MainWindow::insertMessage(UserMessageWidget *message, int row) {
 
 // Add message to the message list
 void
-MainWindow::addMessage(int chatId, int messageId, const QString &username, const QString &time, const QImage &avatar,
-                       const QString &content, MESSAGE_TYPE type) {
+MainWindow::addMessage(int chatId, int userId, int messageId, const QString &username, const QString &time,
+                       const QImage &avatar, const QString &content, MESSAGE_TYPE type) {
     // If we need scroll message list to the bottom
     bool isBottom = false;
     auto *scrollBar = ui->messageList->verticalScrollBar();
@@ -190,6 +196,7 @@ MainWindow::addMessage(int chatId, int messageId, const QString &username, const
             auto *widget = new UserMessageWidget(this);
 
             widget->setChatId(chatId);
+            widget->setUserId(userId);
             widget->setMessageId(messageId);
             // TODO image of message widget | upd. Done ?
             widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
@@ -207,7 +214,8 @@ MainWindow::addMessage(int chatId, int messageId, const QString &username, const
         case SYSTEM_MESSAGE: {
             auto *widget = new SystemMessageWidget(this);
 
-            widget->setId(messageId);
+            widget->setMessageId(messageId);
+            widget->setUserId(userId);
             widget->setContent(content);
 
             item->setSizeHint(widget->sizeHint());
@@ -239,8 +247,7 @@ void MainWindow::chat_name_label_released() {
         chatDialog->show();
     } else {
         // TODO database load profile
-        //UserInfo user(1, "lasdlfasd", QImage(":chatDefaultImage"), nullptr);
-        UserInfo user = sqlLoadProfile(currentChat->getName());
+        UserInfo user = sqlLoadProfile(ui->chat_name_label->getPersonalChatUserId());
         showProfile(&user);
     }
 
@@ -264,13 +271,11 @@ bool MainWindow::checkMessage(QString &content) { // TODO delete 2+ spaces and n
 void MainWindow::sendMessage() {
     QString messageText = ui->message_text_edit->toPlainText();
 
-    //static int messageId = 10; // TODO MESSAGE ID!!! It's a test
-
     if (checkMessage(messageText)) {
         MessageInfo message(-1, messageText, nullptr, USER_MESSAGE, currentChat->getId(), currentUser->getId());
         // TODO database sendMessage
         int messageId = sqlSendMessage(message);
-        addMessage(currentChat->getId(), messageId, currentUser->getUsername(),
+        addMessage(currentChat->getId(), currentUser->getId(), messageId, currentUser->getUsername(),
                    QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"), currentUser->getAvatar(),
                    messageText, USER_MESSAGE);
 
@@ -307,17 +312,63 @@ void MainWindow::setFocusToTextEdit() const {
 }
 
 // Return to chat list
-void MainWindow::chats_button_released()  {
+void MainWindow::chats_button_released() {
     // TODO database load chats
     QList<ChatInfo> chats = sqlLoadChats(currentUser->getId());
 
     ui->chat_list->clear();
 
-    for (const auto &chat : chats)
+    for (const auto &chat: chats)
         addChat(chat.id, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role);
 
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
     currentChat = nullptr;
     currentState = CHATS;
     qDebug() << "Current state changed to CHATS";
+}
+
+void MainWindow::chat_creation_open_ui() {
+    // TODO database load friends
+    QList<UserInfo> friends = sqlLoadFriends(currentUser->getId());
+    ui->chat_creation_friends_list->clear();
+    ui->chat_creation_name_edit->clear();
+    ui->chat_creation_avatar->setPixmap(AvatarEditor::getCircularPixmap(QImage(":chatDefaultImage"),
+                                                                        CHAT_CREATION_CHAT_IMAGE_SIZE));
+    for (const auto &fr: friends)
+        addToList<ChatCreationFriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(),
+                                            ui->chat_creation_friends_list);
+
+    ui->main_stacked_widget->setCurrentIndex(CHAT_CREATION_PAGE);
+    currentChat = nullptr;
+    currentState = CHAT_CREATION;
+    qDebug() << "Current state changed to CHAT_CREATION";
+}
+
+void MainWindow::group_chat_create() {
+    // TODO database create chat
+    QString chatName(ui->chat_creation_name_edit->text());
+    if (chatName.isEmpty())
+        return;
+
+    // Check if at least one user is selected
+    int countMembers = (int) ui->chat_creation_friends_list->selectedItems().size();
+    if (countMembers < 1)
+        return;
+
+    // Success
+    std::vector<int> users;
+    for (const auto &user: ui->chat_creation_friends_list->selectedItems())
+        users.push_back(qobject_cast<ChatCreationFriendWidget *>(
+                ui->chat_creation_friends_list->itemWidget(user))->getFriendId());
+
+    int chatId = sqlCreateChat(currentUser->getId(), chatName, ui->chat_creation_avatar->pixmap().toImage(), users);
+    addChat(chatId, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN);
+
+    // Debug information
+    for (auto userId: users)
+        printf("%d ", userId);
+
+    // Return to chat list ui
+    currentState = CHATS;
+    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
 }

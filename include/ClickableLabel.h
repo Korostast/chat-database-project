@@ -10,6 +10,10 @@ Q_OBJECT
 public:
     explicit ClickableLabel(QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
 
+    int getPersonalChatUserId() const;
+
+    void setPersonalChatUserId(int personalChatUserId);
+
 signals:
 
     void released();
@@ -17,6 +21,8 @@ signals:
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
+private:
+    int personalChatUserId;
 };
 
 #endif //CHATDATABASEPROJECT_CLICKABLELABEL_H

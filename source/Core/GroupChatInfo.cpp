@@ -4,27 +4,27 @@
 #include "Defines.h"
 #include "ChatMemberWidget.h"
 #include "SqlInterface.h"
+#include "ChatCreationFriendWidget.h"
 
 // It will show ui of the chat info window only WORK FOR GROUP CHAT
 void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
+    ui->chat_dialog_stacked_widget->setCurrentIndex(0); // TODO define index
     ui->chat_dialog_avatar->setPixmap(
             AvatarEditor::getCircularPixmap(chat->getAvatar(), CHAT_DIALOG_AVATAR_IMAGE_SIZE));
     ui->chat_dialog_name->setText(chat->getName());
     ui->chat_dialog_count_members->setText(QString::number(chat->getCountMembers()));
     if (chat->getRole() == ADMIN) {
         ui->chat_dialog_name->setReadOnly(false);
+        ui->chat_dialog_add_member_button->show();
         ui->chat_dialog_avatar->setCursor(Qt::PointingHandCursor);
     } else {
         ui->chat_dialog_name->setReadOnly(true);
+        ui->chat_dialog_add_member_button->hide();
         ui->chat_dialog_avatar->setCursor(Qt::ArrowCursor);
     }
 
     // TODO database load members list
-    // TEST
-    QList<UserChatMember> members;
-    members.push_back(UserChatMember(1, "Korostast", QImage(":chatDefaultImage"), ADMIN));
-    members.push_back(UserChatMember(2, "Kriper2002", QImage(":chatDefaultImage"), PARTICIPANT));
-    members.push_back(UserChatMember(3, "Nya", QImage(":chatDefaultImage"), VIEWER));
+    QList<UserChatMember> members = sqlLoadChatMembers(MainWindow::currentChat->getId());
 
     // Cleaning
     ui->chat_dialog_members_list->clear();
@@ -38,6 +38,10 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
         widget->setName(user.username);
         widget->setAvatar(user.avatar);
         widget->setRole(user.role);
+        if (MainWindow::currentChat->getRole() == ADMIN)
+            widget->hideRoleLabelFromAdmin();
+        else
+            widget->showRoleLabel();
 
         item->setSizeHint(widget->sizeHint());
         ui->chat_dialog_members_list->addItem(item);
@@ -48,8 +52,9 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
 
 // Admin change chat name
 void ChatDialog::changeChatName() {
-    qInfo() << QString("Name of chat with id - %1 changed from %2 to %3")
-            .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName(), ui->chat_dialog_name->text());
+    qInfo() << QString("Name of chat with messageId - %1 changed from %2 to %3")
+            .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName(),
+                                                       ui->chat_dialog_name->text());
     setFocus();
     MainWindow::currentChat->setName(ui->chat_dialog_name->text());
     auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
@@ -64,7 +69,7 @@ void ChatDialog::changeChatName() {
 
 // Admin want to change avatar of the chat
 void ChatDialog::openFileChooser() {
-    if (MainWindow::currentChat->getRole() == ADMIN) {
+    if (MainWindow::currentChat == nullptr || MainWindow::currentChat->getRole() == ADMIN) {
         qInfo() << "File chooser opened";
         auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
         auto windowCentreX = mainWindow->x() + mainWindow->width() / 2 - CHOOSE_FILE_PAGE_WIDTH / 2;
@@ -104,9 +109,61 @@ void ChatDialog::leaveChat() {
                               MainWindow::currentUser->getId());
     // TODO database send message
     int messageId = sqlSendMessage(systemMessage);
-    mainWindow->addMessage(MainWindow::currentChat->getId(), messageId, "", "", QImage(), content, SYSTEM_MESSAGE);
+    mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "",
+                           QImage(), content,
+                           SYSTEM_MESSAGE);
     close();
 
     // Remove chat from chats list and back to chat list
     mainWindow->removeChat(MainWindow::currentChat->getId());
+}
+
+void ChatDialog::loadAddMemberUi() {
+    // TODO database load friends
+    QList<UserInfo> friends = sqlLoadFriends(MainWindow::currentUser->getId());
+    ui->chat_dialog_add_members_friend_list->clear();
+    auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
+
+    for (const auto &fr: friends)
+        mainWindow->addToList<ChatCreationFriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(),
+                                                        ui->chat_dialog_add_members_friend_list);
+
+    ui->chat_dialog_stacked_widget->setCurrentIndex(1); // TODO define index
+}
+
+void ChatDialog::addMembers() {
+    // TODO database add members to chat
+    // Check if at least one user is selected
+    int countMembers = (int) ui->chat_dialog_add_members_friend_list->selectedItems().size();
+    if (countMembers < 1)
+        return;
+
+    auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
+
+    // Success
+    std::vector<int> users;
+    for (const auto &user: ui->chat_dialog_add_members_friend_list->selectedItems()) {
+        const auto widget = qobject_cast<ChatCreationFriendWidget *>(
+                ui->chat_dialog_add_members_friend_list->itemWidget(user));
+        users.push_back(widget->getFriendId());
+
+        QString content("%1 присоединился к беседе");
+        content = content.arg(widget->getUsername());
+        MessageInfo systemMessage(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
+                                  MainWindow::currentUser->getId());
+        // TODO database send message
+        int messageId = sqlSendMessage(systemMessage);
+        mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "",
+                               QImage(), content, SYSTEM_MESSAGE);
+    }
+
+    sqlAddMembers(MainWindow::currentChat->getId(), users);
+
+    // Debug information
+    for (auto userId: users) {
+        printf("%d ", userId);
+    }
+
+    // Close chat dialog
+    close();
 }

@@ -72,7 +72,7 @@ void ChatMemberWidget::removeMember() {
         auto *chatDialog = qobject_cast<ChatDialog *>(sender->window());
 
         qInfo() << QString(
-                "Admin remove user with id - %1, username - %2, role - %3 from chat with id - %4, username - %5")
+                "Admin remove user with messageId - %1, username - %2, role - %3 from chat with messageId - %4, username - %5")
                 .arg(chatMemberWidget->getId()).arg(chatMemberWidget->getName()).arg(chatMemberWidget->getRole())
                 .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName());
 
@@ -82,21 +82,31 @@ void ChatMemberWidget::removeMember() {
         // TODO database send message
         MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
                             chatMemberWidget->getId());
-        sqlSendMessage(message);
+        int messageId = sqlSendMessage(message);
 
-        mainWindow->addMessage(MainWindow::currentChat->getId(), 0, "", "", QImage(), content, SYSTEM_MESSAGE);
+        mainWindow->addMessage(MainWindow::currentChat->getId(), getId(), messageId, "", "", QImage(), content,
+                               SYSTEM_MESSAGE);
     }
 }
 
 // Admin change chat member role
 void ChatMemberWidget::changeMemberRole(int index) const {
-    // TODO database change chat member role
-    sqlChangeRole(getId(), MainWindow::currentChat->getId(), index);
+    if (ui->chat_members_roles_combobox->hasFocus()) {// TODO database change chat member role
+        sqlChangeRole(getId(), MainWindow::currentChat->getId(), index);
 
-    qInfo() << QString("Admin change role of user with id - %1, username - %2. Old role - %3, new role - %4")
-            .arg(getId()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
-                              ui->chat_members_roles_combobox->itemText(index));
+        qInfo() << QString("Admin change role of user with messageId - %1, username - %2. Old role - %3, new role - %4")
+                .arg(getId()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
+                                  ui->chat_members_roles_combobox->itemText(index));
 
-    ui->chat_members_roles_combobox->setCurrentIndex(index);
-    ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());
+        ui->chat_members_roles_combobox->setCurrentIndex(index);
+        ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());
+    }
+}
+
+void ChatMemberWidget::hideRoleLabelFromAdmin() const {
+    ui->chat_members_role->hide();
+}
+
+void ChatMemberWidget::showRoleLabel() const {
+    ui->chat_members_role->show();
 }
