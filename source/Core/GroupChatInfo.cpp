@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ChatDialog.h"
 #include "ui_chatdialog.h"
+#include "ui_mainwindow.h"
 #include "Defines.h"
 #include "ChatMemberWidget.h"
 #include "../SqlInterface.h"
@@ -23,7 +24,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
         ui->chat_dialog_avatar->setCursor(Qt::ArrowCursor);
     }
 
-    // TODO database load members list
+    // TODO database searchMessages members list
     QList<UserChatMember> members = sqlLoadChatMembers(MainWindow::currentChat->getId());
 
     // Cleaning
@@ -114,12 +115,15 @@ void ChatDialog::leaveChat() {
                            SYSTEM_MESSAGE);
     close();
 
+    QMetaObject::invokeMethod(mainWindow->ui->chats_button, "released");
+
     // Remove chat from chats list and back to chat list
-    mainWindow->removeChat(MainWindow::currentChat->getId());
+    // TODO
+    //mainWindow->removeChat(MainWindow::currentChat->getId());
 }
 
 void ChatDialog::loadAddMemberUi() {
-    // TODO database load friends
+    // TODO database searchMessages friends
     QList<UserInfo> friends = sqlLoadFriends(MainWindow::currentUser->getId());
     ui->chat_dialog_add_members_friend_list->clear();
     auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());

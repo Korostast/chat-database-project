@@ -13,7 +13,8 @@
 
 // Add chat to the chats list
 void
-MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role) {
+MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role,
+                    int friendId) {
     qInfo() << QString("Chat added: messageId - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
             .arg(id).arg(name).arg(isGroup).arg(countMembers).arg(role);
 
@@ -28,15 +29,16 @@ MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGr
     widget->setCountMembers(countMembers);
     widget->setRole(role);
 
-    // TODO  If the chat is personal, we have to find its username
-    if (!isGroup) {
-
-    }
-
     item->setSizeHint(widget->sizeHint());
 
-    ui->chat_list->insertItem(0, item);
-    ui->chat_list->setItemWidget(item, widget);
+    if (!isGroup) {
+        widget->setFriendId(friendId);
+        ui->personal_chat_list->insertItem(0, item);
+        ui->personal_chat_list->setItemWidget(item, widget);
+    } else {
+        ui->group_chat_list->insertItem(0, item);
+        ui->group_chat_list->setItemWidget(item, widget);
+    }
 
     chatMap[id] = item;
 }
@@ -44,18 +46,18 @@ MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGr
 // Brings the dialog to the top of the chats list
 // This function is useless without caching system. However, don't delete it
 void MainWindow::putOnTop(int id) {
-    int rowNumber = ui->chat_list->row(chatMap[id]);
+    int rowNumber = ui->personal_chat_list->row(chatMap[id]);
     if (rowNumber == 0)
         return;
 
     QListWidgetItem *itemN = chatMap[id]->clone();
-    auto *widget = qobject_cast<ChatWidget *>(ui->chat_list->itemWidget(chatMap[id]));
+    auto *widget = qobject_cast<ChatWidget *>(ui->personal_chat_list->itemWidget(chatMap[id]));
 
-    ui->chat_list->insertItem(0, itemN);
-    ui->chat_list->setItemWidget(itemN, widget);
+    ui->personal_chat_list->insertItem(0, itemN);
+    ui->personal_chat_list->setItemWidget(itemN, widget);
     chatMap[id] = itemN;
 
-    delete ui->chat_list->takeItem(rowNumber + 1);
+    delete ui->personal_chat_list->takeItem(rowNumber + 1);
 }
 
 // Change chat's attributes and move chat at the top of the list
@@ -63,8 +65,8 @@ void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, R
     qInfo() << QString("Chat updated, new parameters: messageId - %1, username - %2 and your role - %3")
             .arg(id).arg(name).arg(role);
 
-    putOnTop(id);
-    auto *widget = qobject_cast<ChatWidget *>(ui->chat_list->itemWidget(chatMap[id]));
+    //putOnTop(id);
+    auto *widget = qobject_cast<ChatWidget *>(ui->personal_chat_list->itemWidget(chatMap[id]));
 
     widget->setName(name);
     if (id == currentChat->getId())
@@ -80,7 +82,7 @@ void MainWindow::openChat() {
             .arg(currentChat->getId()).arg(currentChat->getName()).arg(currentChat->isGroup())
             .arg(currentChat->getCountMembers()).arg(currentChat->getRole());
 
-    // TODO database load messages
+    // TODO database searchMessages messages
     QList<MessageInfo> messages = sqlLoadMessages(currentChat->getId());
 
     // Clear all previous messages from list
@@ -88,8 +90,7 @@ void MainWindow::openChat() {
 
     for (const auto &message: messages)
         addMessage(message.chatId, message.userId, message.messageId, message.username, message.time,
-                   message.avatar, message.content,
-                   message.type);
+                   message.avatar, message.content, message.type);
 
     ui->messageList->scrollToBottom();
     ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(currentChat->getAvatar(), AVATAR_IN_CHAT_IMAGE_SIZE));
@@ -99,8 +100,9 @@ void MainWindow::openChat() {
         ui->chat_online_or_members_label->show();
     } else {
         ui->chat_online_or_members_label->hide();
-        // TODO database load person id
-        int friendId = sqlGetPersonId(currentChat->getId(), currentUser->getId());
+        // TODO database searchMessages person id
+        //int friendId = sqlGetPersonId(currentChat->getId(), currentUser->getId());
+        int friendId = currentChat->getFriendId();
         ui->chat_name_label->setPersonalChatUserId(friendId);
     }
     if (currentChat->getRole() == VIEWER) {
@@ -112,6 +114,7 @@ void MainWindow::openChat() {
     }
 
     currentState = MESSAGES;
+    ui->chat_bar_stacked_widget->setCurrentIndex(0);
     ui->main_stacked_widget->setCurrentIndex(MESSAGES_PAGE);
     setFocusToTextEdit();
 }
@@ -234,7 +237,7 @@ MainWindow::addMessage(int chatId, int userId, int messageId, const QString &use
     if (currentState == MESSAGES && isBottom)
         ui->messageList->scrollToBottom();
 
-    putOnTop(chatId); // TODO message chat ID | I don't remember what does it means
+    //putOnTop(chatId); // TODO message chat ID | I don't remember what does it means
 }
 
 // Click on username of the chat in the chat ui (open information about chat OR user profile)
@@ -246,8 +249,8 @@ void MainWindow::chat_name_label_released() {
         chatDialog->setupCurrentChatUi(currentChat);
         chatDialog->show();
     } else {
-        // TODO database load profile
-        UserInfo user = sqlLoadProfile(ui->chat_name_label->getPersonalChatUserId());
+        // TODO database searchMessages profile
+        UserInfo user = sqlLoadProfile(currentChat->getFriendId());
         showProfile(&user);
     }
 
@@ -286,12 +289,12 @@ void MainWindow::sendMessage() {
     setFocusToTextEdit();
 }
 
-// Obvious
+// Obvious TODO chats_button_released is not needed here
 void MainWindow::removeChat(int id) {
-    int rowNumber = ui->chat_list->row(chatMap[id]);
-    delete ui->chat_list->takeItem(rowNumber);
+    int rowNumber = ui->personal_chat_list->row(chatMap[id]);
+    delete ui->personal_chat_list->takeItem(rowNumber);
     chatMap.remove(id);
-    chats_button_released();
+    //chats_button_released();
 }
 
 // It is used in editing message and deleting too
@@ -313,22 +316,32 @@ void MainWindow::setFocusToTextEdit() const {
 
 // Return to chat list
 void MainWindow::chats_button_released() {
-    // TODO database load chats
-    QList<ChatInfo> chats = sqlLoadChats(currentUser->getId());
+    // TODO database searchMessages chats
+    //QList<ChatInfo> chats = sqlLoadChats(currentUser->getId());
+    QList<PersonalChatInfo> personalChats = sqlLoadPersonalChats(currentUser->getId());
+    QList<GroupChatInfo> groupChats = sqlLoadGroupChats(currentUser->getId());
 
-    ui->chat_list->clear();
+    ui->personal_chat_list->clear();
+    ui->group_chat_list->clear();
 
-    for (const auto &chat: chats)
-        addChat(chat.id, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role);
+    for (const auto &chat: personalChats)
+        addChat(chat.chatId, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role, chat.friendId);
 
-    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
+    for (const auto &chat: groupChats)
+        addChat(chat.chatId, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role, -1);
+
+    if (currentChat != nullptr && currentChat->isGroup())
+        ui->main_stacked_widget->setCurrentIndex(GROUP_CHAT_LIST_PAGE);
+    else
+        ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
+
     currentChat = nullptr;
     currentState = CHATS;
     qDebug() << "Current state changed to CHATS";
 }
 
 void MainWindow::chat_creation_open_ui() {
-    // TODO database load friends
+    // TODO database searchMessages friends
     QList<UserInfo> friends = sqlLoadFriends(currentUser->getId());
     ui->chat_creation_friends_list->clear();
     ui->chat_creation_name_edit->clear();
@@ -362,7 +375,7 @@ void MainWindow::group_chat_create() {
                 ui->chat_creation_friends_list->itemWidget(user))->getFriendId());
 
     int chatId = sqlCreateChat(currentUser->getId(), chatName, ui->chat_creation_avatar->pixmap().toImage(), users);
-    addChat(chatId, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN);
+    addChat(chatId, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN, -1);
 
     // Debug information
     for (auto userId: users)
@@ -370,5 +383,52 @@ void MainWindow::group_chat_create() {
 
     // Return to chat list ui
     currentState = CHATS;
-    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
+    ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
+}
+
+void MainWindow::loadSearchInterface() {
+    ui->messages_search_edit->setText(ui->chat_bar_search_edit->text());
+
+    searchMessages();
+
+    currentState = SEARCH_MESSAGES;
+    ui->main_stacked_widget->setCurrentIndex(MESSAGES_SEARCH_PAGE);
+}
+
+void MainWindow::searchMessages() {
+    QString request(ui->messages_search_edit->text());
+    if (request.isEmpty())
+        return;
+
+    // TODO database search messages
+    ui->messages_search_list->clear();
+    QList<MessageInfo> messages = sqlLoadSearchedMessages(currentChat->getId(), request);
+    for (const auto &message : messages) {
+        auto *item = new QListWidgetItem;
+        if (message.type == USER_MESSAGE) {
+            auto *widget = new UserMessageWidget(this);
+
+            widget->setChatId(message.chatId);
+            widget->setUserId(message.userId);
+            widget->setMessageId(message.messageId);
+            widget->setAvatar(message.avatar);
+            widget->setName(message.username);
+            widget->setTime(message.time);
+            widget->setContent(message.content);
+
+            item->setSizeHint(widget->sizeHint());
+            ui->messages_search_list->addItem(item);
+            ui->messages_search_list->setItemWidget(item, widget);
+        } else if (message.type == SYSTEM_MESSAGE) {
+            auto *widget = new SystemMessageWidget(this);
+
+            widget->setMessageId(message.messageId);
+            widget->setUserId(message.userId);
+            widget->setContent(message.content);
+
+            item->setSizeHint(widget->sizeHint());
+            ui->messageList->addItem(item);
+            ui->messageList->setItemWidget(item, widget);
+        }
+    }
 }

@@ -2,15 +2,20 @@
 #include "MainWindow.h"
 #include "Defines.h"
 
-QList<ChatInfo> sqlLoadChats(int userId) {
-    ChatInfo chat1(0, "Самая первая обычная беседа", QImage(":chatDefaultImage"), true, 0);
-    ChatInfo chat2(1, "Админская", QImage(":chatDefaultImage"), true, 0, ADMIN);
-    ChatInfo chat3(2, "Зрительская", QImage(":chatDefaultImage"), true, 0, VIEWER);
-    ChatInfo chat4(3, "Модераторская", QImage(":chatDefaultImage"), true, 0, MODERATOR);
-    ChatInfo chat5(4, "Личная беседа (не работает имя ещё)", QImage(":chatDefaultImage"), false);
-    ChatInfo chat6(5, "Личная беседа", QImage(":chatDefaultImage"), false);
+QList<PersonalChatInfo> sqlLoadPersonalChats(int userId) {
+    PersonalChatInfo chat5(4, 1, "Личная беседа (не работает имя ещё)", QImage(":chatDefaultImage"));
+    PersonalChatInfo chat6(5, 2, "Личная беседа", QImage(":chatDefaultImage"));
 
-    return QList<ChatInfo>({chat1, chat2, chat3, chat4, chat5, chat6});
+    return QList<PersonalChatInfo>({chat5, chat6});
+}
+
+QList<GroupChatInfo> sqlLoadGroupChats(int userId) {
+    GroupChatInfo chat1(0, "Самая первая обычная беседа", QImage(":chatDefaultImage"), 3);
+    GroupChatInfo chat2(1, "Админская", QImage(":chatDefaultImage"), 4, ADMIN);
+    GroupChatInfo chat3(2, "Зрительская", QImage(":chatDefaultImage"), 5, VIEWER);
+    GroupChatInfo chat4(3, "Модераторская", QImage(":chatDefaultImage"), 10, MODERATOR);
+
+    return QList<GroupChatInfo>({chat1, chat2, chat3, chat4});
 }
 
 QList<MessageInfo> sqlLoadMessages(int chatId) {
@@ -48,6 +53,15 @@ QList<MessageInfo> sqlLoadMessages(int chatId) {
     return QList<MessageInfo>({message1, message2, message3, message4, message5});
 }
 
+QList<MessageInfo> sqlLoadSearchedMessages(int chatId, QString &request) {
+    MessageInfo message1(0, "Hello world!", "2021-03-31 22:10",
+                         USER_MESSAGE, 0, 10, -1, "Korostast");
+    MessageInfo message2(1, "Hello world!", "2021-03-31 22:10",
+                         USER_MESSAGE, 0, 10, -1, "Korostast");
+
+    return QList<MessageInfo>({message1, message2});
+}
+
 QList<UserChatMember> sqlLoadChatMembers(int chatId) {
     UserChatMember user1(0, "Lalala", QImage(":chatDefaultImage"), PARTICIPANT);
     UserChatMember user2(1, "Another one", QImage(":chatDefaultImage"), VIEWER);
@@ -56,12 +70,12 @@ QList<UserChatMember> sqlLoadChatMembers(int chatId) {
     return QList<UserChatMember>({user1, user2, user3});
 }
 
-int sqlGetPersonId(int chatId, int userId) {
-    return 0;
-}
-
 UserInfo sqlLoadProfile(int userId) {
-    return UserInfo(10, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
+    if (userId == 1)
+        return UserInfo(1, "Someone with id == 1", QImage(":chatDefaultImage"), "Sus status", "", "", "", "");
+    if (userId == 2)
+        return UserInfo(1, "Someone with id == 2", QImage(":chatDefaultImage"), "Sus status", "", "", "", "");
+    return UserInfo(12, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
 }
 
 QList<UserInfo> sqlLoadFriends(int userId) {
@@ -153,5 +167,10 @@ int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, co
 }
 
 void sqlAddMembers(int chatId, std::vector<int> &newParticipants) {
+
+}
+
+void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
+                      const QString &status, const QImage &avatar) {
 
 }

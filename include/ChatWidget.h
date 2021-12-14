@@ -26,6 +26,13 @@ private:
 
     ROLE role;
 
+    int friendId;
+
+public:
+    int getFriendId() const;
+
+    void setFriendId(int friendId);
+
 public:
 
     int getId() const;

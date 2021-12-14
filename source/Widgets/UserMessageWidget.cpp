@@ -2,7 +2,7 @@
 #include "UserMessageWidget.h"
 #include "MainWindow.h"
 
-UserMessageWidget::UserMessageWidget(QWidget *parent) : QWidget(parent), ui(new Ui::UserMessageWidget), chatId(-1), messageId(-1) {
+UserMessageWidget::UserMessageWidget(QWidget *parent) : QWidget(parent), ui(new Ui::UserMessageWidget), userId(-1), chatId(-1), messageId(-1) {
     ui->setupUi(this);
 }
 

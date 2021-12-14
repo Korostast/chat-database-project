@@ -14,8 +14,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Initialize Main Window variables
     avatarEditor = new AvatarEditor(this);
     currentState = AUTHORIZATION;
-    currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!",
-                               nullptr); // TODO it is a test
+    currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
     chatDialog = new ChatDialog(this);
 
@@ -29,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     //ui->app_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
-    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
+    ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
 
     // Establish default size of text edit in chat and speed of vertical scrolling
     int defaultRowNumber = 1;
@@ -64,8 +63,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->chats_button, SIGNAL(released()), this, SLOT(chats_button_released()));
     connect(ui->profile_button, SIGNAL(released()), this, SLOT(profile_button_released()));
     connect(ui->friends_button, SIGNAL(released()), this, SLOT(friends_button_released()));
+    connect(ui->settings_button, SIGNAL(released()), this, SLOT(settings_button_released()));
     connect(ui->chat_creation_button, SIGNAL(released()), this, SLOT(chat_creation_open_ui()));
     connect(ui->chat_creation_create_button, SIGNAL(released()), this, SLOT(group_chat_create()));
+    connect(ui->unused_switch_personal_chats, &QPushButton::released, this, [this]() {
+        ui->unused_switch_personal_chats->setChecked(true);
+    });
+    connect(ui->unused_switch_group_chats, &QPushButton::released, this, [this]() {
+        ui->unused_switch_group_chats->setChecked(true);
+    });
+    connect(ui->switch_group_chats, &QPushButton::released, this, [this]() {
+        ui->main_stacked_widget->setCurrentIndex(GROUP_CHAT_LIST_PAGE);
+    });
+    connect(ui->switch_personal_chats, &QPushButton::released, this, [this]() {
+        ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
+    });
     connect(ui->chat_creation_avatar, &ClickableLabel::released, this, [this]() {
         chatDialog->openFileChooser();
     });
@@ -77,8 +89,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->search_people_button, SIGNAL(released()), this, SLOT(search_people()));
     connect(ui->search_people_line, SIGNAL(returnPressed()), this, SLOT(search_people()));
     connect(ui->message_text_edit, SIGNAL(returnKeyPressedEvent()), this, SLOT(sendMessage()));
+    connect(ui->chat_search_label, &ClickableLabel::released, this, [this]() {
+        ui->chat_bar_search_edit->clear();
+        ui->chat_bar_stacked_widget->setCurrentIndex(1);
+    });
+    connect(ui->chat_bar_search_cancel, &QPushButton::released, this, [this]() {
+        ui->chat_bar_stacked_widget->setCurrentIndex(0);
+    });
+    connect(ui->chat_bar_search_button, SIGNAL(released()), this, SLOT(loadSearchInterface()));
     connect(ui->message_text_edit->document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
             this, SLOT(messageTextChanged(QSizeF)));
+
+    // Search messages
+    connect(ui->messages_search_button, SIGNAL(released()), this, SLOT(searchMessages()));
+    connect(ui->messages_search_cancel, &QPushButton::released, this, [this]() {
+        ui->chat_bar_stacked_widget->setCurrentIndex(0);
+        ui->main_stacked_widget->setCurrentIndex(MESSAGES_PAGE);
+        currentState = MESSAGES;
+    });
 
     // Friends
     connect(ui->switch_actual_friends, &QPushButton::released, this, [this]() {
@@ -92,6 +120,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     });
     connect(ui->switch_search_people, &QPushButton::released, this, [this]() {
         switch_friends_page(SEARCH_PEOPLE_PAGE);
+    });
+
+    // Settings
+    connect(ui->settings_save_button, SIGNAL(released()), this, SLOT(settings_save_button_released()));
+    connect(ui->profile_avatar, &ClickableLabel::released, this, [this]() {
+        chatDialog->openFileChooser();
     });
 }
 

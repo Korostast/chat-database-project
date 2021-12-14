@@ -155,7 +155,7 @@
        <item>
         <widget class="QPushButton" name="chat_dialog_add_members_button">
          <property name="text">
-          <string>Добавить выбранных участников</string>
+          <string>Добавить выбранных пользователей</string>
          </property>
         </widget>
        </item>

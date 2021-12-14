@@ -34,11 +34,18 @@ void MainWindow::showProfile(const UserInfo *user) const {
         ui->profile_phone_number->hide();
     }
 
+    if (currentUser->getId() == user->getId()) {
+        ui->profile_avatar->setCursor(Qt::PointingHandCursor);
+        currentState = MY_PROFILE;
+        qDebug() << "Current state changed to MY_PROFILE";
+    } else {
+        ui->profile_avatar->setCursor(Qt::ArrowCursor);
+        currentState = PROFILE;
+        qDebug() << "Current state changed to PROFILE";
+    }
+
     currentChat = nullptr;
-    currentState = PROFILE;
     ui->main_stacked_widget->setCurrentIndex(PROFILE_PAGE);
-    
-    qDebug() << "Current state changed to PROFILE";
 }
 
 

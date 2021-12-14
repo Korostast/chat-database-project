@@ -20,11 +20,14 @@
 #define AUTHORIZATION_PAGE 0
 #define REGISTRATION_PAGE 1
 
-#define CHAT_LIST_PAGE 0
-#define MESSAGES_PAGE 1
-#define PROFILE_PAGE 2
-#define FRIENDS_PAGE 3
-#define CHAT_CREATION_PAGE 4
+#define PERSONAL_CHAT_LIST_PAGE 0
+#define GROUP_CHAT_LIST_PAGE 1
+#define MESSAGES_PAGE 2
+#define PROFILE_PAGE 3
+#define FRIENDS_PAGE 4
+#define CHAT_CREATION_PAGE 5
+#define SETTINGS_PAGE 6
+#define MESSAGES_SEARCH_PAGE 7
 
 #define ACTUAL_FRIENDS_PAGE 0
 #define INCOMING_REQUESTS_PAGE 1
@@ -48,8 +51,11 @@ enum STATE {
     CHATS,
     MESSAGES,
     PROFILE,
+    MY_PROFILE,
     FRIENDS,
-    CHAT_CREATION
+    CHAT_CREATION,
+    SETTINGS,
+    SEARCH_MESSAGES
 };
 
 enum ROLE {
@@ -85,6 +91,32 @@ struct ChatInfo {
     QString name;
     QImage avatar;
     bool group;
+    int countMembers;
+    ROLE role;
+};
+
+struct PersonalChatInfo {
+    PersonalChatInfo(int chatId, int friendId, QString name, QImage avatar = QImage(":chatDefaultImage"))
+            : chatId(chatId), friendId(friendId), name(std::move(name)), avatar(std::move(avatar)) {}
+
+    int chatId;
+    int friendId;
+    QString name;
+    QImage avatar;
+    bool group = false;
+    int countMembers = 2;
+    ROLE role = PARTICIPANT;
+};
+
+struct GroupChatInfo {
+    GroupChatInfo(int chatId, QString name, QImage avatar = QImage(":chatDefaultImage"), int countMembers = 2,
+                  ROLE role = PARTICIPANT)
+            : chatId(chatId), name(std::move(name)), avatar(std::move(avatar)), countMembers(countMembers), role(role){}
+
+    int chatId;
+    QString name;
+    QImage avatar;
+    bool group = true;
     int countMembers;
     ROLE role;
 };

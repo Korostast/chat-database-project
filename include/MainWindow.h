@@ -98,7 +98,8 @@ private:
 
     static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
 
-    void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role);
+    void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role,
+                 int friendId);
 
     static bool checkMessage(QString &content);
 
@@ -124,6 +125,8 @@ private slots:
 
     void friends_button_released();
 
+    void settings_button_released() const;
+
     void search_people();
 
     void sendMessage();
@@ -132,6 +135,11 @@ private slots:
 
     void group_chat_create();
 
+    void settings_save_button_released();
+
+    void loadSearchInterface();
+
+    void searchMessages();
 };
 
 #endif // MAINWINDOW_H
