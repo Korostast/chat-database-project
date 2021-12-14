@@ -14,8 +14,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Initialize Main Window variables
     avatarEditor = new AvatarEditor(this);
     currentState = AUTHORIZATION;
-    currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!",
-                               nullptr); // TODO it is a test
+    currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
     chatDialog = new ChatDialog(this);
 
@@ -64,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->chats_button, SIGNAL(released()), this, SLOT(chats_button_released()));
     connect(ui->profile_button, SIGNAL(released()), this, SLOT(profile_button_released()));
     connect(ui->friends_button, SIGNAL(released()), this, SLOT(friends_button_released()));
+    connect(ui->settings_button, SIGNAL(released()), this, SLOT(settings_button_released()));
     connect(ui->chat_creation_button, SIGNAL(released()), this, SLOT(chat_creation_open_ui()));
     connect(ui->chat_creation_create_button, SIGNAL(released()), this, SLOT(group_chat_create()));
     connect(ui->chat_creation_avatar, &ClickableLabel::released, this, [this]() {
@@ -92,6 +92,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     });
     connect(ui->switch_search_people, &QPushButton::released, this, [this]() {
         switch_friends_page(SEARCH_PEOPLE_PAGE);
+    });
+
+    // Settings
+    connect(ui->settings_save_button, SIGNAL(released()), this, SLOT(settings_save_button_released()));
+    connect(ui->profile_avatar, &ClickableLabel::released, this, [this]() {
+        chatDialog->openFileChooser();
     });
 }
 

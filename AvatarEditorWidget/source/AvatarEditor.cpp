@@ -1,6 +1,7 @@
 #include <QFileDialog>
 #include "../include/AvatarEditor.h"
 #include "ui_avatareditor.h"
+#include "ui_mainwindow.h"
 #include "MainWindow.h"
 #include "../../source/SqlInterface.h"
 
@@ -113,6 +114,7 @@ void AvatarEditor::saveImage() {
 
     auto *mainWindow = qobject_cast<MainWindow *>(this->parentWidget());
 
+    // TODO switch case
     if (MainWindow::currentState == MESSAGES) {
         QString path("../resources/images/chats/%1.png");
         if (!result.save(QString(path).arg(MainWindow::currentChat->getId()), "png")) {
@@ -132,12 +134,20 @@ void AvatarEditor::saveImage() {
                             MainWindow::currentUser->getId());
         int messageId = sqlSendMessage(message);
 
-        mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "", QImage(), content,
+        mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "",
+                               QImage(), content,
                                SYSTEM_MESSAGE);
     } else if (MainWindow::currentState == CHAT_CREATION) {
         mainWindow->setChatCreationAvatar(result);
-    } else {  // if (currentState == USER)
+    } else if (MainWindow::currentState == MY_PROFILE) {
         // TODO user avatar
+        mainWindow->ui->profile_avatar->setPixmap(QPixmap::fromImage(result)
+                                                          .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE,
+                                                                  Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        sqlUpdateProfile(MainWindow::currentUser->getId(), MainWindow::currentUser->getFirstName(),
+                         MainWindow::currentUser->getLastName(), MainWindow::currentUser->getPhoneNumber(),
+                         MainWindow::currentUser->getStatus(), result);
+    } else {
         QString path("../resources/images/users/%1.png");
         if (!result.save(QString(path).arg(MainWindow::currentUser->getId()), "png")) {
             qCritical() << "Error: can't save image";

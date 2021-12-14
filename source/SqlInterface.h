@@ -24,13 +24,13 @@ QList<UserInfo> sqlLoadIncomingRequests(int userId);
 
 QList<UserInfo> sqlLoadOutcomingRequests(int userId);
 
-QList<UserInfo> sqlPeopleInSearch(const QString& substring);
+QList<UserInfo> sqlPeopleInSearch(const QString &substring);
 
 // TODO удалить комментарии. А лучше на англ перевести. А лучше теорвер поучить и дз сделать
 // Функции, отправляющие POST запросы в БД
 // Вызывается в функции 'sendMessage', когда текущий юзер отправляет сообщение. Возвращает messageId
 // Сообщение вставляется в интерфейс уже ПОСЛЕ возвращения. Надо бы добавить анимацию загрузки хотя бы к курсору, но потом
-int sqlSendMessage(const MessageInfo& message);
+int sqlSendMessage(const MessageInfo &message);
 
 // Если сообщение было отредактировано
 void sqlMessageEdited(int messageId, const QString &newContent);
@@ -48,7 +48,7 @@ void sqlRemoveChatMember(int userId, int chatId);
 void sqlChangeRole(int userId, int chatId, int newRole);
 
 // Админ поменял аватарку беседы (пока что для профиля нет функции)
-void sqlUpdateChatAvatar(int chatId, QImage& newAvatar);
+void sqlUpdateChatAvatar(int chatId, QImage &newAvatar);
 
 // Админ поменял название беседы
 void sqlChangeChatName(int chatId, const QString &newName);
@@ -74,5 +74,8 @@ int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, co
 
 // Админ беседы с id = chatId добавил новых участников в беседу. Id новых участников перечислены в newParticipants
 void sqlAddMembers(int chatId, std::vector<int> &newParticipants);
+
+void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
+                      const QString &status, const QImage &avatar);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

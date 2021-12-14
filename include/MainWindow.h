@@ -124,6 +124,8 @@ private slots:
 
     void friends_button_released();
 
+    void settings_button_released() const;
+
     void search_people();
 
     void sendMessage();
@@ -132,6 +134,7 @@ private slots:
 
     void group_chat_create();
 
+    void settings_save_button_released();
 };
 
 #endif // MAINWINDOW_H

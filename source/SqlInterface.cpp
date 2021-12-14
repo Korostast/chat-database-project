@@ -61,7 +61,7 @@ int sqlGetPersonId(int chatId, int userId) {
 }
 
 UserInfo sqlLoadProfile(int userId) {
-    return UserInfo(10, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
+    return UserInfo(12, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
 }
 
 QList<UserInfo> sqlLoadFriends(int userId) {
@@ -153,5 +153,10 @@ int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, co
 }
 
 void sqlAddMembers(int chatId, std::vector<int> &newParticipants) {
+
+}
+
+void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
+                      const QString &status, const QImage &avatar) {
 
 }
