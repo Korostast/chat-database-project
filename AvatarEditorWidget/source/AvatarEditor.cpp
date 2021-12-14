@@ -115,31 +115,31 @@ void AvatarEditor::saveImage() {
 
     if (MainWindow::currentState == MESSAGES) {
         QString path("../resources/images/chats/%1.png");
-        if (!result.save(QString(path).arg(MainWindow::currentChat->getId()), "png")) {
+        if (!result.save(QString(path).arg(MainWindow::currentChat->getID()), "png")) {
             qCritical() << "Error: can't save image";
             return;
         }
         // TODO database update chat avatar
-        sqlUpdateChatAvatar(MainWindow::currentChat->getId(), result);
+        sqlUpdateChatAvatar(MainWindow::currentChat->getID(), result);
 
-        mainWindow->updateChat(MainWindow::currentChat->getId(), MainWindow::currentChat->getName(),
+        mainWindow->updateChat(MainWindow::currentChat->getID(), MainWindow::currentChat->getName(),
                                result, MainWindow::currentChat->getRole());
         QString content = QString("Пользователь %1 изменил аватарку беседы").arg(
                 MainWindow::currentUser->getUsername());
 
         // TODO database send message
-        MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
-                            MainWindow::currentUser->getId());
+        MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
+                            MainWindow::currentUser->getID());
         int messageId = sqlSendMessage(message);
 
-        mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "", QImage(), content,
+        mainWindow->addMessage(MainWindow::currentChat->getID(), MainWindow::currentUser->getID(), messageId, "", "", QImage(), content,
                                SYSTEM_MESSAGE);
     } else if (MainWindow::currentState == CHAT_CREATION) {
         mainWindow->setChatCreationAvatar(result);
     } else {  // if (currentState == USER)
         // TODO user avatar
         QString path("../resources/images/users/%1.png");
-        if (!result.save(QString(path).arg(MainWindow::currentUser->getId()), "png")) {
+        if (!result.save(QString(path).arg(MainWindow::currentUser->getID()), "png")) {
             qCritical() << "Error: can't save image";
         }
     }

@@ -22,7 +22,7 @@ private:
 
     ROLE role;
 public:
-    int getId() const;
+    int getID() const;
 
     void setId(int id);
 

@@ -41,11 +41,11 @@ void ChatWidget::setGroup(bool group) {
     ChatWidget::group = group;
 }
 
-int ChatWidget::getId() const {
+int ChatWidget::getID() const {
     return id;
 }
 
-void ChatWidget::setId(int id) {
+void ChatWidget::setID(int id) {
     ChatWidget::id = id;
 }
 

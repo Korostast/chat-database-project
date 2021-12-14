@@ -92,7 +92,7 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
     return result;
 }
 
-UserInfo sqlLoadProfile(const QString &username) {
+UserInfo sqlLoadProfile(int userID) {
     return UserInfo(1, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
 }
 
@@ -123,7 +123,7 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID) {
     return QList<UserInfo>({user1, user2});
 }
 
-QList<UserInfo> sqlLoadOutgoingRequests(int userId) {
+QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
     UserInfo user1(5, "Masha", QImage(":chatDefaultImage"));
     UserInfo user2(6, "Java", QImage(":chatDefaultImage"));
 
@@ -144,50 +144,66 @@ int sqlSendMessage(const MessageInfo &message) {
     return 0;
 }
 
-void sqlMessageEdited(int messageId, const QString &newContent) {
+void sqlMessageEdited(int messageID, const QString &newContent) {
 
 }
 
-void sqlDeleteMessage(int messageId) {
+void sqlDeleteMessage(int messageID) {
 
 }
 
-void sqlLeaveChat(int userId, int chatId) {
+void sqlLeaveChat(int userID, int chatID) {
 
 }
 
-void sqlRemoveChatMember(int userId, int chatId) {
+void sqlRemoveChatMember(int userID, int chatID) {
 
 }
 
-void sqlChangeRole(int userId, int chatId, int newRole) {
+void sqlChangeRole(int userID, int chatID, int newRole) {
 
 }
 
-void sqlUpdateChatAvatar(int chatId, QImage &newAvatar) {
+void sqlUpdateChatAvatar(int chatID, QImage &newAvatar) {
 
 }
 
-void sqlChangeChatName(int chatId, const QString &newName) {
+void sqlChangeChatName(int chatID, const QString &newName) {
 
 }
 
-void sqlAcceptFriendRequest(int currentUserId, int newFriendId) {
+void sqlAcceptFriendRequest(int currentUserID, int newFriendID) {
 
 }
 
-void sqlDeclineFriendRequest(int currentUserId, int notFriendId) {
+void sqlDeclineFriendRequest(int currentUserID, int notFriendID) {
 
 }
 
-void sqlCancelFriendRequest(int currentUserId, int notFriendId) {
+void sqlCancelFriendRequest(int currentUserID, int notFriendID) {
 
 }
 
-void sqlSendFriendRequest(int userId, int targetUser) {
+void sqlSendFriendRequest(int userID, int targetUser) {
 
 }
 
-void sqlRemoveFriend(int userId, int friendId) {
+void sqlRemoveFriend(int userID, int friendID) {
+
+}
+
+int sqlGetPersonID(int chatID, int userID) {
+    return 0;
+}
+
+int sqlCreateChat(int chatID, QString chatName, QImage thumbnail, std::vector<int> users) {
+    return 0;
+}
+
+QList<UserChatMember> sqlLoadChatMembers(int chatID) {
+    return QList<UserChatMember> {};
+}
+
+void sqlAddMembers(int chatID, std::vector<int> users) {
 
 }

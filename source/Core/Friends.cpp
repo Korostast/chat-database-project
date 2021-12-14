@@ -51,7 +51,7 @@ void MainWindow::switch_friends_page(int page) const {
 
 void FriendWidget::friend_remove_button_released() {
     // TODO database remove friend
-    sqlRemoveFriend(MainWindow::currentUser->getId(), getFriendId());
+    sqlRemoveFriend(MainWindow::currentUser->getID(), getFriendId());
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<FriendWidget>(getFriendId(), mainWindow->ui->actual_friends_list);
@@ -59,7 +59,7 @@ void FriendWidget::friend_remove_button_released() {
 
 void IncomingRequestWidget::accept_request_button_released() {
     // TODO database add friend (accept request)
-    sqlAcceptFriendRequest(MainWindow::currentUser->getId(), getFriendId());
+    sqlAcceptFriendRequest(MainWindow::currentUser->getID(), getFriendId());
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<IncomingRequestWidget>(getFriendId(), mainWindow->ui->incoming_requests_list);
@@ -67,7 +67,7 @@ void IncomingRequestWidget::accept_request_button_released() {
 
 void IncomingRequestWidget::decline_request_button_released() {
     // TODO database
-    sqlDeclineFriendRequest(MainWindow::currentUser->getId(), getFriendId());
+    sqlDeclineFriendRequest(MainWindow::currentUser->getID(), getFriendId());
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<IncomingRequestWidget>(getFriendId(), mainWindow->ui->incoming_requests_list);
@@ -75,7 +75,7 @@ void IncomingRequestWidget::decline_request_button_released() {
 
 void OutcomingRequestWidget::remove_request_button_released() {
     // TODO database
-    sqlCancelFriendRequest(MainWindow::currentUser->getId(), getFriendId());
+    sqlCancelFriendRequest(MainWindow::currentUser->getID(), getFriendId());
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<OutcomingRequestWidget>(getFriendId(), mainWindow->ui->outcoming_requests_list);
@@ -90,12 +90,12 @@ void MainWindow::search_people() {
     ui->search_people_list->clear();
 
     for (const auto &user: users)
-        addPersonInSearch(user.getId(), user.getUsername(), user.getAvatar());
+        addPersonInSearch(user.getID(), user.getUsername(), user.getAvatar());
 }
 
 void MainWindow::friends_button_released() {
     // TODO database load requests / friends
-    int currentId = currentUser->getId();
+    int currentId = currentUser->getID();
     QList<UserInfo> friends = sqlLoadFriends(currentId);
     QList<UserInfo> incomingRequests = sqlLoadIncomingRequests(currentId);
     QList<UserInfo> outcomingRequests = sqlLoadOutgoingRequests(currentId);
@@ -105,11 +105,11 @@ void MainWindow::friends_button_released() {
     ui->outcoming_requests_list->clear();
 
     for (const auto& fr: friends)
-        addToList<FriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(), ui->actual_friends_list);
+        addToList<FriendWidget>(fr.getID(), fr.getUsername(), fr.getAvatar(), ui->actual_friends_list);
     for (const auto& in: incomingRequests)
-        addToList<IncomingRequestWidget>(in.getId(), in.getUsername(), in.getAvatar(), ui->incoming_requests_list);
+        addToList<IncomingRequestWidget>(in.getID(), in.getUsername(), in.getAvatar(), ui->incoming_requests_list);
     for (const auto& out: outcomingRequests)
-        addToList<OutcomingRequestWidget>(out.getId(), out.getUsername(), out.getAvatar(), ui->outcoming_requests_list);
+        addToList<OutcomingRequestWidget>(out.getID(), out.getUsername(), out.getAvatar(), ui->outcoming_requests_list);
 
     ui->main_stacked_widget->setCurrentIndex(FRIENDS_PAGE);
     currentChat = nullptr;
@@ -132,9 +132,9 @@ void MainWindow::tests() {
     //updateChat(2, nullptr, QImage(":chatDefaultImage"), PARTICIPANT);
 
     // Test
-    addMessage(0, currentUser->getId(), 0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!",
+    addMessage(0, currentUser->getID(), 0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!",
                USER_MESSAGE);
-    addMessage(0, currentUser->getId(), 1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!",
+    addMessage(0, currentUser->getID(), 1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!",
                USER_MESSAGE);
     QString test("Он белый\n"
                  "Пушистый\n"
@@ -143,7 +143,7 @@ void MainWindow::tests() {
                  "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими\n"
                  "Он безумно красивый\n"
                  "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, currentUser->getId(), 2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
+    addMessage(0, currentUser->getID(), 2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
                USER_MESSAGE);
 
     QString test2("Он белый"
@@ -153,7 +153,7 @@ void MainWindow::tests() {
                   "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими"
                   "Он безумно красивый"
                   "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, currentUser->getId(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
+    addMessage(0, currentUser->getID(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
                USER_MESSAGE);
 
     QString test3(
@@ -162,7 +162,7 @@ void MainWindow::tests() {
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             "aaaaaaaaaaaaaaaaaaaaaaa");
-    addMessage(0, currentUser->getId(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
+    addMessage(0, currentUser->getID(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
                USER_MESSAGE);
 
     addToList<FriendWidget>(0, "Lalala", QImage(":chatDefaultImage"), ui->actual_friends_list);

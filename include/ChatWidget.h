@@ -28,7 +28,7 @@ private:
 
 public:
 
-    int getId() const;
+    int getID() const;
 
     const QImage &getAvatar() const;
 
@@ -42,7 +42,7 @@ public:
 
     void setRole(ROLE role);
 
-    void setId(int id);
+    void setID(int id);
 
     bool isGroup() const;
 

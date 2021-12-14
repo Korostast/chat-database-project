@@ -2,7 +2,7 @@
 
 #include <utility>
 
-int UserInfo::getId() const {
+int UserInfo::getID() const {
     return id;
 }
 

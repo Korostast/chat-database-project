@@ -15,40 +15,48 @@ QList<ChatInfo> sqlLoadChats(int userID);
 
 QList<MessageInfo> sqlLoadMessages(int chatID);
 
-UserInfo sqlLoadProfile(const QString &username);
+UserInfo sqlLoadProfile(int userID);
 
 QList<UserInfo> sqlLoadFriends(int userID);
 
 QList<UserInfo> sqlLoadIncomingRequests(int userID);
 
-QList<UserInfo> sqlLoadOutgoingRequests(int userId);
+QList<UserInfo> sqlLoadOutgoingRequests(int userID);
 
 QList<UserInfo> sqlPeopleInSearch(const QString &substring);
 
 int sqlSendMessage(const MessageInfo &message);
 
-void sqlMessageEdited(int messageId, const QString &newContent);
+void sqlMessageEdited(int messageID, const QString &newContent);
 
-void sqlDeleteMessage(int messageId);
+void sqlDeleteMessage(int messageID);
 
-void sqlLeaveChat(int userId, int chatId);
+void sqlLeaveChat(int userID, int chatID);
 
-void sqlRemoveChatMember(int userId, int chatId);
+void sqlRemoveChatMember(int userID, int chatID);
 
-void sqlChangeRole(int userId, int chatId, int newRole);
+void sqlChangeRole(int userID, int chatID, int newRole);
 
-void sqlUpdateChatAvatar(int chatId, QImage &newAvatar);
+void sqlUpdateChatAvatar(int chatID, QImage &newAvatar);
 
-void sqlChangeChatName(int chatId, const QString &newName);
+void sqlChangeChatName(int chatID, const QString &newName);
 
-void sqlAcceptFriendRequest(int currentUserId, int newFriendId);
+void sqlAcceptFriendRequest(int currentUserID, int newFriendID);
 
-void sqlDeclineFriendRequest(int currentUserId, int notFriendId);
+void sqlDeclineFriendRequest(int currentUserID, int notFriendID);
 
-void sqlCancelFriendRequest(int currentUserId, int notFriendId);
+void sqlCancelFriendRequest(int currentUserID, int notFriendID);
 
-void sqlSendFriendRequest(int userId, int targetUser);
+void sqlSendFriendRequest(int userID, int targetUser);
 
-void sqlRemoveFriend(int userId, int friendId);
+void sqlRemoveFriend(int userID, int friendID);
+
+int sqlGetPersonID(int chatID, int userID);
+
+int sqlCreateChat(int chatID, QString chatName, QImage thumbnail, std::vector<int> users);
+
+QList<UserChatMember> sqlLoadChatMembers(int chatID);
+
+void sqlAddMembers(int chatID, std::vector<int> users);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

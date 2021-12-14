@@ -15,7 +15,7 @@ ChatMemberWidget::~ChatMemberWidget() {
     delete ui;
 }
 
-int ChatMemberWidget::getId() const {
+int ChatMemberWidget::getID() const {
     return id;
 }
 
@@ -49,9 +49,9 @@ void ChatMemberWidget::setRole(ROLE role) {
     ChatMemberWidget::role = role;
     ui->chat_members_roles_combobox->setCurrentIndex(role);
     ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());
-    if (MainWindow::currentChat->getRole() < ADMIN || id == MainWindow::currentUser->getId())
+    if (MainWindow::currentChat->getRole() < ADMIN || id == MainWindow::currentUser->getID())
         ui->chat_members_roles_combobox->hide();
-    if (MainWindow::currentChat->getRole() < MODERATOR || id == MainWindow::currentUser->getId())
+    if (MainWindow::currentChat->getRole() < MODERATOR || id == MainWindow::currentUser->getID())
         ui->chat_members_remove_button->hide();
 }
 
@@ -67,24 +67,24 @@ void ChatMemberWidget::removeMember() {
         auto *chatMemberWidget = qobject_cast<ChatMemberWidget *>(sender->parent());
         content = content.arg(chatMemberWidget->getName());
 
-        sqlRemoveChatMember(chatMemberWidget->getId(), MainWindow::currentChat->getId());
+        sqlRemoveChatMember(chatMemberWidget->getID(), MainWindow::currentChat->getID());
 
         auto *chatDialog = qobject_cast<ChatDialog *>(sender->window());
 
         qInfo() << QString(
                 "Admin remove user with messageId - %1, username - %2, role - %3 from chat with messageId - %4, username - %5")
-                .arg(chatMemberWidget->getId()).arg(chatMemberWidget->getName()).arg(chatMemberWidget->getRole())
-                .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName());
+                .arg(chatMemberWidget->getID()).arg(chatMemberWidget->getName()).arg(chatMemberWidget->getRole())
+                .arg(MainWindow::currentChat->getID()).arg(MainWindow::currentChat->getName());
 
         chatDialog->removeMemberFromUi(chatMemberWidget);
 
         auto *mainWindow = qobject_cast<MainWindow *>(chatDialog->parent());
         // TODO database send message
-        MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
-                            chatMemberWidget->getId());
+        MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
+                            chatMemberWidget->getID());
         int messageId = sqlSendMessage(message);
 
-        mainWindow->addMessage(MainWindow::currentChat->getId(), getId(), messageId, "", "", QImage(), content,
+        mainWindow->addMessage(MainWindow::currentChat->getID(), getID(), messageId, "", "", QImage(), content,
                                SYSTEM_MESSAGE);
     }
 }
@@ -92,10 +92,10 @@ void ChatMemberWidget::removeMember() {
 // Admin change chat member role
 void ChatMemberWidget::changeMemberRole(int index) const {
     if (ui->chat_members_roles_combobox->hasFocus()) {// TODO database change chat member role
-        sqlChangeRole(getId(), MainWindow::currentChat->getId(), index);
+        sqlChangeRole(getID(), MainWindow::currentChat->getID(), index);
 
         qInfo() << QString("Admin change role of user with messageId - %1, username - %2. Old role - %3, new role - %4")
-                .arg(getId()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
+                .arg(getID()).arg(getName(), ui->chat_members_roles_combobox->currentText(),
                                   ui->chat_members_roles_combobox->itemText(index));
 
         ui->chat_members_roles_combobox->setCurrentIndex(index);
