@@ -80,7 +80,7 @@ void MainWindow::openChat() {
             .arg(currentChat->getId()).arg(currentChat->getName()).arg(currentChat->isGroup())
             .arg(currentChat->getCountMembers()).arg(currentChat->getRole());
 
-    // TODO database load messages
+    // TODO database searchMessages messages
     QList<MessageInfo> messages = sqlLoadMessages(currentChat->getId());
 
     // Clear all previous messages from list
@@ -88,8 +88,7 @@ void MainWindow::openChat() {
 
     for (const auto &message: messages)
         addMessage(message.chatId, message.userId, message.messageId, message.username, message.time,
-                   message.avatar, message.content,
-                   message.type);
+                   message.avatar, message.content, message.type);
 
     ui->messageList->scrollToBottom();
     ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(currentChat->getAvatar(), AVATAR_IN_CHAT_IMAGE_SIZE));
@@ -99,7 +98,7 @@ void MainWindow::openChat() {
         ui->chat_online_or_members_label->show();
     } else {
         ui->chat_online_or_members_label->hide();
-        // TODO database load person id
+        // TODO database searchMessages person id
         int friendId = sqlGetPersonId(currentChat->getId(), currentUser->getId());
         ui->chat_name_label->setPersonalChatUserId(friendId);
     }
@@ -112,6 +111,7 @@ void MainWindow::openChat() {
     }
 
     currentState = MESSAGES;
+    ui->chat_bar_stacked_widget->setCurrentIndex(0);
     ui->main_stacked_widget->setCurrentIndex(MESSAGES_PAGE);
     setFocusToTextEdit();
 }
@@ -246,7 +246,7 @@ void MainWindow::chat_name_label_released() {
         chatDialog->setupCurrentChatUi(currentChat);
         chatDialog->show();
     } else {
-        // TODO database load profile
+        // TODO database searchMessages profile
         UserInfo user = sqlLoadProfile(ui->chat_name_label->getPersonalChatUserId());
         showProfile(&user);
     }
@@ -313,7 +313,7 @@ void MainWindow::setFocusToTextEdit() const {
 
 // Return to chat list
 void MainWindow::chats_button_released() {
-    // TODO database load chats
+    // TODO database searchMessages chats
     QList<ChatInfo> chats = sqlLoadChats(currentUser->getId());
 
     ui->chat_list->clear();
@@ -328,7 +328,7 @@ void MainWindow::chats_button_released() {
 }
 
 void MainWindow::chat_creation_open_ui() {
-    // TODO database load friends
+    // TODO database searchMessages friends
     QList<UserInfo> friends = sqlLoadFriends(currentUser->getId());
     ui->chat_creation_friends_list->clear();
     ui->chat_creation_name_edit->clear();
@@ -371,4 +371,51 @@ void MainWindow::group_chat_create() {
     // Return to chat list ui
     currentState = CHATS;
     ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
+}
+
+void MainWindow::loadSearchInterface() {
+    ui->messages_search_edit->setText(ui->chat_bar_search_edit->text());
+
+    searchMessages();
+
+    currentState = SEARCH_MESSAGES;
+    ui->main_stacked_widget->setCurrentIndex(MESSAGES_SEARCH_PAGE);
+}
+
+void MainWindow::searchMessages() {
+    QString request(ui->messages_search_edit->text());
+    if (request.isEmpty())
+        return;
+
+    ui->messages_search_list->clear();
+    QList<MessageInfo> messages = sqlLoadSearchMessages(currentChat->getId(), request);
+    for (const auto &message : messages) {
+        auto *item = new QListWidgetItem;
+        if (message.type == USER_MESSAGE) {
+            auto *widget = new UserMessageWidget(this);
+
+            widget->setChatId(message.chatId);
+            widget->setUserId(message.userId);
+            widget->setMessageId(message.messageId);
+            widget->setAvatar(message.avatar);
+            widget->setName(message.username);
+            widget->setTime(message.time);
+            widget->setContent(message.content);
+
+
+            item->setSizeHint(widget->sizeHint());
+            ui->messages_search_list->addItem(item);
+            ui->messages_search_list->setItemWidget(item, widget);
+        } else if (message.type == SYSTEM_MESSAGE) {
+            auto *widget = new SystemMessageWidget(this);
+
+            widget->setMessageId(message.messageId);
+            widget->setUserId(message.userId);
+            widget->setContent(message.content);
+
+            item->setSizeHint(widget->sizeHint());
+            ui->messageList->addItem(item);
+            ui->messageList->setItemWidget(item, widget);
+        }
+    }
 }

@@ -3,6 +3,10 @@
 #include "../SqlInterface.h"
 
 void MainWindow::settings_button_released() const {
+    ui->settings_firstname_edit->setText(currentUser->getFirstName());
+    ui->settings_lastname_edit->setText(currentUser->getLastName());
+    ui->settings_phonenumber_edit->setText(currentUser->getPhoneNumber());
+    ui->settings_status_edit->setText(currentUser->getStatus());
     ui->main_stacked_widget->setCurrentIndex(SETTINGS_PAGE);
     currentState = SETTINGS;
 }

@@ -11,6 +11,8 @@ MessageTextEdit::MessageTextEdit(QWidget *parent) : CustomPlainTextEdit(parent) 
 
 // When we right-click on the message, context menu show
 void MessageTextEdit::showContextMenu(const QPoint &pos) {
+    if (MainWindow::currentState != MESSAGES)
+        return;
     qDebug() << "Context menu called";
 
     auto *userMessageWidget = qobject_cast<UserMessageWidget *>(this->parentWidget());

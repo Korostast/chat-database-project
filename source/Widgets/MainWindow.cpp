@@ -77,8 +77,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->search_people_button, SIGNAL(released()), this, SLOT(search_people()));
     connect(ui->search_people_line, SIGNAL(returnPressed()), this, SLOT(search_people()));
     connect(ui->message_text_edit, SIGNAL(returnKeyPressedEvent()), this, SLOT(sendMessage()));
+    connect(ui->chat_search_label, &ClickableLabel::released, this, [this]() {
+        ui->chat_bar_search_edit->clear();
+        ui->chat_bar_stacked_widget->setCurrentIndex(1);
+    });
+    connect(ui->chat_bar_search_cancel, &QPushButton::released, this, [this]() {
+        ui->chat_bar_stacked_widget->setCurrentIndex(0);
+    });
+    connect(ui->chat_bar_search_button, SIGNAL(released()), this, SLOT(loadSearchInterface()));
     connect(ui->message_text_edit->document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
             this, SLOT(messageTextChanged(QSizeF)));
+
+    // Search messages
+    connect(ui->messages_search_button, SIGNAL(released()), this, SLOT(searchMessages()));
+    connect(ui->messages_search_cancel, &QPushButton::released, this, [this]() {
+        ui->chat_bar_stacked_widget->setCurrentIndex(0);
+        ui->main_stacked_widget->setCurrentIndex(MESSAGES_PAGE);
+        currentState = MESSAGES;
+    });
 
     // Friends
     connect(ui->switch_actual_friends, &QPushButton::released, this, [this]() {

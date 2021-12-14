@@ -48,6 +48,15 @@ QList<MessageInfo> sqlLoadMessages(int chatId) {
     return QList<MessageInfo>({message1, message2, message3, message4, message5});
 }
 
+QList<MessageInfo> sqlLoadSearchMessages(int chatId, QString &request) {
+    MessageInfo message1(0, "Hello world!", "2021-03-31 22:10",
+                         USER_MESSAGE, 0, 10, -1, "Korostast");
+    MessageInfo message2(1, "Hello world!", "2021-03-31 22:10",
+                         USER_MESSAGE, 0, 10, -1, "Korostast");
+
+    return QList<MessageInfo>({message1, message2});
+}
+
 QList<UserChatMember> sqlLoadChatMembers(int chatId) {
     UserChatMember user1(0, "Lalala", QImage(":chatDefaultImage"), PARTICIPANT);
     UserChatMember user2(1, "Another one", QImage(":chatDefaultImage"), VIEWER);

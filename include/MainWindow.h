@@ -135,6 +135,10 @@ private slots:
     void group_chat_create();
 
     void settings_save_button_released();
+
+    void loadSearchInterface();
+
+    void searchMessages();
 };
 
 #endif // MAINWINDOW_H

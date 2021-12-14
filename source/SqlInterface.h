@@ -9,6 +9,9 @@ QList<ChatInfo> sqlLoadChats(int userId);
 
 QList<MessageInfo> sqlLoadMessages(int chatId);
 
+//
+QList<MessageInfo> sqlLoadSearchMessages(int chatId, QString &request);
+
 // Юзер открыл информацию о беседе, загружается список участников. Используется структура UserChatMember, потому что
 // она содержит роль участника. Можно объединить с UserInfo, но вроде смысла нет
 QList<UserChatMember> sqlLoadChatMembers(int chatId);
@@ -26,7 +29,7 @@ QList<UserInfo> sqlLoadOutcomingRequests(int userId);
 
 QList<UserInfo> sqlPeopleInSearch(const QString &substring);
 
-// TODO удалить комментарии. А лучше на англ перевести. А лучше теорвер поучить и дз сделать
+// TODO удалить комментарии. А лучше на англ перевести
 // Функции, отправляющие POST запросы в БД
 // Вызывается в функции 'sendMessage', когда текущий юзер отправляет сообщение. Возвращает messageId
 // Сообщение вставляется в интерфейс уже ПОСЛЕ возвращения. Надо бы добавить анимацию загрузки хотя бы к курсору, но потом
@@ -68,13 +71,14 @@ void sqlSendFriendRequest(int userId, int targetUser);
 // Юзер удалил друга
 void sqlRemoveFriend(int userId, int friendId);
 
-// Юзер с id = adminId создаёт групповой диалог. participants - список id участников (т.е. по умолчанию роль PARTICIPANT)
+// Юзер с id = adminId создаёт групповой диалог. Participants - список id участников (т.е. по умолчанию роль PARTICIPANT)
 // Функция возвращает id беседы. Это нужно для того, чтобы лишний раз не загружать заново список диалогов после создания
 int sqlCreateChat(int adminId, const QString &chatName, const QImage &avatar, const std::vector<int> &participants);
 
 // Админ беседы с id = chatId добавил новых участников в беседу. Id новых участников перечислены в newParticipants
 void sqlAddMembers(int chatId, std::vector<int> &newParticipants);
 
+// Юзер изменил один или более атрибутов аккаунта. userId не изменяется
 void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
                       const QString &status, const QImage &avatar);
 

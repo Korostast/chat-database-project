@@ -94,7 +94,7 @@ void MainWindow::search_people() {
 }
 
 void MainWindow::friends_button_released() {
-    // TODO database load requests / friends
+    // TODO database searchMessages requests / friends
     int currentId = currentUser->getId();
     QList<UserInfo> friends = sqlLoadFriends(currentId);
     QList<UserInfo> incomingRequests = sqlLoadIncomingRequests(currentId);

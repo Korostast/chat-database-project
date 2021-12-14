@@ -23,7 +23,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
         ui->chat_dialog_avatar->setCursor(Qt::ArrowCursor);
     }
 
-    // TODO database load members list
+    // TODO database searchMessages members list
     QList<UserChatMember> members = sqlLoadChatMembers(MainWindow::currentChat->getId());
 
     // Cleaning
@@ -119,7 +119,7 @@ void ChatDialog::leaveChat() {
 }
 
 void ChatDialog::loadAddMemberUi() {
-    // TODO database load friends
+    // TODO database searchMessages friends
     QList<UserInfo> friends = sqlLoadFriends(MainWindow::currentUser->getId());
     ui->chat_dialog_add_members_friend_list->clear();
     auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
