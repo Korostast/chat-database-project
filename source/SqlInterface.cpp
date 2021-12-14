@@ -2,17 +2,6 @@
 #include "MainWindow.h"
 #include "Defines.h"
 
-QList<ChatInfo> sqlLoadChats(int userId) {
-    ChatInfo chat1(0, "Самая первая обычная беседа", QImage(":chatDefaultImage"), true, 0);
-    ChatInfo chat2(1, "Админская", QImage(":chatDefaultImage"), true, 0, ADMIN);
-    ChatInfo chat3(2, "Зрительская", QImage(":chatDefaultImage"), true, 0, VIEWER);
-    ChatInfo chat4(3, "Модераторская", QImage(":chatDefaultImage"), true, 0, MODERATOR);
-    ChatInfo chat5(4, "Личная беседа (не работает имя ещё)", QImage(":chatDefaultImage"), false);
-    ChatInfo chat6(5, "Личная беседа", QImage(":chatDefaultImage"), false);
-
-    return QList<ChatInfo>({chat1, chat2, chat3, chat4, chat5, chat6});
-}
-
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userId) {
     PersonalChatInfo chat5(4, 1, "Личная беседа (не работает имя ещё)", QImage(":chatDefaultImage"));
     PersonalChatInfo chat6(5, 2, "Личная беседа", QImage(":chatDefaultImage"));

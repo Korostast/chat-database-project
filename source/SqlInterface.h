@@ -5,7 +5,6 @@
 #include "Defines.h"
 
 // Функции отправляющие GET запросы в БД
-QList<ChatInfo> sqlLoadChats(int userId);
 
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userId);
 
