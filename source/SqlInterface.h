@@ -7,17 +7,18 @@
 // Функции отправляющие GET запросы в БД
 QList<ChatInfo> sqlLoadChats(int userId);
 
+QList<PersonalChatInfo> sqlLoadPersonalChats(int userId);
+
+QList<GroupChatInfo> sqlLoadGroupChats(int userId);
+
 QList<MessageInfo> sqlLoadMessages(int chatId);
 
-//
-QList<MessageInfo> sqlLoadSearchMessages(int chatId, QString &request);
+// Юзер ищет сообщения по паттерну request
+QList<MessageInfo> sqlLoadSearchedMessages(int chatId, QString &request);
 
 // Юзер открыл информацию о беседе, загружается список участников. Используется структура UserChatMember, потому что
 // она содержит роль участника. Можно объединить с UserInfo, но вроде смысла нет
 QList<UserChatMember> sqlLoadChatMembers(int chatId);
-
-// Юзер открыл личную беседу. Нужно вернуть ID юзера, с которым он общается
-int sqlGetPersonId(int chatId, int userId);
 
 UserInfo sqlLoadProfile(int userId);
 

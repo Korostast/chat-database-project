@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     //ui->app_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
-    ui->main_stacked_widget->setCurrentIndex(CHAT_LIST_PAGE);
+    ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
 
     // Establish default size of text edit in chat and speed of vertical scrolling
     int defaultRowNumber = 1;
@@ -66,6 +66,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->settings_button, SIGNAL(released()), this, SLOT(settings_button_released()));
     connect(ui->chat_creation_button, SIGNAL(released()), this, SLOT(chat_creation_open_ui()));
     connect(ui->chat_creation_create_button, SIGNAL(released()), this, SLOT(group_chat_create()));
+    connect(ui->unused_switch_personal_chats, &QPushButton::released, this, [this]() {
+        ui->unused_switch_personal_chats->setChecked(true);
+    });
+    connect(ui->unused_switch_group_chats, &QPushButton::released, this, [this]() {
+        ui->unused_switch_group_chats->setChecked(true);
+    });
+    connect(ui->switch_group_chats, &QPushButton::released, this, [this]() {
+        ui->main_stacked_widget->setCurrentIndex(GROUP_CHAT_LIST_PAGE);
+    });
+    connect(ui->switch_personal_chats, &QPushButton::released, this, [this]() {
+        ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
+    });
     connect(ui->chat_creation_avatar, &ClickableLabel::released, this, [this]() {
         chatDialog->openFileChooser();
     });

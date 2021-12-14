@@ -124,11 +124,11 @@ void MainWindow::friends_button_released() {
 void MainWindow::tests() {
     // Test
     for (int i = 0; i < 5; ++i) {
-        addChat(i, QString::fromStdString(std::to_string(i)), QImage(":chatDefaultImage"), true, 0, PARTICIPANT);
+        addChat(i, QString::fromStdString(std::to_string(i)), QImage(":chatDefaultImage"), true, 0, PARTICIPANT, -1);
     }
-    addChat(5, "5", QImage(":chatDefaultImage"), true, 0, VIEWER);
-    addChat(6, "6", QImage(":chatDefaultImage"), true, 0, ADMIN);
-    addChat(7, "Личная беседа", QImage(":chatDefaultImage"), false, 0, PARTICIPANT);
+    addChat(5, "5", QImage(":chatDefaultImage"), true, 0, VIEWER, -1);
+    addChat(6, "6", QImage(":chatDefaultImage"), true, 0, ADMIN, -1);
+    addChat(7, "Личная беседа", QImage(":chatDefaultImage"), false, 0, PARTICIPANT, -1);
     //updateChat(2, nullptr, QImage(":chatDefaultImage"), PARTICIPANT);
 
     // Test

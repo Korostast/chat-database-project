@@ -98,7 +98,8 @@ private:
 
     static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
 
-    void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role);
+    void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role,
+                 int friendId);
 
     static bool checkMessage(QString &content);
 

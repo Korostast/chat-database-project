@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ChatDialog.h"
 #include "ui_chatdialog.h"
+#include "ui_mainwindow.h"
 #include "Defines.h"
 #include "ChatMemberWidget.h"
 #include "../SqlInterface.h"
@@ -114,8 +115,11 @@ void ChatDialog::leaveChat() {
                            SYSTEM_MESSAGE);
     close();
 
+    QMetaObject::invokeMethod(mainWindow->ui->chats_button, "released");
+
     // Remove chat from chats list and back to chat list
-    mainWindow->removeChat(MainWindow::currentChat->getId());
+    // TODO
+    //mainWindow->removeChat(MainWindow::currentChat->getId());
 }
 
 void ChatDialog::loadAddMemberUi() {

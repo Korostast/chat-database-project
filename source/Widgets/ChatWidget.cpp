@@ -72,3 +72,11 @@ ROLE ChatWidget::getRole() const {
 void ChatWidget::setRole(ROLE role) {
     ChatWidget::role = role;
 }
+
+int ChatWidget::getFriendId() const {
+    return friendId;
+}
+
+void ChatWidget::setFriendId(int friendId) {
+    ChatWidget::friendId = friendId;
+}
