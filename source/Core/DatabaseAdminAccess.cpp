@@ -4,9 +4,24 @@
 #include "ui_deletedatabasemessagebox.h"
 #include "SqlInterface.h"
 
+bool DatabaseChooserDialog::isDatabaseNameCorrect(const QString& databaseName) {
+    QString errorMessage("Название базы данных может состоять только из латинских букв, цифр и нижнего подчёркивания");
+    if (databaseName.isEmpty()) {
+        QMessageBox::critical(this, "Ошибка", QString(errorMessage));
+        return false;
+    }
+    for (auto letter: databaseName.toLatin1()) {
+        if (!isalnum(letter) && letter != '_') {
+            QMessageBox::critical(this, "Ошибка", QString(errorMessage));
+            return false;
+        }
+    }
+    return true;
+}
+
 void DatabaseChooserDialog::add_database() {
     QString databaseName(ui->database_creation_edit->text());
-    if (databaseName.isEmpty())
+    if (!isDatabaseNameCorrect(databaseName))
         return;
 
     // Check if current name is not in list

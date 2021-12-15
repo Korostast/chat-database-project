@@ -22,6 +22,9 @@ public:
 
     DeleteDatabaseMessagebox *deleteMessageBox;
 
+private:
+    bool isDatabaseNameCorrect(const QString& databaseName);
+
 private slots:
 
     void add_database();
