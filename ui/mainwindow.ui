@@ -30,36 +30,10 @@
     <item>
      <widget class="QStackedWidget" name="app_stacked_widget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0" columnstretch="0,0,0,0,0,0">
-        <item row="0" column="5" alignment="Qt::AlignRight|Qt::AlignTop">
-         <widget class="QPushButton" name="authentification_admin_button">
-          <property name="minimumSize">
-           <size>
-            <width>80</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Войти как администратор</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
         <item row="3" column="1">
          <widget class="QStackedWidget" name="authentification_stacked_widget">
           <property name="currentIndex">
@@ -332,15 +306,73 @@
           </widget>
          </widget>
         </item>
-        <item row="3" column="5">
-         <spacer name="horizontalSpacer_2">
+        <item row="4" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>50</number>
+          </property>
+          <property name="rightMargin">
+           <number>50</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="switch_auth_button">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>48</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Авторизация</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="switch_register_button">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>48</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Регистрация</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="5" column="1">
+         <spacer name="verticalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Vertical</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -402,66 +434,8 @@
           </item>
          </layout>
         </item>
-        <item row="4" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <property name="spacing">
-           <number>0</number>
-          </property>
-          <property name="leftMargin">
-           <number>50</number>
-          </property>
-          <property name="rightMargin">
-           <number>50</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="switch_auth_button">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>48</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Авторизация</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="switch_register_button">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>48</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Регистрация</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
-         <widget class="QPushButton" name="authentification_choose_database_button">
+        <item row="0" column="5" alignment="Qt::AlignRight|Qt::AlignTop">
+         <widget class="QPushButton" name="authentification_admin_button">
           <property name="minimumSize">
            <size>
             <width>80</width>
@@ -469,9 +443,86 @@
            </size>
           </property>
           <property name="text">
-           <string>Выбрать базу данных</string>
+           <string>Войти как администратор</string>
           </property>
          </widget>
+        </item>
+        <item row="3" column="5">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <item alignment="Qt::AlignTop">
+           <widget class="QPushButton" name="authentification_choose_database_button">
+            <property name="minimumSize">
+             <size>
+              <width>80</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Выбрать базу данных</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item alignment="Qt::AlignLeft">
+             <widget class="QLabel" name="label_5">
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Текущая БД: </string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="current_database_name_label">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>information_schema</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -492,66 +543,8 @@
         <property name="horizontalSpacing">
          <number>0</number>
         </property>
-        <item row="0" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>11</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(42, 42, 42);
-color: rgb(231, 231, 231);</string>
-            </property>
-            <property name="text">
-             <string>   Database Test Chat App</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
         <item row="1" column="0">
-         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0,0,0" columnminimumwidth="1,200,1,1,1">
-          <item row="0" column="4">
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="0">
-           <spacer name="horizontalSpacer_6">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0,0,0">
           <item row="0" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,1,0,0,20">
             <property name="spacing">
@@ -566,14 +559,14 @@ color: rgb(231, 231, 231);</string>
             <item>
              <widget class="QPushButton" name="profile_button">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
               <property name="minimumSize">
                <size>
-                <width>0</width>
+                <width>120</width>
                 <height>30</height>
                </size>
               </property>
@@ -693,8 +686,14 @@ color: rgb(231, 231, 231);</string>
               </property>
               <property name="minimumSize">
                <size>
-                <width>200</width>
+                <width>120</width>
                 <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
                </size>
               </property>
              </widget>
@@ -1810,7 +1809,120 @@ color: rgb(231, 231, 231);</string>
             </widget>
            </widget>
           </item>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
+        </item>
+        <item row="0" column="0">
+         <widget class="QFrame" name="frame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>45</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(42, 42, 42);
+color: rgb(231, 231, 231);</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_22">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Database Test App</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_23">
+             <item alignment="Qt::AlignRight">
+              <widget class="QLabel" name="current_user_avatar_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>40</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>avatar</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="current_user_name_label">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>username</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
