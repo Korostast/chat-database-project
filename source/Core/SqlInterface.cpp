@@ -104,7 +104,7 @@ UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername
             .arg(userID)
             .arg(password);
 
-    if (!q.exec())
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
     if (!q.next())
         throw QSqlException("The password is incorrect. Try again");

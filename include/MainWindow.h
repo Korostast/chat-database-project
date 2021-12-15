@@ -112,7 +112,7 @@ private:
 
 private slots:
 
-    void sign_in_button_released() const;
+    void sign_in_button_released();
 
     void register_button_released() const;
 

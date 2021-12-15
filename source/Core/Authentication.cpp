@@ -56,7 +56,7 @@ QString MainWindow::checkRegisterInput(const QString &username, const QString &p
     return nullptr;
 }
 
-void MainWindow::sign_in_button_released() const {
+void MainWindow::sign_in_button_released() {
     qDebug() << "AUTH BUTTON CLICKED";
 
     QString password = ui->auth_password_edit->text();
@@ -71,6 +71,8 @@ void MainWindow::sign_in_button_released() const {
     try {
         // TODO database authorization
         currentUser = new UserInfo(sqlAuthenticate(password, emailOrUsername));
+        if (currentUser->getAvatar().isNull())
+            currentUser->setAvatar(QImage(":chatDefaultImage"));
         ui->current_user_name_label->setText(currentUser->getUsername());
         ui->current_user_avatar_label->setPixmap(AvatarEditor::getCircularPixmap(currentUser->getAvatar(), 40));
         currentState = CHATS;
@@ -82,6 +84,7 @@ void MainWindow::sign_in_button_released() const {
 
     // Change screen to chat list
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
+    chats_button_released();
 }
 
 void MainWindow::register_button_released() const {
@@ -101,6 +104,8 @@ void MainWindow::register_button_released() const {
     try {
         // TODO database register account
         currentUser = new UserInfo(sqlRegister(username, email, password));
+        if (currentUser->getAvatar().isNull())
+            currentUser->setAvatar(QImage(":chatDefaultImage"));
         ui->current_user_name_label->setText(currentUser->getUsername());
         ui->current_user_avatar_label->setPixmap(AvatarEditor::getCircularPixmap(currentUser->getAvatar(), 40));
         currentState = CHATS;
