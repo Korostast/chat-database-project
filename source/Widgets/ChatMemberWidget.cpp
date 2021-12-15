@@ -2,7 +2,7 @@
 #include "AvatarEditor.h"
 #include "MainWindow.h"
 #include "ui_chatmemberwidget.h"
-#include "../Core/SqlInterface.h"
+#include "SqlInterface.h"
 
 ChatMemberWidget::ChatMemberWidget(QWidget *parent)
         : QWidget(parent), ui(new Ui::ChatMemberWidget), id(-1), role(VIEWER) {

@@ -3,7 +3,7 @@
 #include "ui_avatareditor.h"
 #include "ui_mainwindow.h"
 #include "MainWindow.h"
-#include "../../source/Core/SqlInterface.h"
+#include "SqlInterface.h"
 
 AvatarEditor::AvatarEditor(QWidget *parent)
         : QDialog(parent), ui(new Ui::AvatarEditor), scaleFactor(0), image(new QImage),

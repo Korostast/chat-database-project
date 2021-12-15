@@ -2,7 +2,7 @@
 #include "MessageTextEdit.h"
 #include "UserMessageWidget.h"
 #include "MainWindow.h"
-#include "../Core/SqlInterface.h"
+#include "SqlInterface.h"
 
 MessageTextEdit::MessageTextEdit(QWidget *parent) : CustomPlainTextEdit(parent) {
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
