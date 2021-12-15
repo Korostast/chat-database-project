@@ -5,7 +5,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QFile>
-#include <sstream>
 #include <QDateTime>
 
 void dbConnect() {
@@ -39,10 +38,10 @@ void dbClose() {
 QList<ChatInfo> sqlLoadChats(int userID) {
     qDebug() << "Loading chats for userID =" << userID;
 
-    std::stringstream sout;
-    sout << "call getChatList(" << userID << ")";
+    QString qStr = QString("call getChatList(%1)")
+            .arg(userID);
 
-    QSqlQuery q(QString::fromStdString(sout.str()));
+    QSqlQuery q(qStr);
     q.exec();
 
     QList<ChatInfo> result;
@@ -61,10 +60,10 @@ QList<ChatInfo> sqlLoadChats(int userID) {
 QList<MessageInfo> sqlLoadMessages(int chatID) {
     qDebug() << "Loading messages for chatID =" << chatID;
 
-    std::stringstream sout;
-    sout << "call getMessages(" << chatID << ")";
+    QString qStr = QString("call getMessages(%1)")
+            .arg(chatID);
 
-    QSqlQuery q(QString::fromStdString(sout.str()));
+    QSqlQuery q(qStr);
     q.exec();
 
     QList<MessageInfo> result;
@@ -79,30 +78,43 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
                                   q.value(7).toString())
         );
 
-
-    QString test3(
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaa");
-    MessageInfo message5(4, test3, "2021-03-31 23:59",
-                         USER_MESSAGE, 0, 10, -1, "Korostast");
-
     return result;
 }
 
 UserInfo sqlLoadProfile(int userID) {
-    return UserInfo(1, "Someone", QImage(":chatDefaultImage"), "Sus status", nullptr, nullptr, nullptr, nullptr);
+    qDebug() << "Loading profile for userID = " << userID;
+
+    QString qStr = QString("call getProfile(%1)")
+            .arg(userID);
+
+    QSqlQuery q(qStr);
+    q.exec();
+
+    if (!q.next()) {
+        qWarning() << "No profile found for userID =" << userID;
+        return UserInfo();
+    }
+
+    UserInfo result(q.value(0).toInt(),
+                    q.value(1).toString(),
+                    QImage::fromData(q.value(2).toByteArray()),
+                    q.value(3).toString(),
+                    q.value(4).toString(),
+                    q.value(5).toString(),
+                    q.value(6).toString(),
+                    q.value(7).toString()
+    );
+
+    return result;
 }
 
 QList<UserInfo> sqlLoadFriends(int userID) {
     qDebug() << "Loading friends for userID =" << userID;
 
-    std::stringstream sout;
-    sout << "call getFriends(" << userID << ")";
+    QString qStr = QString("call getFriends(%1)")
+            .arg(userID);
 
-    QSqlQuery q(QString::fromStdString(sout.str()));
+    QSqlQuery q(qStr);
     q.exec();
 
     QList<UserInfo> result;
@@ -112,56 +124,133 @@ QList<UserInfo> sqlLoadFriends(int userID) {
                                QImage::fromData(q.value(2).toByteArray()))
         );
 
-
     return result;
 }
 
 QList<UserInfo> sqlLoadIncomingRequests(int userID) {
-    UserInfo user1(3, "This_is_request", QImage(":chatDefaultImage"));
-    UserInfo user2(4, "Kriper2003", QImage(":chatDefaultImage"));
+    qDebug() << "Loading incoming friend requests for userID =" << userID;
 
-    return QList<UserInfo>({user1, user2});
+    QString qStr = QString("call getIncomingRequests(%1)")
+            .arg(userID);
+
+    QSqlQuery q(qStr);
+    q.exec();
+
+    QList<UserInfo> result;
+    while (q.next())
+        result.append(UserInfo(q.value(0).toInt(),
+                               q.value(1).toString(),
+                               QImage::fromData(q.value(2).toByteArray()))
+        );
+
+    return result;
 }
 
 QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
-    UserInfo user1(5, "Masha", QImage(":chatDefaultImage"));
-    UserInfo user2(6, "Java", QImage(":chatDefaultImage"));
+    qDebug() << "Loading friends for userID =" << userID;
 
-    return QList<UserInfo>({user1, user2});
+    QString qStr = QString("call getOutgoingRequests(%1)")
+            .arg(userID);
+
+    QSqlQuery q(qStr);
+    q.exec();
+
+    QList<UserInfo> result;
+    while (q.next())
+        result.append(UserInfo(q.value(0).toInt(),
+                               q.value(1).toString(),
+                               QImage::fromData(q.value(2).toByteArray()))
+        );
+
+    return result;
 }
 
+// TODO the function should receive userID as an argument to calculate relation status
 QList<UserInfo> sqlPeopleInSearch(const QString &substring) {
-    UserInfo user1(0, "Lalala", QImage(":chatDefaultImage"));
-    UserInfo user2(1, "Another one", QImage(":chatDefaultImage"));
-    UserInfo user3(2, "Second", QImage(":chatDefaultImage"));
-    UserInfo user4(3, "This_is_request", QImage(":chatDefaultImage"));
-    UserInfo user5(4, "Kriper2003", QImage(":chatDefaultImage"));
+    qDebug() << "Searching for users with username like -" << substring;
 
-    return QList<UserInfo>({user1, user2, user3, user4, user5});
+    QString qStr = QString("call searchUsers('%1')")
+            .arg(substring);
+
+    QSqlQuery q(qStr);
+    q.exec();
+
+    QList<UserInfo> result;
+    while (q.next())
+        result.append(UserInfo(q.value(0).toInt(),
+                               q.value(1).toString(),
+                               QImage::fromData(q.value(2).toByteArray()))
+        );
+
+    return result;
 }
 
 int sqlSendMessage(const MessageInfo &message) {
-    return 0;
+    qDebug() << "Sending message from" << message.userId << "to chat" << message.chatId;
+
+    QString qStr = QString("call sendMessage(%1,%2,'%3',%4,%5)")
+            .arg(message.chatId)
+            .arg(message.userId)
+            .arg(message.content)
+            .arg(message.type)
+            .arg(message.replyId);
+
+    QSqlQuery q(qStr);
+    q.exec();
+
+    if (!q.next())
+        qWarning() << "Failed to send the message";
+
+    return q.value(0).toInt();
 }
 
 void sqlMessageEdited(int messageID, const QString &newContent) {
+    qDebug() << "Editing message with messageID =" << messageID;
 
+    QString qStr = QString("call editMessage(%1,'%2')")
+            .arg(messageID)
+            .arg(newContent);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
 void sqlDeleteMessage(int messageID) {
+    qDebug() << "Deleting message with messageID =" << messageID;
 
+    QString qStr = QString("call deleteMessage(%1)")
+            .arg(messageID);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
 void sqlLeaveChat(int userID, int chatID) {
+    qDebug() << "User with userID =" << userID << "leaves chat with chatID =" << chatID;
 
+    QString qStr = QString("call leaveChat(%1,%2)")
+            .arg(chatID)
+            .arg(userID);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
 void sqlRemoveChatMember(int userID, int chatID) {
-
+    qDebug() << "Redirected to sqlRemoveChatMember";
+    sqlLeaveChat(userID, chatID);
 }
 
 void sqlChangeRole(int userID, int chatID, int newRole) {
+    qDebug() << "Setting role of userID =" << userID << "in chatID =" << chatID << "to" << newRole;
 
+    QString qStr = QString("call updateRole(%1,%2,%3)")
+            .arg(chatID)
+            .arg(userID)
+            .arg(newRole);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
 void sqlUpdateChatAvatar(int chatID, QImage &newAvatar) {
@@ -173,37 +262,61 @@ void sqlChangeChatName(int chatID, const QString &newName) {
 }
 
 void sqlAcceptFriendRequest(int currentUserID, int newFriendID) {
+    qDebug() << "userID =" << currentUserID << "accepts friend request from" << newFriendID;
 
+    QString qStr = QString("call acceptRequest(%1,%1)")
+            .arg(newFriendID)
+            .arg(currentUserID);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
 void sqlDeclineFriendRequest(int currentUserID, int notFriendID) {
-
+    qDebug() << "Redirected to sqlCancelFriendRequest";
 }
 
 void sqlCancelFriendRequest(int currentUserID, int notFriendID) {
+    qDebug() << "Deleting friend request between" << currentUserID << "and" << notFriendID;
 
+    QString qStr = QString("call deleteRequest(%1,%2)")
+            .arg(currentUserID)
+            .arg(notFriendID);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
 void sqlSendFriendRequest(int userID, int targetUser) {
+    qDebug() << "Sending friend request from"<<userID<<"to"<<targetUser;
 
+    QString qStr = QString("call sendFriendRequest(%1,%2)")
+            .arg(userID)
+            .arg(targetUser);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
 void sqlRemoveFriend(int userID, int friendID) {
+    qDebug() <<userID<<"unfriended"<<friendID;
 
+    QString qStr = QString("call deleteFriend(%1,%2)")
+            .arg(userID)
+            .arg(friendID);
+
+    QSqlQuery q(qStr);
+    q.exec();
 }
 
-int sqlGetPersonID(int chatID, int userID) {
-    return 0;
-}
-
-int sqlCreateChat(int chatID, QString chatName, QImage thumbnail, std::vector<int> users) {
+int sqlCreateChat(int chatID, const QString &chatName, const QImage &thumbnail, const std::vector<int> &users) {
     return 0;
 }
 
 QList<UserChatMember> sqlLoadChatMembers(int chatID) {
-    return QList<UserChatMember> {};
+    return QList<UserChatMember>{};
 }
 
-void sqlAddMembers(int chatID, std::vector<int> users) {
+void sqlAddMembers(int chatID, const std::vector<int> &users) {
 
 }

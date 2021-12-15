@@ -53,10 +53,10 @@ void sqlRemoveFriend(int userID, int friendID);
 
 int sqlGetPersonID(int chatID, int userID);
 
-int sqlCreateChat(int chatID, QString chatName, QImage thumbnail, std::vector<int> users);
+int sqlCreateChat(int chatID, const QString& chatName, const QImage& thumbnail, const std::vector<int>& users);
 
 QList<UserChatMember> sqlLoadChatMembers(int chatID);
 
-void sqlAddMembers(int chatID, std::vector<int> users);
+void sqlAddMembers(int chatID, const std::vector<int>& users);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H
