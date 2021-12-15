@@ -22,7 +22,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
-    int personalChatUserId;
+    int personalChatUserID;
 };
 
 #endif //CHATDATABASEPROJECT_CLICKABLELABEL_H

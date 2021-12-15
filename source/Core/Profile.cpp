@@ -34,7 +34,7 @@ void MainWindow::showProfile(const UserInfo *user) const {
         ui->profile_phone_number->hide();
     }
 
-    if (currentUser->getId() == user->getId()) {
+    if (currentUser->getID() == user->getID()) {
         ui->profile_avatar->setCursor(Qt::PointingHandCursor);
         currentState = MY_PROFILE;
         qDebug() << "Current state changed to MY_PROFILE";

@@ -41,11 +41,11 @@ void ChatWidget::setGroup(bool group) {
     ChatWidget::group = group;
 }
 
-int ChatWidget::getId() const {
+int ChatWidget::getID() const {
     return id;
 }
 
-void ChatWidget::setId(int id) {
+void ChatWidget::setID(int id) {
     ChatWidget::id = id;
 }
 
@@ -73,10 +73,10 @@ void ChatWidget::setRole(ROLE role) {
     ChatWidget::role = role;
 }
 
-int ChatWidget::getFriendId() const {
+int ChatWidget::getFriendID() const {
     return friendId;
 }
 
-void ChatWidget::setFriendId(int friendId) {
+void ChatWidget::setFriendID(int friendId) {
     ChatWidget::friendId = friendId;
 }

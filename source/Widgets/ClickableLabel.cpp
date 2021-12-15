@@ -8,9 +8,9 @@ void ClickableLabel::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 int ClickableLabel::getPersonalChatUserId() const {
-    return personalChatUserId;
+    return personalChatUserID;
 }
 
 void ClickableLabel::setPersonalChatUserId(int personalChatUserId) {
-    ClickableLabel::personalChatUserId = personalChatUserId;
+    ClickableLabel::personalChatUserID = personalChatUserId;
 }

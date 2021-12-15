@@ -97,11 +97,11 @@ struct ChatInfo {
 };
 
 struct PersonalChatInfo {
-    PersonalChatInfo(int chatId, int friendId, QString name, QImage avatar = QImage(":chatDefaultImage"))
-            : chatId(chatId), friendId(friendId), name(std::move(name)), avatar(std::move(avatar)) {}
+    PersonalChatInfo(int chatID, int friendID, QString name, QImage avatar = QImage(":chatDefaultImage"))
+            : chatID(chatID), friendID(friendID), name(std::move(name)), avatar(std::move(avatar)) {}
 
-    int chatId;
-    int friendId;
+    int chatID;
+    int friendID;
     QString name;
     QImage avatar;
     bool group = false;
@@ -110,11 +110,11 @@ struct PersonalChatInfo {
 };
 
 struct GroupChatInfo {
-    GroupChatInfo(int chatId, QString name, QImage avatar = QImage(":chatDefaultImage"), int countMembers = 2,
+    GroupChatInfo(int chatID, QString name, QImage avatar = QImage(":chatDefaultImage"), int countMembers = 2,
                   ROLE role = PARTICIPANT)
-            : chatId(chatId), name(std::move(name)), avatar(std::move(avatar)), countMembers(countMembers), role(role){}
+            : chatID(chatID), name(std::move(name)), avatar(std::move(avatar)), countMembers(countMembers), role(role){}
 
-    int chatId;
+    int chatID;
     QString name;
     QImage avatar;
     bool group = true;
@@ -123,18 +123,18 @@ struct GroupChatInfo {
 };
 
 struct MessageInfo {
-    MessageInfo(int messageId, QString content, QString time, MESSAGE_TYPE type, int chatId, int userId,
-                int replyId = -1, QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"))
-            : chatId(chatId), userId(userId), replyId(replyId), messageId(messageId), username(std::move(username)),
+    MessageInfo(int messageID, QString content, QString time, MESSAGE_TYPE type, int chatID, int userID,
+                int replyID = -1, QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"))
+            : chatID(chatID), userID(userID), replyID(replyID), messageID(messageID), username(std::move(username)),
               time(std::move(time)), avatar(std::move(avatar)), content(std::move(content)), type(type) {}
 
-    int messageId;
+    int messageID;
     QString content;
     QString time;
     MESSAGE_TYPE type;
-    int chatId;
-    int userId;
-    int replyId;
+    int chatID;
+    int userID;
+    int replyID;
     QString username;
     QImage avatar;
 };

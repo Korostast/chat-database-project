@@ -14,11 +14,11 @@ Q_OBJECT
 
 private:
 
-    int chatId;
+    int chatID;
 
-    int userId;
+    int userID;
 
-    int messageId;
+    int messageID;
 
     QImage avatar;
 
@@ -32,17 +32,17 @@ private:
 
 public:
 
-    int getChatId() const;
+    int getChatID() const;
 
-    void setChatId(int chatId);
+    void setChatID(int chatID);
 
-    int getUserId() const;
+    int getUserID() const;
 
-    void setUserId(int userId);
+    void setUserID(int userID);
 
-    int getMessageId() const;
+    int getMessageID() const;
 
-    void setMessageId(int id);
+    void setMessageID(int id);
 
     const QImage & getAvatar() const;
 

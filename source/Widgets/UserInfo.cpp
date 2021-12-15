@@ -2,11 +2,11 @@
 
 #include <utility>
 
-int UserInfo::getId() const {
+int UserInfo::getID() const {
     return id;
 }
 
-void UserInfo::setId(int id) {
+void UserInfo::setID(int id) {
     UserInfo::id = id;
 }
 

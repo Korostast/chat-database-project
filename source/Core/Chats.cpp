@@ -14,15 +14,15 @@
 // Add chat to the chats list
 void
 MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role,
-                    int friendId) {
-    qInfo() << QString("Chat added: messageId - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
+                    int friendID) {
+    qInfo() << QString("Chat added: messageID - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
             .arg(id).arg(name).arg(isGroup).arg(countMembers).arg(role);
 
     auto *item = new QListWidgetItem;
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
     auto *widget = new ChatWidget(this);
-    widget->setId(id);
+    widget->setID(id);
     widget->setName(name);
     widget->setAvatar(avatar);
     widget->setGroup(isGroup);
@@ -32,7 +32,7 @@ MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGr
     item->setSizeHint(widget->sizeHint());
 
     if (!isGroup) {
-        widget->setFriendId(friendId);
+        widget->setFriendID(friendID);
         ui->personal_chat_list->insertItem(0, item);
         ui->personal_chat_list->setItemWidget(item, widget);
     } else {
@@ -62,14 +62,14 @@ void MainWindow::putOnTop(int id) {
 
 // Change chat's attributes and move chat at the top of the list
 void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, ROLE role) {
-    qInfo() << QString("Chat updated, new parameters: messageId - %1, username - %2 and your role - %3")
+    qInfo() << QString("Chat updated, new parameters: messageID - %1, username - %2 and your role - %3")
             .arg(id).arg(name).arg(role);
 
     //putOnTop(id);
     auto *widget = qobject_cast<ChatWidget *>(ui->personal_chat_list->itemWidget(chatMap[id]));
 
     widget->setName(name);
-    if (id == currentChat->getId())
+    if (id == currentChat->getID())
         ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(avatar, AVATAR_IN_CHAT_IMAGE_SIZE));
     widget->setAvatar(avatar);
     widget->setRole(role);
@@ -78,18 +78,18 @@ void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, R
 
 // Load chat ui
 void MainWindow::openChat() {
-    qInfo() << QString("Opened chat: messageId - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
-            .arg(currentChat->getId()).arg(currentChat->getName()).arg(currentChat->isGroup())
+    qInfo() << QString("Opened chat: messageID - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
+            .arg(currentChat->getID()).arg(currentChat->getName()).arg(currentChat->isGroup())
             .arg(currentChat->getCountMembers()).arg(currentChat->getRole());
 
     // TODO database searchMessages messages
-    QList<MessageInfo> messages = sqlLoadMessages(currentChat->getId());
+    QList<MessageInfo> messages = sqlLoadMessages(currentChat->getID());
 
     // Clear all previous messages from list
     ui->messageList->clear();
 
     for (const auto &message: messages)
-        addMessage(message.chatId, message.userId, message.messageId, message.username, message.time,
+        addMessage(message.chatID, message.userID, message.messageID, message.username, message.time,
                    message.avatar, message.content, message.type);
 
     ui->messageList->scrollToBottom();
@@ -102,8 +102,8 @@ void MainWindow::openChat() {
     } else {
         ui->chat_online_or_members_label->hide();
         // TODO database searchMessages person id | nope
-        //int friendId = sqlGetPersonId(currentChat->getId(), currentUser->getId());
-        int friendId = currentChat->getFriendId();
+        //int friendID = sqlGetPersonID(currentChat->getID(), currentUser->getID());
+        int friendId = currentChat->getFriendID();
         ui->chat_name_label->setPersonalChatUserId(friendId);
     }
     if (currentChat->getRole() == VIEWER) {
@@ -159,9 +159,9 @@ void MainWindow::insertMessage(UserMessageWidget *message, int row) {
     auto *item = new QListWidgetItem;
     auto *widget = new UserMessageWidget(this);
 
-    widget->setChatId(message->getChatId());
-    widget->setUserId(message->getUserId());
-    widget->setMessageId(message->getMessageId());
+    widget->setChatID(message->getChatID());
+    widget->setUserID(message->getUserID());
+    widget->setMessageID(message->getMessageID());
     // TODO image of message widget | upd. Done ?
     const auto &avatar = message->getAvatar();
     widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
@@ -181,7 +181,7 @@ void MainWindow::insertMessage(UserMessageWidget *message, int row) {
 
 // Add message to the message list
 void
-MainWindow::addMessage(int chatId, int userId, int messageId, const QString &username, const QString &time,
+MainWindow::addMessage(int chatID, int userID, int messageID, const QString &username, const QString &time,
                        const QImage &avatar, const QString &content, MESSAGE_TYPE type) {
     // If we need scroll message list to the bottom
     bool isBottom = false;
@@ -199,9 +199,9 @@ MainWindow::addMessage(int chatId, int userId, int messageId, const QString &use
         case USER_MESSAGE: {
             auto *widget = new UserMessageWidget(this);
 
-            widget->setChatId(chatId);
-            widget->setUserId(userId);
-            widget->setMessageId(messageId);
+            widget->setChatID(chatID);
+            widget->setUserID(userID);
+            widget->setMessageID(messageID);
             // TODO image of message widget | upd. Done ?
             widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
             widget->setName(username);
@@ -218,8 +218,8 @@ MainWindow::addMessage(int chatId, int userId, int messageId, const QString &use
         case SYSTEM_MESSAGE: {
             auto *widget = new SystemMessageWidget(this);
 
-            widget->setMessageId(messageId);
-            widget->setUserId(userId);
+            widget->setMessageID(messageID);
+            widget->setUserID(userID);
             widget->setContent(content);
 
             item->setSizeHint(widget->sizeHint());
@@ -238,7 +238,7 @@ MainWindow::addMessage(int chatId, int userId, int messageId, const QString &use
     if (currentState == MESSAGES && isBottom)
         ui->messageList->scrollToBottom();
 
-    //putOnTop(chatId); // TODO message chat ID | I don't remember what does it means
+    //putOnTop(chatID); // TODO message chat ID | I don't remember what does it means
 }
 
 // Click on username of the chat in the chat ui (open information about chat OR user profile)
@@ -247,11 +247,11 @@ void MainWindow::chat_name_label_released() {
     qDebug() << "ChatDialog opened";
 
     if (MainWindow::currentChat->isGroup()) {
-        chatDialog->setupCurrentChatUi(currentChat);
+        chatDialog->setupCurrentChatUI(currentChat);
         chatDialog->show();
     } else {
         // TODO database searchMessages profile
-        UserInfo user = sqlLoadProfile(currentChat->getFriendId());
+        UserInfo user = sqlLoadProfile(currentChat->getFriendID());
         showProfile(&user);
     }
 
@@ -276,10 +276,10 @@ void MainWindow::sendMessage() {
     QString messageText = ui->message_text_edit->toPlainText();
 
     if (checkMessage(messageText)) {
-        MessageInfo message(-1, messageText, nullptr, USER_MESSAGE, currentChat->getId(), currentUser->getId());
+        MessageInfo message(-1, messageText, nullptr, USER_MESSAGE, currentChat->getID(), currentUser->getID());
         // TODO database sendMessage
         int messageId = sqlSendMessage(message);
-        addMessage(currentChat->getId(), currentUser->getId(), messageId, currentUser->getUsername(),
+        addMessage(currentChat->getID(), currentUser->getID(), messageId, currentUser->getUsername(),
                    QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"), currentUser->getAvatar(),
                    messageText, USER_MESSAGE);
 
@@ -303,7 +303,7 @@ int MainWindow::deleteMessage(UserMessageWidget *message) const {
     int size = ui->messageList->count();
     for (int i = 0; i < size; ++i) {
         auto *widget = qobject_cast<UserMessageWidget *>(ui->messageList->itemWidget(ui->messageList->item(i)));
-        if (message->getMessageId() == widget->getMessageId()) {
+        if (message->getMessageID() == widget->getMessageID()) {
             delete ui->messageList->takeItem(i);
             return i;
         }
@@ -318,18 +318,18 @@ void MainWindow::setFocusToTextEdit() const {
 // Return to chat list
 void MainWindow::chats_button_released() {
     // TODO database searchMessages chats
-    //QList<ChatInfo> chats = sqlLoadChats(currentUser->getId());
-    QList<PersonalChatInfo> personalChats = sqlLoadPersonalChats(currentUser->getId());
-    QList<GroupChatInfo> groupChats = sqlLoadGroupChats(currentUser->getId());
+    //QList<ChatInfo> chats = sqlLoadChats(currentUser->getID());
+    QList<PersonalChatInfo> personalChats = sqlLoadPersonalChats(currentUser->getID());
+    QList<GroupChatInfo> groupChats = sqlLoadGroupChats(currentUser->getID());
 
     ui->personal_chat_list->clear();
     ui->group_chat_list->clear();
 
     for (const auto &chat: personalChats)
-        addChat(chat.chatId, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role, chat.friendId);
+        addChat(chat.chatID, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role, chat.friendID);
 
     for (const auto &chat: groupChats)
-        addChat(chat.chatId, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role, -1);
+        addChat(chat.chatID, chat.name, chat.avatar, chat.group, chat.countMembers, chat.role, -1);
 
     if (currentChat != nullptr && currentChat->isGroup())
         ui->main_stacked_widget->setCurrentIndex(GROUP_CHAT_LIST_PAGE);
@@ -343,13 +343,13 @@ void MainWindow::chats_button_released() {
 
 void MainWindow::chat_creation_open_ui() {
     // TODO database searchMessages friends
-    QList<UserInfo> friends = sqlLoadFriends(currentUser->getId());
+    QList<UserInfo> friends = sqlLoadFriends(currentUser->getID());
     ui->chat_creation_friends_list->clear();
     ui->chat_creation_name_edit->clear();
     ui->chat_creation_avatar->setPixmap(AvatarEditor::getCircularPixmap(QImage(":chatDefaultImage"),
                                                                         CHAT_CREATION_CHAT_IMAGE_SIZE));
     for (const auto &fr: friends)
-        addToList<ChatCreationFriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(),
+        addToList<ChatCreationFriendWidget>(fr.getID(), fr.getUsername(), fr.getAvatar(),
                                             ui->chat_creation_friends_list);
 
     ui->main_stacked_widget->setCurrentIndex(CHAT_CREATION_PAGE);
@@ -373,10 +373,10 @@ void MainWindow::group_chat_create() {
     std::vector<int> users;
     for (const auto &user: ui->chat_creation_friends_list->selectedItems())
         users.push_back(qobject_cast<ChatCreationFriendWidget *>(
-                ui->chat_creation_friends_list->itemWidget(user))->getFriendId());
+                ui->chat_creation_friends_list->itemWidget(user))->getFriendID());
 
-    int chatId = sqlCreateChat(currentUser->getId(), chatName, ui->chat_creation_avatar->pixmap().toImage(), users);
-    addChat(chatId, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN, -1);
+    int chatID = sqlCreateChat(currentUser->getID(), chatName, ui->chat_creation_avatar->pixmap().toImage(), users);
+    addChat(chatID, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN, -1);
 
     // Debug information
     for (auto userId: users)
@@ -408,15 +408,15 @@ void MainWindow::searchMessages() {
 
     // TODO database search messages
     ui->messages_search_list->clear();
-    QList<MessageInfo> messages = sqlLoadSearchedMessages(currentChat->getId(), request);
+    QList<MessageInfo> messages = sqlLoadSearchedMessages(currentChat->getID(), request);
     for (const auto &message: messages) {
         auto *item = new QListWidgetItem;
         if (message.type == USER_MESSAGE) {
             auto *widget = new UserMessageWidget(this);
 
-            widget->setChatId(message.chatId);
-            widget->setUserId(message.userId);
-            widget->setMessageId(message.messageId);
+            widget->setChatID(message.chatID);
+            widget->setUserID(message.userID);
+            widget->setMessageID(message.messageID);
             widget->setAvatar(message.avatar);
             widget->setName(message.username);
             widget->setTime(message.time);
@@ -428,8 +428,8 @@ void MainWindow::searchMessages() {
         } else if (message.type == SYSTEM_MESSAGE) {
             auto *widget = new SystemMessageWidget(this);
 
-            widget->setMessageId(message.messageId);
-            widget->setUserId(message.userId);
+            widget->setMessageID(message.messageID);
+            widget->setUserID(message.userID);
             widget->setContent(message.content);
 
             item->setSizeHint(widget->sizeHint());
@@ -445,6 +445,6 @@ void MainWindow::deleteMessagesInSearch() const {
         return;
 
     // TODO database delete messages by pattern
-    sqlDeleteMessagesByPattern(currentChat->getId(), pattern);
+    sqlDeleteMessagesByPattern(currentChat->getID(), pattern);
     ui->messages_search_list->clear();
 }

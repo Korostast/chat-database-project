@@ -4,7 +4,7 @@
 #include "ui_friendwidget.h"
 
 FriendWidget::FriendWidget(QWidget *parent) : ui(new Ui::FriendWidget) {
-    setFriendId(-1);
+    setFriendID(-1);
     ui->setupUi(this);
     connect(ui->friend_remove, SIGNAL(released()), this, SLOT(friend_remove_button_released()));
 }

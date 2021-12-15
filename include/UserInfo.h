@@ -23,9 +23,9 @@ public:
 
     UserInfo &operator=(const UserInfo &user);
 
-    int getId() const;
+    int getID() const;
 
-    void setId(int id);
+    void setID(int id);
 
     const QString &getUsername() const;
 

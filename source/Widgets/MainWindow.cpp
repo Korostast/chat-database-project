@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "FriendWidget.h"
 #include "IncomingRequestWidget.h"
+#include "SqlInterface.h"
 #include <QScrollBar>
 
 STATE MainWindow::currentState = AUTHORIZATION;
@@ -11,10 +12,13 @@ ChatWidget *MainWindow::currentChat = nullptr;
 UserInfo *MainWindow::currentUser;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+    // Open database connection
+    dbConnect();
+
     // Initialize Main Window variables
     avatarEditor = new AvatarEditor(this);
     currentState = AUTHORIZATION;
-    currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
+    currentUser = new UserInfo(1, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
     chatDialog = new ChatDialog(this);
     databaseDialog = new DatabaseChooserDialog(this);
@@ -142,6 +146,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow() {
     delete ui;
     delete currentUser;
+
+    // Close database connection
+    dbClose();
 }
 
 // This filter monitor event of focus switching when dealing with chat info dialog. Ask Korostast about this mega stupid feature

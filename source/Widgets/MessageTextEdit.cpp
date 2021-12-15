@@ -53,9 +53,9 @@ void MessageTextEdit::editMessage() {
 // We clicked 'remove'
 void MessageTextEdit::removeMessage(UserMessageWidget *message) {
     // TODO database delete message
-    sqlDeleteMessage(message->getMessageId());
+    sqlDeleteMessage(message->getMessageID());
 
-    qDebug() << QString("Removing message with messageId = %1").arg(message->getMessageId());
+    qDebug() << QString("Removing message with messageID = %1").arg(message->getMessageID());
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     mainWindow->deleteMessage(message);
 }
@@ -89,14 +89,14 @@ void MessageTextEdit::editingFinish() {
             return;
         }
 
-        qInfo() << QString("Edited message with messageId - %1. Old content: %2. New content: %3")
-                .arg(userMessageWidget->getMessageId()).arg(userMessageWidget->getContent(), toPlainText());
+        qInfo() << QString("Edited message with messageID - %1. Old content: %2. New content: %3")
+                .arg(userMessageWidget->getMessageID()).arg(userMessageWidget->getContent(), toPlainText());
 
         setTextInteractionFlags(textInteractionFlags() & ~Qt::TextEditable);
 
         UserMessageWidget message;
-        message.setChatId(userMessageWidget->getChatId());
-        message.setMessageId(userMessageWidget->getMessageId());
+        message.setChatID(userMessageWidget->getChatID());
+        message.setMessageID(userMessageWidget->getMessageID());
         message.setName(userMessageWidget->getName());
         message.setTime(userMessageWidget->getTime());
         message.setAvatar(userMessageWidget->getAvatar());
@@ -104,7 +104,7 @@ void MessageTextEdit::editingFinish() {
         userMessageWidget->setContent(message.getContent());
 
         // TODO database message is edited
-        sqlMessageEdited(message.getMessageId(), message.getContent());
+        sqlMessageEdited(message.getMessageID(), message.getContent());
 
         int rowNumber = mainWindow->deleteMessage(userMessageWidget);
         qDebug() << userMessageWidget->getContent();

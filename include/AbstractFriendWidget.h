@@ -8,19 +8,19 @@ class AbstractFriendWidget : public QWidget {
 Q_OBJECT
 
 private:
-    int friendId;
+    int friendID;
 
     QString username;
 
     QImage avatar;
 
 public:
-    int getFriendId() const {
-        return friendId;
+    int getFriendID() const {
+        return friendID;
     }
 
-    void setFriendId(int friendId) {
-        AbstractFriendWidget::friendId = friendId;
+    void setFriendID(int friendID) {
+        AbstractFriendWidget::friendID = friendID;
     }
 
     const QString &getUsername() const {
@@ -40,7 +40,7 @@ public:
     }
 
 protected:
-    explicit AbstractFriendWidget(QWidget *parent = nullptr) : QWidget(parent), friendId(-1) {};
+    explicit AbstractFriendWidget(QWidget *parent = nullptr) : QWidget(parent), friendID(-1) {};
 
 };
 

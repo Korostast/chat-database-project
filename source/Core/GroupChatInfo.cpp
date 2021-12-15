@@ -8,7 +8,7 @@
 #include "ChatCreationFriendWidget.h"
 
 // It will show ui of the chat info window only WORK FOR GROUP CHAT
-void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
+void ChatDialog::setupCurrentChatUI(ChatWidget *chat) {
     ui->chat_dialog_stacked_widget->setCurrentIndex(0); // TODO define index
     ui->chat_dialog_avatar->setPixmap(
             AvatarEditor::getCircularPixmap(chat->getAvatar(), CHAT_DIALOG_AVATAR_IMAGE_SIZE));
@@ -25,7 +25,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
     }
 
     // TODO database searchMessages members list
-    QList<UserChatMember> members = sqlLoadChatMembers(MainWindow::currentChat->getId());
+    QList<UserChatMember> members = sqlLoadChatMembers(MainWindow::currentChat->getID());
 
     // Cleaning
     ui->chat_dialog_members_list->clear();
@@ -35,7 +35,7 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
         item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
 
         auto *widget = new ChatMemberWidget(this);
-        widget->setId(user.id);
+        widget->setID(user.id);
         widget->setName(user.username);
         widget->setAvatar(user.avatar);
         widget->setRole(user.role);
@@ -53,17 +53,17 @@ void ChatDialog::setupCurrentChatUi(ChatWidget *chat) {
 
 // Admin change chat name
 void ChatDialog::changeChatName() {
-    qInfo() << QString("Name of chat with messageId - %1 changed from %2 to %3")
-            .arg(MainWindow::currentChat->getId()).arg(MainWindow::currentChat->getName(),
+    qInfo() << QString("Name of chat with messageID - %1 changed from %2 to %3")
+            .arg(MainWindow::currentChat->getID()).arg(MainWindow::currentChat->getName(),
                                                        ui->chat_dialog_name->text());
     setFocus();
     MainWindow::currentChat->setName(ui->chat_dialog_name->text());
     auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
-    mainWindow->updateChat(MainWindow::currentChat->getId(), ui->chat_dialog_name->text(),
+    mainWindow->updateChat(MainWindow::currentChat->getID(), ui->chat_dialog_name->text(),
                            MainWindow::currentChat->getAvatar(), MainWindow::currentChat->getRole());
 
     // TODO database new chat name
-    sqlUpdateChat(MainWindow::currentChat->getId(), ui->chat_dialog_name->text(), MainWindow::currentChat->getAvatar());
+    sqlUpdateChat(MainWindow::currentChat->getID(), ui->chat_dialog_name->text(), MainWindow::currentChat->getAvatar());
 
     // TODO system message
 }
@@ -85,12 +85,12 @@ void ChatDialog::openFileChooser() {
 }
 
 // Searching for widget of the chat member in the list
-void ChatDialog::removeMemberFromUi(ChatMemberWidget *member) {
+void ChatDialog::removeMemberFromUI(ChatMemberWidget *member) {
     int size = ui->chat_dialog_members_list->count();
     for (int i = 0; i < size; ++i) {
         auto *currentRow = ui->chat_dialog_members_list->item(i);
         auto *user = qobject_cast<ChatMemberWidget *>(ui->chat_dialog_members_list->itemWidget(currentRow));
-        if (user->getId() == member->getId()) {
+        if (user->getID() == member->getID()) {
             delete ui->chat_dialog_members_list->takeItem(i);
             break;
         }
@@ -100,17 +100,17 @@ void ChatDialog::removeMemberFromUi(ChatMemberWidget *member) {
 // You leave the chat
 void ChatDialog::leaveChat() {
     // TODO database leave chat
-    sqlLeaveChat(MainWindow::currentUser->getId(), MainWindow::currentChat->getId());
+    sqlLeaveChat(MainWindow::currentUser->getID(), MainWindow::currentChat->getID());
 
     auto *mainWindow = qobject_cast<MainWindow *>(parent());
     QString content("%1 покинул беседу");
     content = content.arg(MainWindow::currentUser->getUsername());
 
-    MessageInfo systemMessage(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
-                              MainWindow::currentUser->getId());
+    MessageInfo systemMessage(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
+                              MainWindow::currentUser->getID());
     // TODO database send message
     int messageId = sqlSendMessage(systemMessage);
-    mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "",
+    mainWindow->addMessage(MainWindow::currentChat->getID(), MainWindow::currentUser->getID(), messageId, "", "",
                            QImage(), content,
                            SYSTEM_MESSAGE);
     close();
@@ -119,17 +119,17 @@ void ChatDialog::leaveChat() {
 
     // Remove chat from chats list and back to chat list
     // TODO
-    //mainWindow->removeChat(MainWindow::currentChat->getId());
+    //mainWindow->removeChat(MainWindow::currentChat->getID());
 }
 
-void ChatDialog::loadAddMemberUi() {
+void ChatDialog::loadAddMemberUI() {
     // TODO database searchMessages friends
-    QList<UserInfo> friends = sqlLoadFriends(MainWindow::currentUser->getId());
+    QList<UserInfo> friends = sqlLoadFriends(MainWindow::currentUser->getID());
     ui->chat_dialog_add_members_friend_list->clear();
     auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
 
     for (const auto &fr: friends)
-        mainWindow->addToList<ChatCreationFriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(),
+        mainWindow->addToList<ChatCreationFriendWidget>(fr.getID(), fr.getUsername(), fr.getAvatar(),
                                                         ui->chat_dialog_add_members_friend_list);
 
     ui->chat_dialog_stacked_widget->setCurrentIndex(1); // TODO define index
@@ -149,19 +149,19 @@ void ChatDialog::addMembers() {
     for (const auto &user: ui->chat_dialog_add_members_friend_list->selectedItems()) {
         const auto widget = qobject_cast<ChatCreationFriendWidget *>(
                 ui->chat_dialog_add_members_friend_list->itemWidget(user));
-        users.push_back(widget->getFriendId());
+        users.push_back(widget->getFriendID());
 
         QString content("%1 присоединился к беседе");
         content = content.arg(widget->getUsername());
-        MessageInfo systemMessage(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getId(),
-                                  MainWindow::currentUser->getId());
+        MessageInfo systemMessage(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
+                                  MainWindow::currentUser->getID());
         // TODO database send message
         int messageId = sqlSendMessage(systemMessage);
-        mainWindow->addMessage(MainWindow::currentChat->getId(), MainWindow::currentUser->getId(), messageId, "", "",
+        mainWindow->addMessage(MainWindow::currentChat->getID(), MainWindow::currentUser->getID(), messageId, "", "",
                                QImage(), content, SYSTEM_MESSAGE);
     }
 
-    sqlAddMembers(MainWindow::currentChat->getId(), users);
+    sqlAddMembers(MainWindow::currentChat->getID(), users);
 
     // Debug information
     for (auto userId: users) {

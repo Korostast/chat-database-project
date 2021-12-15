@@ -15,16 +15,16 @@ Q_OBJECT
 private:
     Ui::ChatCreationFriendWidget *ui;
 
-    int friendId;
+    int friendID;
 
     QString username;
 
     QImage avatar;
 
 public:
-    int getFriendId() const;
+    int getFriendID() const;
 
-    void setFriendId(int friendId);
+    void setFriendID(int friendId);
 
     const QString &getUsername() const;
 
@@ -35,7 +35,7 @@ public:
     void setAvatar(const QImage &avatar);
 
 public:
-    explicit ChatCreationFriendWidget(QWidget *parent = nullptr, int friendId = -1, QString username = "",
+    explicit ChatCreationFriendWidget(QWidget *parent = nullptr, int friendID = -1, QString username = "",
                                       QImage avatar = QImage(":chatDefaultImage"));
 
 };

@@ -29,13 +29,13 @@ private:
     int friendId;
 
 public:
-    int getFriendId() const;
+    int getFriendID() const;
 
-    void setFriendId(int friendId);
+    void setFriendID(int friendId);
 
 public:
 
-    int getId() const;
+    int getID() const;
 
     const QImage &getAvatar() const;
 
@@ -49,7 +49,7 @@ public:
 
     void setRole(ROLE role);
 
-    void setId(int id);
+    void setID(int id);
 
     bool isGroup() const;
 

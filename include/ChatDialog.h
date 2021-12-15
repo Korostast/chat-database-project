@@ -19,9 +19,9 @@ public:
 
     ~ChatDialog() override;
 
-    void setupCurrentChatUi(ChatWidget *chat);
+    void setupCurrentChatUI(ChatWidget *chat);
 
-    void removeMemberFromUi(ChatMemberWidget *member);
+    void removeMemberFromUI(ChatMemberWidget *member);
 
     void openFileChooser();
 
@@ -35,7 +35,7 @@ private slots:
 
     void leaveChat();
 
-    void loadAddMemberUi();
+    void loadAddMemberUI();
 
     void addMembers();
 };

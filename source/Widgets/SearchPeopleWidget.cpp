@@ -26,7 +26,7 @@ void SearchPeopleWidget::setAvatar(const QImage &avatar) {
 
 void SearchPeopleWidget::add_friend_button_released() {
     // TODO database send friend request
-    sqlSendFriendRequest(MainWindow::currentUser->getId(), getFriendId());
+    sqlSendFriendRequest(MainWindow::currentUser->getID(), getFriendID());
 
     // TODO change ui of search people widget
     ui->search_people_add->hide();

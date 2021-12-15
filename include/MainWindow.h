@@ -44,7 +44,7 @@ public:
 
     void putOnTop(int id);
 
-    void addMessage(int chatId, int userId, int messageId, const QString &username, const QString &time,
+    void addMessage(int chatID, int userID, int messageID, const QString &username, const QString &time,
                     const QImage &avatar, const QString &content, MESSAGE_TYPE type);
 
     void insertMessage(UserMessageWidget *message, int row);
@@ -60,11 +60,11 @@ public:
     // Templated function for friend widget and incoming, outcoming requests
     // FRIENDS FOO
     template <typename T>
-    void addToList(int friendId, const QString &username, const QImage &avatar, QListWidget *list){
+    void addToList(int friendID, const QString &username, const QImage &avatar, QListWidget *list){
         auto *item = new QListWidgetItem;
 
         auto *widget = new T(this);
-        widget->setFriendId(friendId);
+        widget->setFriendID(friendID);
         widget->setUsername(username);
 
         // TODO avatars | done ?
@@ -77,9 +77,9 @@ public:
     }
 
     template<typename T>
-    static void removeFromList(int requestId, QListWidget *list);
+    static void removeFromList(int requestID, QListWidget *list);
 
-    void addPersonInSearch(int personId, const QString &username, const QImage &avatar, const QString &status);
+    void addPersonInSearch(int personID, const QString &username, const QImage &avatar, const QString &status);
 
     void showProfile(const UserInfo *user) const;
 
@@ -102,7 +102,7 @@ private:
     static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
 
     void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role,
-                 int friendId);
+                 int friendID);
 
     static bool checkMessage(QString &content);
 

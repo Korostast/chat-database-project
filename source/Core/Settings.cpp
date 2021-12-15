@@ -19,7 +19,7 @@ void MainWindow::settings_save_button_released() {
 
     if (currentUser->getFirstName() != firstname || currentUser->getLastName() != lastname ||
         currentUser->getPhoneNumber() != phoneNumber || currentUser->getStatus() != status) {
-        sqlUpdateProfile(currentUser->getId(), firstname, lastname, phoneNumber, status, currentUser->getAvatar());
+        sqlUpdateProfile(currentUser->getID(), firstname, lastname, phoneNumber, status, currentUser->getAvatar());
         currentUser->setFirstName(firstname);
         currentUser->setLastName(lastname);
         currentUser->setPhoneNumber(phoneNumber);

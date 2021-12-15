@@ -50,7 +50,7 @@ void MainWindow::sign_in_button_released() const {
 
     // Success
     // Loading data from database: user, account, chats, friends, requests TODO
-    int id = 0;
+    int id = 1;
     QString username = "Korostast";
     currentUser = new UserInfo(id, username);
     currentState = CHATS;

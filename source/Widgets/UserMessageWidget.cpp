@@ -2,7 +2,7 @@
 #include "UserMessageWidget.h"
 #include "MainWindow.h"
 
-UserMessageWidget::UserMessageWidget(QWidget *parent) : QWidget(parent), ui(new Ui::UserMessageWidget), userId(-1), chatId(-1), messageId(-1) {
+UserMessageWidget::UserMessageWidget(QWidget *parent) : QWidget(parent), ui(new Ui::UserMessageWidget), userID(-1), chatID(-1), messageID(-1) {
     ui->setupUi(this);
 }
 
@@ -10,12 +10,12 @@ UserMessageWidget::~UserMessageWidget() {
     delete ui;
 }
 
-int UserMessageWidget::getMessageId() const {
-    return messageId;
+int UserMessageWidget::getMessageID() const {
+    return messageID;
 }
 
-void UserMessageWidget::setMessageId(int id) {
-    UserMessageWidget::messageId = id;
+void UserMessageWidget::setMessageID(int id) {
+    UserMessageWidget::messageID = id;
 }
 
 const QImage & UserMessageWidget::getAvatar() const {
@@ -82,7 +82,7 @@ int UserMessageWidget::countRows(const QString &text) {
     int answer = (int) lines.size();
     for (const auto& line : lines) {
         QTextDocument document(line);
-        document.setDefaultFont(QFont("Segoe UI", 12)); // TODO hardcoded font
+        document.setDefaultFont(QFont("Segoe Ui", 12)); // TODO hardcoded font
         answer += (int) document.size().width() / MESSAGE_LINE_WIDTH;
     }
     return answer;
@@ -93,18 +93,18 @@ void UserMessageWidget::contextMenuEvent(QContextMenuEvent *event) {
     qInfo() << "Context menu called";
 }
 
-int UserMessageWidget::getChatId() const {
-    return chatId;
+int UserMessageWidget::getChatID() const {
+    return chatID;
 }
 
-void UserMessageWidget::setChatId(int chatId) {
-    UserMessageWidget::chatId = chatId;
+void UserMessageWidget::setChatID(int chatID) {
+    UserMessageWidget::chatID = chatID;
 }
 
-int UserMessageWidget::getUserId() const {
-    return userId;
+int UserMessageWidget::getUserID() const {
+    return userID;
 }
 
-void UserMessageWidget::setUserId(int userId) {
-    UserMessageWidget::userId = userId;
+void UserMessageWidget::setUserID(int userID) {
+    UserMessageWidget::userID = userID;
 }

@@ -24,7 +24,7 @@ set(CMAKE_PREFIX_PATH $ENV{Qt${QT_MAJOR_VERSION}_HOME})
 
 #find_package should find everything fine so long as the ENV Variable is set or, for linux systems,
 #it is in the default install path.
-find_package(Qt${QT_MAJOR_VERSION} COMPONENTS Widgets REQUIRED PATHS $ENV{Qt${QT_MAJOR_VERSION}_HOME})
+find_package(Qt${QT_MAJOR_VERSION} COMPONENTS Widgets Sql REQUIRED PATHS $ENV{Qt${QT_MAJOR_VERSION}_HOME})
 
 #Add every file into this list, otherwise moc don't find the classes
 add_executable(${TARGET_NAME}
@@ -80,4 +80,4 @@ target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/AvatarEditorWidget/include)
 
 #Add any extra libs to link also.
-target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_MAJOR_VERSION}::Widgets)
+target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_MAJOR_VERSION}::Widgets Qt${QT_MAJOR_VERSION}::Sql)

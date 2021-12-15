@@ -22,9 +22,9 @@ private:
 
     ROLE role;
 public:
-    int getId() const;
+    int getID() const;
 
-    void setId(int id);
+    void setID(int id);
 
     const QImage &getAvatar() const;
 

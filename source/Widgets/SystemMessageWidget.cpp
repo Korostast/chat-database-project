@@ -4,7 +4,7 @@
 #include "SystemMessageWidget.h"
 
 SystemMessageWidget::SystemMessageWidget(QWidget *parent) : QWidget(parent), ui(new Ui::SystemMessageWidget),
-                                                            messageId(-1), userId(-1) {
+                                                            messageID(-1), userID(-1) {
     ui->setupUi(this);
 }
 
@@ -21,18 +21,18 @@ void SystemMessageWidget::setContent(const QString &content) {
     ui->system_message_content->setText(content);
 }
 
-int SystemMessageWidget::getMessageId() const {
-    return messageId;
+int SystemMessageWidget::getMessageID() const {
+    return messageID;
 }
 
-void SystemMessageWidget::setMessageId(int messageId) {
-    SystemMessageWidget::messageId = messageId;
+void SystemMessageWidget::setMessageID(int id) {
+    SystemMessageWidget::messageID = id;
 }
 
-int SystemMessageWidget::getUserId() const {
-    return userId;
+int SystemMessageWidget::getUserID() const {
+    return userID;
 }
 
-void SystemMessageWidget::setUserId(int userId) {
-    SystemMessageWidget::userId = userId;
+void SystemMessageWidget::setUserID(int userID) {
+    SystemMessageWidget::userID = userID;
 }
