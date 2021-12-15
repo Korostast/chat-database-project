@@ -81,6 +81,7 @@ struct UserChatMember {
     ROLE role;
 };
 
+// TODO refactor this
 struct ChatInfo {
     ChatInfo(int id, QString name, QImage avatar = QImage(":chatDefaultImage"), bool group = false,
              int countMembers = 2, ROLE role = PARTICIPANT)

@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
     chatDialog = new ChatDialog(this);
+    databaseDialog = new DatabaseChooserDialog(this);
 
     // Event filter for chat info dialog
     chatDialog->installEventFilter(this);
@@ -58,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->register_button, SIGNAL(released()), this, SLOT(register_button_released()));
     connect(ui->switch_auth_button, SIGNAL(released()), this, SLOT(switch_auth_button_released()));
     connect(ui->switch_register_button, SIGNAL(released()), this, SLOT(switch_register_button_released()));
+    connect(ui->authentification_admin_button, SIGNAL(released()), this, SLOT(open_admin_dialog()));
+    connect(ui->authentification_choose_database_button, SIGNAL(released()), this, SLOT(open_choose_database_dialog()));
 
     // App
     connect(ui->chats_button, SIGNAL(released()), this, SLOT(chats_button_released()));
@@ -97,11 +100,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         ui->chat_bar_stacked_widget->setCurrentIndex(0);
     });
     connect(ui->chat_bar_search_button, SIGNAL(released()), this, SLOT(loadSearchInterface()));
+    connect(ui->chat_bar_search_edit, &QLineEdit::returnPressed, this, [this]() {
+        if (ui->chat_bar_search_edit->text().isEmpty())
+            return;
+        loadSearchInterface();
+    });
     connect(ui->message_text_edit->document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
             this, SLOT(messageTextChanged(QSizeF)));
 
     // Search messages
     connect(ui->messages_search_button, SIGNAL(released()), this, SLOT(searchMessages()));
+    connect(ui->messages_search_edit, SIGNAL(returnPressed()), this, SLOT(searchMessages()));
     connect(ui->messages_search_remove_messages, SIGNAL(released()), this, SLOT(deleteMessagesInSearch()));
     connect(ui->messages_search_cancel, &QPushButton::released, this, [this]() {
         ui->chat_bar_stacked_widget->setCurrentIndex(0);

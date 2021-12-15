@@ -1,5 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+#include "ui_databasechooserdialog.h"
+#include "../SqlInterface.h"
 
 // If data is correct
 QString MainWindow::checkAuthInput(const QString &username, const QString &password, const QString &email) {
@@ -114,4 +116,20 @@ void MainWindow::switch_register_button_released() const {
     } else {
         ui->switch_register_button->setChecked(true);
     }
+}
+
+void MainWindow::open_admin_dialog() {
+    databaseDialog->ui->admin_database_creation_stacked_widget->setCurrentIndex(0);
+    databaseDialog->show();
+}
+
+void MainWindow::open_choose_database_dialog() {
+    // TODO database load databases list
+    QList<QString> databases = sqlLoadDatabaseList();
+    databaseDialog->ui->database_choose_list->clear();
+    for (const auto &db : databases)
+        databaseDialog->ui->database_choose_list->addItem(db);
+
+    databaseDialog->ui->admin_database_creation_stacked_widget->setCurrentIndex(2);
+    databaseDialog->show();
 }

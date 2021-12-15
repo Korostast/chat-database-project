@@ -2,6 +2,14 @@
 #include "MainWindow.h"
 #include "Defines.h"
 
+QList<QString> sqlLoadDatabaseList() {
+    QString database1("Main database");
+    QString database2("Another database");
+    QString database3("The third one");
+
+    return QList<QString>({database1, database2, database3});
+}
+
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userId) {
     PersonalChatInfo chat5(4, 1, "Личная беседа (не работает имя ещё)", QImage(":chatDefaultImage"));
     PersonalChatInfo chat6(5, 2, "Личная беседа", QImage(":chatDefaultImage"));
@@ -176,5 +184,21 @@ void sqlAddMembers(int chatId, std::vector<int> &newParticipants) {
 
 void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
                       const QString &status, const QImage &avatar) {
+
+}
+
+bool sqlAdminAuth(const QString& password) {
+    return true;
+}
+
+void sqlCreateDatabase(const QString &databaseName) {
+
+}
+
+void sqlDeleteDatabase(const QString& databaseName) {
+
+}
+
+void sqlChooseDatabase(const QString& databaseName) {
 
 }
