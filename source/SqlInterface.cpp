@@ -146,11 +146,7 @@ void sqlChangeRole(int userId, int chatId, int newRole) {
 
 }
 
-void sqlUpdateChatAvatar(int chatId, QImage &newAvatar) {
-
-}
-
-void sqlChangeChatName(int chatId, const QString &newName) {
+void sqlUpdateChat(int chatId, const QString &newName, const QImage &newAvatar) {
 
 }
 

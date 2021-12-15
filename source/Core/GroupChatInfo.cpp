@@ -63,7 +63,7 @@ void ChatDialog::changeChatName() {
                            MainWindow::currentChat->getAvatar(), MainWindow::currentChat->getRole());
 
     // TODO database new chat name
-    sqlChangeChatName(MainWindow::currentChat->getId(), ui->chat_dialog_name->text());
+    sqlUpdateChat(MainWindow::currentChat->getId(), ui->chat_dialog_name->text(), MainWindow::currentChat->getAvatar());
 
     // TODO system message
 }

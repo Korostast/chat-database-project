@@ -122,7 +122,7 @@ void AvatarEditor::saveImage() {
             return;
         }
         // TODO database update chat avatar
-        sqlUpdateChatAvatar(MainWindow::currentChat->getId(), result);
+        sqlUpdateChat(MainWindow::currentChat->getId(), MainWindow::currentChat->getName(), result);
 
         mainWindow->updateChat(MainWindow::currentChat->getId(), MainWindow::currentChat->getName(),
                                result, MainWindow::currentChat->getRole());

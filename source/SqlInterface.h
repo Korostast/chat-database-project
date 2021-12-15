@@ -56,11 +56,8 @@ void sqlRemoveChatMember(int userId, int chatId);
 // Админ меняет роль юзера в чате
 void sqlChangeRole(int userId, int chatId, int newRole);
 
-// Админ поменял аватарку беседы (пока что для профиля нет функции)
-void sqlUpdateChatAvatar(int chatId, QImage &newAvatar);
-
-// Админ поменял название беседы
-void sqlChangeChatName(int chatId, const QString &newName);
+// Админ обновил имя или аватарку чата
+void sqlUpdateChat(int chatId, const QString &newName, const QImage &newAvatar);
 
 // Юзер принял заявку в друзья
 void sqlAcceptFriendRequest(int currentUserId, int newFriendId);
