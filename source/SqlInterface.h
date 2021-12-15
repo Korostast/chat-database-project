@@ -30,7 +30,7 @@ QList<UserInfo> sqlLoadIncomingRequests(int userId);
 
 QList<UserInfo> sqlLoadOutcomingRequests(int userId);
 
-QList<UserInfo> sqlPeopleInSearch(const QString &substring);
+QList<std::pair<UserInfo, QString>> sqlPeopleInSearch(const QString &substring);
 
 // TODO удалить комментарии. А лучше на англ перевести
 // Функции, отправляющие POST запросы в БД

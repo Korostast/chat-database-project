@@ -108,17 +108,17 @@ QList<UserInfo> sqlLoadOutcomingRequests(int userId) {
     return QList<UserInfo>({user1, user2});
 }
 
-QList<UserInfo> sqlPeopleInSearch(const QString& substring) {
-    UserInfo user1(0, "Lalala", QImage(":chatDefaultImage"));
-    UserInfo user2(1, "Another one", QImage(":chatDefaultImage"));
-    UserInfo user3(2, "Second", QImage(":chatDefaultImage"));
-    UserInfo user4(3, "This_is_request", QImage(":chatDefaultImage"));
-    UserInfo user5(4, "Kriper2003", QImage(":chatDefaultImage"));
+QList<std::pair<UserInfo, QString> > sqlPeopleInSearch(const QString &substring) {
+    std::pair<UserInfo, QString> user1({UserInfo(0, "Lalala", QImage(":chatDefaultImage"))}, "Уже в друзьях");
+    std::pair<UserInfo, QString> user2({UserInfo(1, "Another one", QImage(":chatDefaultImage"))}, nullptr);
+    std::pair<UserInfo, QString> user3({UserInfo(2, "Second", QImage(":chatDefaultImage"))}, nullptr);
+    std::pair<UserInfo, QString> user4({UserInfo(3, "This_is_request", QImage(":chatDefaultImage"))}, "Вы уже послали запрос");
+    std::pair<UserInfo, QString> user5({UserInfo(4, "Kriper2003", QImage(":chatDefaultImage"))}, nullptr);
 
-    return QList<UserInfo>({user1, user2, user3, user4, user5});
+    return QList<std::pair<UserInfo, QString> >({user1, user2, user3, user4, user5});
 }
 
-int sqlSendMessage(const MessageInfo& message) {
+int sqlSendMessage(const MessageInfo &message) {
     return 0;
 }
 
@@ -146,7 +146,7 @@ void sqlChangeRole(int userId, int chatId, int newRole) {
 
 }
 
-void sqlUpdateChatAvatar(int chatId, QImage& newAvatar) {
+void sqlUpdateChatAvatar(int chatId, QImage &newAvatar) {
 
 }
 
@@ -187,7 +187,7 @@ void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastn
 
 }
 
-bool sqlAdminAuth(const QString& password) {
+bool sqlAdminAuth(const QString &password) {
     return true;
 }
 
@@ -195,10 +195,10 @@ void sqlCreateDatabase(const QString &databaseName) {
 
 }
 
-void sqlDeleteDatabase(const QString& databaseName) {
+void sqlDeleteDatabase(const QString &databaseName) {
 
 }
 
-void sqlChooseDatabase(const QString& databaseName) {
+void sqlChooseDatabase(const QString &databaseName) {
 
 }

@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+#include "ui_searchpeoplewidget.h"
 #include "FriendWidget.h"
 #include "IncomingRequestWidget.h"
 #include "OutcomingRequestWidget.h"
@@ -20,10 +21,16 @@ void MainWindow::removeFromList(int requestId, QListWidget *list) {
 }
 
 // Add person widget to the search list
-void MainWindow::addPersonInSearch(int personId, const QString &username, const QImage &avatar) {
+void MainWindow::addPersonInSearch(int personId, const QString &username, const QImage &avatar, const QString &status) {
     auto *item = new QListWidgetItem;
 
     auto *widget = new SearchPeopleWidget(this);
+    if (!status.isEmpty()) {
+        widget->ui->search_people_add->hide();
+        widget->ui->friend_request_unavailable_label->setText(status);
+    } else {
+        widget->ui->friend_request_unavailable_label->hide();
+    }
     widget->setFriendId(personId);
     widget->setUsername(username);
 
@@ -83,14 +90,16 @@ void OutcomingRequestWidget::remove_request_button_released() {
 
 void MainWindow::search_people() {
     QString input(ui->search_people_line->text());
+    if (input.isEmpty())
+        return;
 
     // TODO database search people
-    QList<UserInfo> users = sqlPeopleInSearch(input);
+    QList<std::pair<UserInfo, QString> > users = sqlPeopleInSearch(input);
 
     ui->search_people_list->clear();
 
     for (const auto &user: users)
-        addPersonInSearch(user.getId(), user.getUsername(), user.getAvatar());
+        addPersonInSearch(user.first.getId(), user.first.getUsername(), user.first.getAvatar(), user.second);
 }
 
 void MainWindow::friends_button_released() {
@@ -179,9 +188,9 @@ void MainWindow::tests() {
     addToList<OutcomingRequestWidget>(5, "Masha", QImage(":chatDefaultImage"), ui->outcoming_requests_list);
     addToList<OutcomingRequestWidget>(6, "Java", QImage(":chatDefaultImage"), ui->outcoming_requests_list);
 
-    addPersonInSearch(0, "Lalala", QImage(":chatDefaultImage"));
-    addPersonInSearch(1, "Another one", QImage(":chatDefaultImage"));
-    addPersonInSearch(2, "Second", QImage(":chatDefaultImage"));
-    addPersonInSearch(3, "This_is_request", QImage(":chatDefaultImage"));
-    addPersonInSearch(4, "Kriper2003", QImage(":chatDefaultImage"));
+    /*addPersonInSearch(0, "Lalala", QImage(":chatDefaultImage"), <#initializer#>);
+    addPersonInSearch(1, "Another one", QImage(":chatDefaultImage"), <#initializer#>);
+    addPersonInSearch(2, "Second", QImage(":chatDefaultImage"), <#initializer#>);
+    addPersonInSearch(3, "This_is_request", QImage(":chatDefaultImage"), <#initializer#>);
+    addPersonInSearch(4, "Kriper2003", QImage(":chatDefaultImage"), <#initializer#>);*/
 }

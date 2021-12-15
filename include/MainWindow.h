@@ -79,7 +79,7 @@ public:
     template<typename T>
     static void removeFromList(int requestId, QListWidget *list);
 
-    void addPersonInSearch(int personId, const QString &username, const QImage &avatar);
+    void addPersonInSearch(int personId, const QString &username, const QImage &avatar, const QString &status);
 
     void showProfile(const UserInfo *user) const;
 
