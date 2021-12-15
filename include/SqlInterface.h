@@ -4,6 +4,13 @@
 #include "MainWindow.h"
 #include "Defines.h"
 
+class QSqlException : std::exception {
+    std::string msg;
+public:
+    explicit QSqlException(std::string message);
+
+    const char *what() const noexcept override;
+};
 
 // Create a database connection session
 // Errors are handled by the function
@@ -11,6 +18,11 @@ void dbConnect();
 
 // Close the default database connection session
 void dbClose();
+
+// Authorization and registration
+UserInfo sqlRegister(const QString& username, const QString& email, const QString &password);
+
+UserInfo sqlAuthenticate(const QString& username, const QString& emailOrUsername);
 
 // Функции отправляющие GET запросы в БД
 

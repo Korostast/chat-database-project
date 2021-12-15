@@ -3,8 +3,33 @@
 #include "ui_databasechooserdialog.h"
 #include "SqlInterface.h"
 
+QString MainWindow::checkAuthInput(const QString &password, const QString &emailOrUsername) {
+    // If it is email
+    if (emailOrUsername.contains("@")) {
+        if (emailOrUsername.isEmpty()) {
+            return "Email field is empty";
+        }
+    } else {
+        for (auto letter: emailOrUsername.toLatin1()) {
+            if (!isalnum(letter)) {
+                return "Username can consist only of latin characters and digits";
+            }
+        }
+    }
+    if (password.isEmpty()) {
+        return "Password field is empty";
+    }
+    for (auto letter: password.toLatin1()) {
+        if (!isalnum(letter) && !QString("@-_&").contains(letter)) {
+            return "Password can consist only of latin characters, digits and special symbols @-_&";
+        }
+    }
+
+    return nullptr;
+}
+
 // If data is correct
-QString MainWindow::checkAuthInput(const QString &username, const QString &password, const QString &email) {
+QString MainWindow::checkRegisterInput(const QString &username, const QString &password, const QString &email) {
     for (auto letter: username.toLatin1()) {
         if (!isalnum(letter)) {
             return "Username can consist only of latin characters and digits";
@@ -24,6 +49,7 @@ QString MainWindow::checkAuthInput(const QString &username, const QString &passw
     if (email.indexOf('@') == -1) {
         return "Email is not correct";
     }
+
     return nullptr;
 }
 
@@ -31,29 +57,23 @@ void MainWindow::sign_in_button_released() const {
     qDebug() << "AUTH BUTTON CLICKED";
 
     QString password = ui->auth_password_edit->text();
-    QString email = ui->auth_email_edit->text();
-    QString error = checkAuthInput(nullptr, password, email);
+    QString emailOrUsername = ui->auth_email_edit->text();
+    QString error = checkAuthInput(password, emailOrUsername);
     if (!error.isEmpty()) {
         ui->auth_register_error_label->setText(error);
         ui->auth_register_error_label->show();
         return;
     }
 
-
-    // Call a function that send request to database and return string about error TODO
-    //error = "User doesn't exist";
-    if (!error.isEmpty()) {
-        ui->auth_register_error_label->setText(error);
+    try {
+        // TODO database authorization
+        currentUser = new UserInfo(sqlAuthenticate(password, emailOrUsername));
+        currentState = CHATS;
+    } catch (QSqlException &error) {
+        ui->auth_register_error_label->setText(error.what());
         ui->auth_register_error_label->show();
         return;
     }
-
-    // Success
-    // Loading data from database: user, account, chats, friends, requests TODO
-    int id = 1;
-    QString username = "Korostast";
-    currentUser = new UserInfo(id, username);
-    currentState = CHATS;
 
     // Change screen to chat list
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
@@ -65,7 +85,7 @@ void MainWindow::register_button_released() const {
     QString username = ui->register_username_edit->text();
     QString password = ui->register_password_edit->text();
     QString email = ui->register_email_edit->text();
-    QString error = checkAuthInput(username, password, email);
+    QString error = checkRegisterInput(username, password, email);
     if (!error.isEmpty()) {
         ui->auth_register_error_label->setText(error);
         ui->auth_register_error_label->show();
@@ -73,16 +93,15 @@ void MainWindow::register_button_released() const {
     }
 
     // Send request to database
-    //error = "User is already exist";
-    if (!error.isEmpty()) {
-        ui->auth_register_error_label->setText(error);
+    try {
+        // TODO database register account
+        currentUser = new UserInfo(sqlRegister(username, email, password));
+        currentState = CHATS;
+    } catch (QSqlException &error) {
+        ui->auth_register_error_label->setText(error.what());
         ui->auth_register_error_label->show();
         return;
     }
-
-    // Success
-    int id = 0; // from db
-    currentUser = new UserInfo(id, username, QImage(":chatDefaultImage"), nullptr, email, nullptr);
 
     // Change screen to chat list
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);

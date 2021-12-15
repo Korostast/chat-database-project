@@ -99,7 +99,9 @@ private:
 
     QMap<int, QListWidgetItem *> chatMap;
 
-    static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
+    static QString checkRegisterInput(const QString &username, const QString &password, const QString &email);
+
+    static QString checkAuthInput(const QString &password, const QString &emailOrUsername);
 
     void addChat(int id, const QString &name, const QImage &avatar, bool isGroup, int countMembers, ROLE role,
                  int friendID);
