@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include "DatabaseChooserDialog.h"
 #include "ui_databasechooserdialog.h"
+#include "ui_mainwindow.h"
 #include "ui_deletedatabasemessagebox.h"
 #include "SqlInterface.h"
 
@@ -98,6 +99,8 @@ void DatabaseChooserDialog::choose_database() {
     // If we confirmed choosing
     if (reply == QMessageBox::Yes) {
         qDebug() << QString("Chose database with name: %1").arg(databaseName);
+        auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
+        mainWindow->ui->current_database_name_label->setText(databaseName);
 
         // TODO database choose database
         sqlChooseDatabase(databaseName);

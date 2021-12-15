@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // TODO test
     //chats_button_released();
 
-    //ui->app_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
+    ui->app_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
     ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
 

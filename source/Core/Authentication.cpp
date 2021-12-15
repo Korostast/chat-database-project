@@ -68,6 +68,8 @@ void MainWindow::sign_in_button_released() const {
     try {
         // TODO database authorization
         currentUser = new UserInfo(sqlAuthenticate(password, emailOrUsername));
+        ui->current_user_name_label->setText(currentUser->getUsername());
+        ui->current_user_avatar_label->setPixmap(AvatarEditor::getCircularPixmap(currentUser->getAvatar(), 40));
         currentState = CHATS;
     } catch (QSqlException &error) {
         ui->auth_register_error_label->setText(error.what());
@@ -96,6 +98,8 @@ void MainWindow::register_button_released() const {
     try {
         // TODO database register account
         currentUser = new UserInfo(sqlRegister(username, email, password));
+        ui->current_user_name_label->setText(currentUser->getUsername());
+        ui->current_user_avatar_label->setPixmap(AvatarEditor::getCircularPixmap(currentUser->getAvatar(), 40));
         currentState = CHATS;
     } catch (QSqlException &error) {
         ui->auth_register_error_label->setText(error.what());
