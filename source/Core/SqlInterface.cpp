@@ -86,32 +86,33 @@ UserInfo sqlRegister(const QString &username, const QString &email, const QStrin
 
 UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername) {
     qDebug() << "Trying to authenticate" << emailOrUsername;
+    QSqlQuery q;
+    QString qStr;
 
     // Check if user exists
-    QString qStr = QString("call existsUser('%1')")
+    qStr = QString("call existsUser('%1')")
             .arg(emailOrUsername);
 
-    QSqlQuery q1(qStr);
-    if (!q1.exec())
-        qWarning() << q1.lastError().databaseText();
-    if (!q1.next())
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+    if (!q.next())
         throw QSqlException("User with this username or email does not exist");
-    int userID = q1.value(0).toInt();
+    int userID = q.value(0).toInt();
 
     // Check credentials
     qStr = QString("call authenticateUser(%1, '%2')")
             .arg(userID)
             .arg(password);
-    QSqlQuery q2(qStr);
-    if (!q2.exec())
-        qWarning() << q2.lastError().databaseText();
-    if (!q2.next())
+
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
+    if (!q.next())
         throw QSqlException("The password is incorrect. Try again");
-    UserInfo result(q2.value("id").toInt(),
-                    q2.value("username").toString(),
-                    QImage::fromData(q2.value("thumbnail").toByteArray()),
-                    q2.value("profile_status").toString(),
-                    q2.value("email").toString());
+    UserInfo result(q.value("id").toInt(),
+                    q.value("username").toString(),
+                    QImage::fromData(q.value("thumbnail").toByteArray()),
+                    q.value("profile_status").toString(),
+                    q.value("email").toString());
 
     return result;
 }
@@ -119,9 +120,9 @@ UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername
 QList<QString> sqlLoadDatabaseList() {
     qDebug() << "Loading database list from 'information_schema'";
 
-    QSqlQuery q(
-            "select SCHEMA_NAME from information_schema.SCHEMATA where SCHEMA_NAME not in ('information_schema','mysql','performance_schema','sys')");
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(
+            "select SCHEMA_NAME from information_schema.SCHEMATA where SCHEMA_NAME not in ('information_schema','mysql','performance_schema','sys')"))
         qWarning() << q.lastError().databaseText();
 
     QList<QString> result;
@@ -153,8 +154,8 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
     QString qStr = QString("call getMessages(%1)")
             .arg(chatID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
     QList<MessageInfo> result;
@@ -195,8 +196,8 @@ UserInfo sqlLoadProfile(int userID) {
     QString qStr = QString("call getProfile(%1)")
             .arg(userID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
     if (!q.next()) {
@@ -224,8 +225,8 @@ QList<UserInfo> sqlLoadFriends(int userID) {
     QString qStr = QString("call getFriends(%1)")
             .arg(userID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
     QList<UserInfo> result;
@@ -244,8 +245,8 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID) {
     QString qStr = QString("call getIncomingRequests(%1)")
             .arg(userID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
     QList<UserInfo> result;
@@ -264,8 +265,8 @@ QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
     QString qStr = QString("call getOutgoingRequests(%1)")
             .arg(userID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
     QList<UserInfo> result;
@@ -299,8 +300,8 @@ int sqlSendMessage(const MessageInfo &message) {
             .arg(message.type)
             .arg(message.replyID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
     if (!q.next())
@@ -316,8 +317,8 @@ void sqlMessageEdited(int messageID, const QString &newContent) {
             .arg(messageID)
             .arg(newContent);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -327,8 +328,8 @@ void sqlDeleteMessage(int messageID) {
     QString qStr = QString("call deleteMessage(%1)")
             .arg(messageID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -343,8 +344,8 @@ void sqlLeaveChat(int userID, int chatID) {
             .arg(chatID)
             .arg(userID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -361,8 +362,8 @@ void sqlChangeRole(int userID, int chatID, int newRole) {
             .arg(userID)
             .arg(newRole);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -377,8 +378,8 @@ void sqlAcceptFriendRequest(int currentUserID, int newFriendID) {
             .arg(newFriendID)
             .arg(currentUserID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -394,8 +395,8 @@ void sqlCancelFriendRequest(int currentUserID, int notFriendID) {
             .arg(currentUserID)
             .arg(notFriendID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -406,8 +407,8 @@ void sqlSendFriendRequest(int userID, int requestedID) {
             .arg(userID)
             .arg(requestedID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -418,8 +419,8 @@ void sqlRemoveFriend(int userID, int friendID) {
             .arg(userID)
             .arg(friendID);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
@@ -442,12 +443,13 @@ bool sqlAdminAuth(const QString &password) {
 
 void sqlCreateDatabase(const QString &databaseName) {
     qWarning() << "CREATING DATABASE" << databaseName;
+    QSqlQuery q;
+    QString qStr;
 
-    QString qStr = QString("create database %1")
+    qStr = QString("create database %1")
             .arg(databaseName);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
     sqlChooseDatabase(databaseName);
@@ -459,9 +461,9 @@ void sqlCreateDatabase(const QString &databaseName) {
     }
 
     qStr = qFile.readAll();
-    QSqlQuery qNew(qStr);
-    if (!qNew.exec())
-        qWarning() << qNew.lastError().databaseText();
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlDeleteDatabase(const QString &databaseName) {
@@ -470,8 +472,8 @@ void sqlDeleteDatabase(const QString &databaseName) {
     QString qStr = QString("drop database %1")
             .arg(databaseName);
 
-    QSqlQuery q(qStr);
-    if (!q.exec())
+    QSqlQuery q;
+    if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
