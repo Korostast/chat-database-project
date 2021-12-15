@@ -8,6 +8,7 @@ DatabaseChooserDialog::DatabaseChooserDialog(QWidget *parent) : QDialog(parent),
     connect(ui->database_creation_add_button, SIGNAL(released()), this, SLOT(add_database()));
     connect(ui->database_creation_remove_button, SIGNAL(released()), this, SLOT(delete_database()));
     connect(ui->admin_auth_button, SIGNAL(released()), this, SLOT(admin_auth()));
+    connect(ui->database_choose_button, SIGNAL(released()), this, SLOT(choose_database()));
 }
 
 DatabaseChooserDialog::~DatabaseChooserDialog() {

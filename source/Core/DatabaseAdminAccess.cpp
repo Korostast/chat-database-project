@@ -13,13 +13,13 @@ void DatabaseChooserDialog::add_database() {
     for (int i = 0; i < ui->database_creation_list->count(); ++i) {
         if (ui->database_creation_list->item(i)->data(Qt::DisplayRole) == databaseName) {
             qWarning() << QString("Database name %1 is already in list").arg(databaseName);
-            QMessageBox::warning(this, "Ошибка", QString("База данных с названием %1 уже существует").arg(databaseName));
+            QMessageBox::warning(this, "Ошибка", QString("База данных с названием '%1' уже существует").arg(databaseName));
             return;
         }
     }
 
     // Throw message box
-    QString content("Вы уверены, что хотите создать базу данных с названием %1");
+    QString content("Вы уверены, что хотите создать базу данных с названием '%1'?");
     content = content.arg(databaseName);
     QMessageBox::StandardButton reply = QMessageBox::question(this, "Создание базы данных", content,
                                                               QMessageBox::Yes | QMessageBox::No);
@@ -64,5 +64,28 @@ void DatabaseChooserDialog::admin_auth() {
         }
     } else {
         qWarning() << QString("Incorrect password: %1").arg(password);
+    }
+}
+
+void DatabaseChooserDialog::choose_database() {
+    if (ui->database_choose_list->selectedItems().isEmpty())
+        return;
+
+    // TODO database delete database
+    QString databaseName = ui->database_choose_list->selectedItems().back()->text();
+
+    // Throw message box
+    QString content("Вы уверены, что хотите выбрать базу данных с названием '%1'?");
+    content = content.arg(databaseName);
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "Выбор базы данных", content,
+                                                              QMessageBox::Yes | QMessageBox::No);
+
+    // If we confirmed choosing
+    if (reply == QMessageBox::Yes) {
+        qDebug() << QString("Chose database with name: %1").arg(databaseName);
+
+        // TODO database choose database
+        sqlChooseDatabase(databaseName);
+        close();
     }
 }

@@ -30,6 +30,8 @@ private slots:
 
     void admin_auth();
 
+    void choose_database();
+
 };
 
 

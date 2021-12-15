@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->switch_auth_button, SIGNAL(released()), this, SLOT(switch_auth_button_released()));
     connect(ui->switch_register_button, SIGNAL(released()), this, SLOT(switch_register_button_released()));
     connect(ui->authentification_admin_button, SIGNAL(released()), this, SLOT(open_admin_dialog()));
+    connect(ui->authentification_choose_database_button, SIGNAL(released()), this, SLOT(open_choose_database_dialog()));
 
     // App
     connect(ui->chats_button, SIGNAL(released()), this, SLOT(chats_button_released()));

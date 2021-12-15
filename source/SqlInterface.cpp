@@ -198,3 +198,7 @@ void sqlCreateDatabase(const QString &databaseName) {
 void sqlDeleteDatabase(const QString& databaseName) {
 
 }
+
+void sqlChooseDatabase(const QString& databaseName) {
+
+}

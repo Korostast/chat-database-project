@@ -97,4 +97,7 @@ void sqlCreateDatabase(const QString &databaseName);
 // Админ удаляет базу данных
 void sqlDeleteDatabase(const QString& databaseName);
 
+// Юзер выбрал базу данных
+void sqlChooseDatabase(const QString& databaseName);
+
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

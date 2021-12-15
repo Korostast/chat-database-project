@@ -120,6 +120,8 @@ private slots:
 
     void open_admin_dialog();
 
+    void open_choose_database_dialog();
+
     void messageTextChanged(QSizeF docSize);
 
     void chat_name_label_released();

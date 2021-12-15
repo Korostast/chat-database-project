@@ -23,7 +23,7 @@
    <item>
     <widget class="QStackedWidget" name="admin_database_creation_stacked_widget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="admin_auth_page">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -163,6 +163,26 @@
           </widget>
          </item>
         </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="choose_database_page">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QListWidget" name="database_choose_list">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="database_choose_button">
+         <property name="text">
+          <string>Выбрать базу данных</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
