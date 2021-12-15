@@ -22,7 +22,7 @@ void dbClose();
 // Authorization and registration
 UserInfo sqlRegister(const QString &username, const QString &email, const QString &password);
 
-UserInfo sqlAuthenticate(const QString &username, const QString &emailOrUsername);
+UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername);
 
 // Функции отправляющие GET запросы в БД
 
