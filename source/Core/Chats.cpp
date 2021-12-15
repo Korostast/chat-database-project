@@ -8,7 +8,7 @@
 #include <QScrollBar>
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 #include "ChatCreationFriendWidget.h"
 
 // Add chat to the chats list

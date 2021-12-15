@@ -2,7 +2,7 @@
 #include "ui_searchpeoplewidget.h"
 #include "AvatarEditor.h"
 #include "MainWindow.h"
-#include "../SqlInterface.h"
+#include "../Core/SqlInterface.h"
 
 SearchPeopleWidget::SearchPeopleWidget(QWidget *parent) : ui(new Ui::SearchPeopleWidget) {
     ui->setupUi(this);

@@ -1,6 +1,6 @@
 #include "DeleteDatabaseMessagebox.h"
 #include "ui_deletedatabasemessagebox.h"
-#include "../SqlInterface.h"
+#include "../Core/SqlInterface.h"
 
 DeleteDatabaseMessagebox::DeleteDatabaseMessagebox(QWidget *parent) : QDialog(parent), ui(new Ui::DeleteDatabaseMessagebox) {
     ui->setupUi(this);

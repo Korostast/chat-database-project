@@ -2,7 +2,7 @@
 #include "DatabaseChooserDialog.h"
 #include "ui_databasechooserdialog.h"
 #include "ui_deletedatabasemessagebox.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 
 void DatabaseChooserDialog::add_database() {
     QString databaseName(ui->database_creation_edit->text());

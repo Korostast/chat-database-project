@@ -5,7 +5,7 @@
 #include "IncomingRequestWidget.h"
 #include "OutcomingRequestWidget.h"
 #include "SearchPeopleWidget.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 
 // Templated function for friend widget and incoming, outcoming requests
 template<typename T>

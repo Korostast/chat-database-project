@@ -4,7 +4,7 @@
 #include "ui_mainwindow.h"
 #include "Defines.h"
 #include "ChatMemberWidget.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 #include "ChatCreationFriendWidget.h"
 
 // It will show ui of the chat info window only WORK FOR GROUP CHAT

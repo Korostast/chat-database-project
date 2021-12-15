@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 
 void MainWindow::settings_button_released() const {
     ui->settings_firstname_edit->setText(currentUser->getFirstName());

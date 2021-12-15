@@ -1,7 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "ui_databasechooserdialog.h"
-#include "../SqlInterface.h"
+#include "SqlInterface.h"
 
 // If data is correct
 QString MainWindow::checkAuthInput(const QString &username, const QString &password, const QString &email) {
