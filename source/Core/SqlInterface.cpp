@@ -7,6 +7,12 @@
 #include <QFile>
 #include <QDateTime>
 
+QSqlException::QSqlException(std::string message) : msg(std::move(message)) {}
+
+const char *QSqlException::what() const noexcept {
+    return msg.c_str();
+}
+
 void dbConnect() {
     QFile qFile("db_access.txt");
     if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -33,6 +39,14 @@ void dbConnect() {
 void dbClose() {
     QSqlDatabase::database().close();
     qDebug() << "Database connection closed";
+}
+
+UserInfo sqlRegister(const QString& username, const QString& email, const QString& password) {
+    return UserInfo(0, "Korostast", QImage(":chatDefaultImage"), nullptr, email);
+}
+
+UserInfo sqlAuthenticate(const QString& username, const QString& emailOrUsername) {
+    return UserInfo(0, "Korostast", QImage(":chatDefaultImage"), nullptr, "qwerty@gmail.net");
 }
 
 QList<QString> sqlLoadDatabaseList() {
