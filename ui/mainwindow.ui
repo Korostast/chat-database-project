@@ -482,12 +482,17 @@
               <height>40</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(42, 42, 42);
 color: rgb(231, 231, 231);</string>
             </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string>   Database Test Chat App</string>
             </property>
            </widget>
           </item>
@@ -698,7 +703,7 @@ color: rgb(231, 231, 231);</string>
              </size>
             </property>
             <property name="currentIndex">
-             <number>7</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="personal_chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0,0,0,0" columnstretch="0">

@@ -32,7 +32,7 @@
    <item row="0" column="1">
     <widget class="QStackedWidget" name="avatar_editor_stacked_widget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="choose_file_page">
       <property name="sizePolicy">
@@ -61,13 +61,6 @@
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>Загрузка аватарки</string>
-          </property>
-         </widget>
-        </item>
-        <item alignment="Qt::AlignRight|Qt::AlignTop">
-         <widget class="QPushButton" name="pushButton_4">
-          <property name="text">
-           <string>(Закрыть)</string>
           </property>
          </widget>
         </item>
@@ -106,19 +99,6 @@
        </property>
        <property name="text">
         <string>Выбрать файл</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_3">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>240</y>
-         <width>121</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>PushButton</string>
        </property>
       </widget>
      </widget>
