@@ -46,8 +46,38 @@ UserInfo sqlRegister(const QString &username, const QString &email, const QStrin
     return UserInfo(0, "Korostast", QImage(":chatDefaultImage"), nullptr, email);
 }
 
-UserInfo sqlAuthenticate(const QString &username, const QString &emailOrUsername) {
-    return UserInfo(0, "Korostast", QImage(":chatDefaultImage"), nullptr, "qwerty@gmail.net");
+UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername) {
+    qDebug() << "Trying to authenticate" << emailOrUsername;
+
+    // Check if user exists
+    QString qStr = QString("call existsUser('%1')")
+            .arg(emailOrUsername);
+
+    QSqlQuery q1(qStr);
+    if(!q1.exec())
+        qWarning() << q1.lastError().databaseText();
+    if(!q1.next())
+        throw QSqlException("User with this username or email does not exist");
+    int userID = q1.value(0).toInt();
+
+    // Check credentials
+    qStr = QString("call authenticateUser(%1, '%2')")
+            .arg(userID)
+            .arg(password);
+    QSqlQuery q2(qStr);
+    if(!q2.exec())
+        qWarning() << q2.lastError().databaseText();
+    if(!q2.next()) {
+        qDebug() << q2.lastQuery();
+        throw QSqlException("The password is incorrect. Try again");
+    }
+    UserInfo result(q2.value("id").toInt(),
+                    q2.value("username").toString(),
+                    QImage::fromData(q2.value("thumbnail").toByteArray()),
+                    q2.value("profile_status").toString(),
+                    q2.value("email").toString());
+
+    return result;
 }
 
 QList<QString> sqlLoadDatabaseList() {
