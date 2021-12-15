@@ -55,11 +55,11 @@ QList<QString> sqlLoadDatabaseList() {
 
     QSqlQuery q(
             "select SCHEMA_NAME from information_schema.SCHEMATA where SCHEMA_NAME not in ('information_schema','mysql','performance_schema','sys')");
-    if(!q.exec())
+    if (!q.exec())
         qWarning() << q.lastError().databaseText();
 
     QList<QString> result;
-    while(q.next())
+    while (q.next())
         result.append(q.value(0).toString());
 
     return result;
@@ -384,8 +384,18 @@ void sqlCreateDatabase(const QString &databaseName) {
     if (!q.exec())
         qWarning() << q.lastError().databaseText();
 
-    
     sqlChooseDatabase(databaseName);
+
+    QFile qFile("db_create.sql");
+    if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qCritical() << "Could not find 'db_create.sql'";
+        exit(100);
+    }
+
+    qStr = qFile.readAll();
+    QSqlQuery qNew(qStr);
+    if (!qNew.exec())
+        qWarning() << qNew.lastError().databaseText();
 }
 
 void sqlDeleteDatabase(const QString &databaseName) {
