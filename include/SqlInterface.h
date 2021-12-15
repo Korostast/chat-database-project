@@ -14,15 +14,15 @@ public:
 
 // Create a database connection session
 // Errors are handled by the function
-void dbConnect();
+void dbConnect(const QString &dbName = "information_schema");
 
 // Close the default database connection session
 void dbClose();
 
 // Authorization and registration
-UserInfo sqlRegister(const QString& username, const QString& email, const QString &password);
+UserInfo sqlRegister(const QString &username, const QString &email, const QString &password);
 
-UserInfo sqlAuthenticate(const QString& username, const QString& emailOrUsername);
+UserInfo sqlAuthenticate(const QString &username, const QString &emailOrUsername);
 
 // Функции отправляющие GET запросы в БД
 
@@ -106,15 +106,15 @@ void sqlUpdateProfile(int userID, const QString &firstname, const QString &lastn
                       const QString &status, const QImage &avatar);
 
 // Админ авторизуется в окне создания баз данных. Возвращает true, если получилось авторизоваться, false в ином случае
-bool sqlAdminAuth(const QString& password);
+bool sqlAdminAuth(const QString &password);
 
 // Админ создаёт базу данных
 void sqlCreateDatabase(const QString &databaseName);
 
 // Админ удаляет базу данных
-void sqlDeleteDatabase(const QString& databaseName);
+void sqlDeleteDatabase(const QString &databaseName);
 
 // Юзер выбрал базу данных
-void sqlChooseDatabase(const QString& databaseName);
+void sqlChooseDatabase(const QString &databaseName);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

@@ -4,6 +4,7 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QFile>
 #include <QDateTime>
 
@@ -13,7 +14,7 @@ const char *QSqlException::what() const noexcept {
     return msg.c_str();
 }
 
-void dbConnect() {
+void dbConnect(const QString &dbName) {
     QFile qFile("db_access.txt");
     if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qCritical() << "Could not find 'db_access.txt' file with access credentials";
@@ -24,16 +25,16 @@ void dbConnect() {
 
     QSqlDatabase db = QSqlDatabase::addDatabase(qTextStream.readLine());
     db.setHostName(qTextStream.readLine());
-    db.setDatabaseName(qTextStream.readLine());
+    db.setDatabaseName(dbName);
     db.setUserName(qTextStream.readLine());
     db.setPassword(qTextStream.readLine());
 
     if (!db.open()) {
         qCritical()
-                << "Could not connect to the database\nPlease check your internet connection, access credentials and database availability";
+                << "Could not connect to the database\nPlease check your access credentials\n";
         exit(100);
     }
-    qDebug() << "Database connection opened";
+    qDebug() << "Connected to database" << dbName;
 }
 
 void dbClose() {
@@ -41,20 +42,27 @@ void dbClose() {
     qDebug() << "Database connection closed";
 }
 
-UserInfo sqlRegister(const QString& username, const QString& email, const QString& password) {
+UserInfo sqlRegister(const QString &username, const QString &email, const QString &password) {
     return UserInfo(0, "Korostast", QImage(":chatDefaultImage"), nullptr, email);
 }
 
-UserInfo sqlAuthenticate(const QString& username, const QString& emailOrUsername) {
+UserInfo sqlAuthenticate(const QString &username, const QString &emailOrUsername) {
     return UserInfo(0, "Korostast", QImage(":chatDefaultImage"), nullptr, "qwerty@gmail.net");
 }
 
 QList<QString> sqlLoadDatabaseList() {
-    QString database1("Main database");
-    QString database2("Another database");
-    QString database3("The third one");
+    qDebug() << "Loading database list from 'information_schema'";
 
-    return QList<QString>({database1, database2, database3});
+    QSqlQuery q(
+            "select SCHEMA_NAME from information_schema.SCHEMATA where SCHEMA_NAME not in ('information_schema','mysql','performance_schema','sys')");
+    if(!q.exec())
+        qWarning() << q.lastError().databaseText();
+
+    QList<QString> result;
+    while(q.next())
+        result.append(q.value(0).toString());
+
+    return result;
 }
 
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userID) {
@@ -80,7 +88,8 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
             .arg(chatID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 
     QList<MessageInfo> result;
     while (q.next())
@@ -121,7 +130,8 @@ UserInfo sqlLoadProfile(int userID) {
             .arg(userID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 
     if (!q.next()) {
         qWarning() << "No profile found for userID =" << userID;
@@ -149,7 +159,8 @@ QList<UserInfo> sqlLoadFriends(int userID) {
             .arg(userID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 
     QList<UserInfo> result;
     while (q.next())
@@ -168,7 +179,8 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID) {
             .arg(userID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 
     QList<UserInfo> result;
     while (q.next())
@@ -187,7 +199,8 @@ QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
             .arg(userID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 
     QList<UserInfo> result;
     while (q.next())
@@ -203,7 +216,8 @@ QList<std::pair<UserInfo, QString> > sqlPeopleInSearch(const QString &substring)
     std::pair<UserInfo, QString> user1({UserInfo(0, "Lalala", QImage(":chatDefaultImage"))}, "Уже в друзьях");
     std::pair<UserInfo, QString> user2({UserInfo(1, "Another one", QImage(":chatDefaultImage"))}, nullptr);
     std::pair<UserInfo, QString> user3({UserInfo(2, "Second", QImage(":chatDefaultImage"))}, nullptr);
-    std::pair<UserInfo, QString> user4({UserInfo(3, "This_is_request", QImage(":chatDefaultImage"))}, "Вы уже послали запрос");
+    std::pair<UserInfo, QString> user4({UserInfo(3, "This_is_request", QImage(":chatDefaultImage"))},
+                                       "Вы уже послали запрос");
     std::pair<UserInfo, QString> user5({UserInfo(4, "Kriper2003", QImage(":chatDefaultImage"))}, nullptr);
 
     return QList<std::pair<UserInfo, QString> >({user1, user2, user3, user4, user5});
@@ -220,7 +234,8 @@ int sqlSendMessage(const MessageInfo &message) {
             .arg(message.replyID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 
     if (!q.next())
         qWarning() << "Failed to send the message";
@@ -236,7 +251,8 @@ void sqlMessageEdited(int messageID, const QString &newContent) {
             .arg(newContent);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlDeleteMessage(int messageID) {
@@ -246,7 +262,8 @@ void sqlDeleteMessage(int messageID) {
             .arg(messageID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlDeleteMessagesByPattern(int chatID, const QString &pattern) {
@@ -261,7 +278,8 @@ void sqlLeaveChat(int userID, int chatID) {
             .arg(userID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlRemoveChatMember(int userID, int chatID) {
@@ -278,7 +296,8 @@ void sqlChangeRole(int userID, int chatID, int newRole) {
             .arg(newRole);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlUpdateChat(int chatID, const QString &newName, const QImage &newAvatar) {
@@ -293,7 +312,8 @@ void sqlAcceptFriendRequest(int currentUserID, int newFriendID) {
             .arg(currentUserID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlDeclineFriendRequest(int currentUserID, int notFriendID) {
@@ -309,7 +329,8 @@ void sqlCancelFriendRequest(int currentUserID, int notFriendID) {
             .arg(notFriendID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlSendFriendRequest(int userID, int requestedID) {
@@ -320,18 +341,20 @@ void sqlSendFriendRequest(int userID, int requestedID) {
             .arg(requestedID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlRemoveFriend(int userID, int friendID) {
-    qDebug() <<userID<<"unfriended"<<friendID;
+    qDebug() << userID << "unfriended" << friendID;
 
     QString qStr = QString("call deleteFriend(%1,%2)")
             .arg(userID)
             .arg(friendID);
 
     QSqlQuery q(qStr);
-    q.exec();
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 int sqlCreateChat(int adminID, const QString &chatName, const QImage &avatar, const std::vector<int> &participants) {
@@ -352,13 +375,31 @@ bool sqlAdminAuth(const QString &password) {
 }
 
 void sqlCreateDatabase(const QString &databaseName) {
+    qWarning() << "CREATING DATABASE" << databaseName;
 
+    QString qStr = QString("create database %1")
+            .arg(databaseName);
+
+    QSqlQuery q(qStr);
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
+
+    
+    sqlChooseDatabase(databaseName);
 }
 
 void sqlDeleteDatabase(const QString &databaseName) {
+    qWarning() << "DELETING DATABASE" << databaseName;
 
+    QString qStr = QString("drop database %1")
+            .arg(databaseName);
+
+    QSqlQuery q(qStr);
+    if (!q.exec())
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlChooseDatabase(const QString &databaseName) {
-
+    dbClose();
+    dbConnect(databaseName);
 }
