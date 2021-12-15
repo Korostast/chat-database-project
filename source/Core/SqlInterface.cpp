@@ -23,7 +23,6 @@ void dbConnect() {
     QTextStream qTextStream(&qFile);
 
     QSqlDatabase db = QSqlDatabase::addDatabase(qTextStream.readLine());
-    qDebug() << db.drivers();
     db.setHostName(qTextStream.readLine());
     db.setDatabaseName(qTextStream.readLine());
     db.setUserName(qTextStream.readLine());

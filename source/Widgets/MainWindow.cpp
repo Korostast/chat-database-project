@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Initialize Main Window variables
     avatarEditor = new AvatarEditor(this);
     currentState = AUTHORIZATION;
-    currentUser = new UserInfo(1, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
+    //currentUser = new UserInfo(1, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
     chatDialog = new ChatDialog(this);
     databaseDialog = new DatabaseChooserDialog(this);
@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Setting up interface and show default page (authorization)
     ui->setupUi(this);
     // TODO test
-    chats_button_released();
+    //chats_button_released();
 
     //ui->app_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
     ui->authentification_stacked_widget->setCurrentIndex(AUTHORIZATION_PAGE);
