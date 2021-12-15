@@ -47,16 +47,6 @@ void DatabaseChooserDialog::delete_database() {
     deleteMessageBox->ui->messagebox_delete_database_confirm->setEnabled(false);
     deleteMessageBox->ui->messagebox_delete_database_label->setText(QString("Введите delete %1").arg(databaseName));
     deleteMessageBox->show();
-
-    /*QMessageBox msgBox;
-    QLineEdit edit;
-    msgBox.layout()->addWidget(&edit);
-    msgBox.setText(tr("Confirm?"));
-    QAbstractButton *pButtonYes = msgBox.addButton(tr("Yeah!"), QMessageBox::YesRole);
-    msgBox.addButton(tr("Nope"), QMessageBox::NoRole);
-    msgBox.exec();*/
-
-    //sqlDeleteDatabase(databaseName);
 }
 
 void DatabaseChooserDialog::admin_auth() {

@@ -99,11 +99,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         ui->chat_bar_stacked_widget->setCurrentIndex(0);
     });
     connect(ui->chat_bar_search_button, SIGNAL(released()), this, SLOT(loadSearchInterface()));
+    connect(ui->chat_bar_search_edit, &QLineEdit::returnPressed, this, [this]() {
+        if (ui->chat_bar_search_edit->text().isEmpty())
+            return;
+        loadSearchInterface();
+    });
     connect(ui->message_text_edit->document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
             this, SLOT(messageTextChanged(QSizeF)));
 
     // Search messages
     connect(ui->messages_search_button, SIGNAL(released()), this, SLOT(searchMessages()));
+    connect(ui->messages_search_edit, SIGNAL(returnPressed()), this, SLOT(searchMessages()));
     connect(ui->messages_search_remove_messages, SIGNAL(released()), this, SLOT(deleteMessagesInSearch()));
     connect(ui->messages_search_cancel, &QPushButton::released, this, [this]() {
         ui->chat_bar_stacked_widget->setCurrentIndex(0);
