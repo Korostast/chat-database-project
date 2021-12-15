@@ -6,6 +6,9 @@
 
 // Функции отправляющие GET запросы в БД
 
+// Админ или юзер открыл окно выбора базы данных (в структуре id и имя базы)
+QList<QString> sqlLoadDatabaseList();
+
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userId);
 
 QList<GroupChatInfo> sqlLoadGroupChats(int userId);
@@ -84,5 +87,14 @@ void sqlAddMembers(int chatId, std::vector<int> &newParticipants);
 // Юзер изменил один или более атрибутов аккаунта. userId не изменяется
 void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
                       const QString &status, const QImage &avatar);
+
+// Админ авторизуется в окне создания баз данных. Возвращает true, если получилось авторизоваться, false в ином случае
+bool sqlAdminAuth(const QString& password);
+
+// Админ создаёт базу данных
+void sqlCreateDatabase(const QString &databaseName);
+
+// Админ удаляет базу данных
+void sqlDeleteDatabase(const QString& databaseName);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

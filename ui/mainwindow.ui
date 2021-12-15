@@ -30,7 +30,7 @@
     <item>
      <widget class="QStackedWidget" name="app_stacked_widget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0" columnstretch="0,0,0,0,0,0">
@@ -446,6 +446,19 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="0" column="5" alignment="Qt::AlignRight|Qt::AlignTop">
+         <widget class="QPushButton" name="authentification_admin_button">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Войти как администратор</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     currentUser = new UserInfo(10, "KorostastTrue", QImage(":chatDefaultImage"), "Hello world!!", nullptr); // TODO it is a test
     (currentChat = new ChatWidget(this))->hide(); // TODO parent?
     chatDialog = new ChatDialog(this);
+    databaseDialog = new DatabaseChooserDialog(this);
 
     // Event filter for chat info dialog
     chatDialog->installEventFilter(this);
@@ -58,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->register_button, SIGNAL(released()), this, SLOT(register_button_released()));
     connect(ui->switch_auth_button, SIGNAL(released()), this, SLOT(switch_auth_button_released()));
     connect(ui->switch_register_button, SIGNAL(released()), this, SLOT(switch_register_button_released()));
+    connect(ui->authentification_admin_button, SIGNAL(released()), this, SLOT(open_admin_dialog()));
 
     // App
     connect(ui->chats_button, SIGNAL(released()), this, SLOT(chats_button_released()));

@@ -11,6 +11,7 @@
 #include "Defines.h"
 #include "CustomPlainTextEdit.h"
 #include "UserMessageWidget.h"
+#include "DatabaseChooserDialog.h"
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 
@@ -94,6 +95,8 @@ private:
 
     ChatDialog *chatDialog;
 
+    DatabaseChooserDialog *databaseDialog;
+
     QMap<int, QListWidgetItem *> chatMap;
 
     static QString checkAuthInput(const QString &username, const QString &password, const QString &email);
@@ -114,6 +117,8 @@ private slots:
     void switch_auth_button_released() const;
 
     void switch_register_button_released() const;
+
+    void open_admin_dialog();
 
     void messageTextChanged(QSizeF docSize);
 
