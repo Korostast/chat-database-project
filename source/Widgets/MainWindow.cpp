@@ -102,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // Search messages
     connect(ui->messages_search_button, SIGNAL(released()), this, SLOT(searchMessages()));
+    connect(ui->messages_search_remove_messages, SIGNAL(released()), this, SLOT(deleteMessagesInSearch()));
     connect(ui->messages_search_cancel, &QPushButton::released, this, [this]() {
         ui->chat_bar_stacked_widget->setCurrentIndex(0);
         ui->main_stacked_widget->setCurrentIndex(MESSAGES_PAGE);

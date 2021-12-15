@@ -96,11 +96,12 @@ void MainWindow::openChat() {
     ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(currentChat->getAvatar(), AVATAR_IN_CHAT_IMAGE_SIZE));
     ui->chat_name_label->setText(currentChat->getName());
     if (currentChat->isGroup()) {
-        ui->chat_online_or_members_label->setText(QString::number(currentChat->getCountMembers()));
+        ui->chat_online_or_members_label->setText(QString("%1 участников")
+                                                          .arg(QString::number(currentChat->getCountMembers())));
         ui->chat_online_or_members_label->show();
     } else {
         ui->chat_online_or_members_label->hide();
-        // TODO database searchMessages person id
+        // TODO database searchMessages person id | nope
         //int friendId = sqlGetPersonId(currentChat->getId(), currentUser->getId());
         int friendId = currentChat->getFriendId();
         ui->chat_name_label->setPersonalChatUserId(friendId);
@@ -392,6 +393,11 @@ void MainWindow::loadSearchInterface() {
     searchMessages();
 
     currentState = SEARCH_MESSAGES;
+    if (currentChat->getRole() >= ADMIN)
+        ui->messages_search_remove_messages->show();
+    else
+        ui->messages_search_remove_messages->hide();
+
     ui->main_stacked_widget->setCurrentIndex(MESSAGES_SEARCH_PAGE);
 }
 
@@ -403,7 +409,7 @@ void MainWindow::searchMessages() {
     // TODO database search messages
     ui->messages_search_list->clear();
     QList<MessageInfo> messages = sqlLoadSearchedMessages(currentChat->getId(), request);
-    for (const auto &message : messages) {
+    for (const auto &message: messages) {
         auto *item = new QListWidgetItem;
         if (message.type == USER_MESSAGE) {
             auto *widget = new UserMessageWidget(this);
@@ -431,4 +437,14 @@ void MainWindow::searchMessages() {
             ui->messageList->setItemWidget(item, widget);
         }
     }
+}
+
+void MainWindow::deleteMessagesInSearch() const {
+    QString pattern(ui->messages_search_edit->text());
+    if (pattern.isEmpty())
+        return;
+
+    // TODO database delete messages by pattern
+    sqlDeleteMessagesByPattern(currentChat->getId(), pattern);
+    ui->messages_search_list->clear();
 }
