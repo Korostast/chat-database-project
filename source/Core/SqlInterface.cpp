@@ -43,7 +43,45 @@ void dbClose() {
 }
 
 UserInfo sqlRegister(const QString &username, const QString &email, const QString &password) {
-    return UserInfo(0, "Korostast", QImage(":chatDefaultImage"), nullptr, email);
+    qDebug() << "Trying to register" << username;
+    QSqlQuery q;
+    QString qStr;
+
+    // Check if user with such username exists
+    qStr = QString("call existsUser('%1')")
+            .arg(username);
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+    if (q.next())
+        throw QSqlException("User with this username already exists");
+
+    // Check if user with such email exists
+    qStr = QString("call existsUser('%1')")
+            .arg(email);
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+    if (q.next())
+        throw QSqlException("User with this email already exists");
+
+    // Register the account
+    qStr = QString("call registerAccount('%1','%2','%3')")
+            .arg(username)
+            .arg(password)
+            .arg(email);
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+    if (!q.next())
+        throw QSqlException("Registration failed");
+    UserInfo result(q.value("id").toInt(),
+                    q.value("username").toString(),
+                    QImage::fromData(q.value("thumbnail").toByteArray()),
+                    q.value("profile_status").toString(),
+                    q.value("email").toString());
+
+    return result;
 }
 
 UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername) {
@@ -54,9 +92,9 @@ UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername
             .arg(emailOrUsername);
 
     QSqlQuery q1(qStr);
-    if(!q1.exec())
+    if (!q1.exec())
         qWarning() << q1.lastError().databaseText();
-    if(!q1.next())
+    if (!q1.next())
         throw QSqlException("User with this username or email does not exist");
     int userID = q1.value(0).toInt();
 
@@ -65,12 +103,10 @@ UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername
             .arg(userID)
             .arg(password);
     QSqlQuery q2(qStr);
-    if(!q2.exec())
+    if (!q2.exec())
         qWarning() << q2.lastError().databaseText();
-    if(!q2.next()) {
-        qDebug() << q2.lastQuery();
+    if (!q2.next())
         throw QSqlException("The password is incorrect. Try again");
-    }
     UserInfo result(q2.value("id").toInt(),
                     q2.value("username").toString(),
                     QImage::fromData(q2.value("thumbnail").toByteArray()),
