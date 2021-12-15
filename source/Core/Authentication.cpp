@@ -4,12 +4,12 @@
 #include "SqlInterface.h"
 
 QString MainWindow::checkAuthInput(const QString &password, const QString &emailOrUsername) {
+    if (emailOrUsername.isEmpty()) {
+        return "Username/email field is empty";
+    }
+
     // If it is email
-    if (emailOrUsername.contains("@")) {
-        if (emailOrUsername.isEmpty()) {
-            return "Email field is empty";
-        }
-    } else {
+    if (!emailOrUsername.contains("@")) {
         for (auto letter: emailOrUsername.toLatin1()) {
             if (!isalnum(letter)) {
                 return "Username can consist only of latin characters and digits";
@@ -30,6 +30,9 @@ QString MainWindow::checkAuthInput(const QString &password, const QString &email
 
 // If data is correct
 QString MainWindow::checkRegisterInput(const QString &username, const QString &password, const QString &email) {
+    if (username.isEmpty()) {
+        return "Username field is empty";
+    }
     for (auto letter: username.toLatin1()) {
         if (!isalnum(letter)) {
             return "Username can consist only of latin characters and digits";

@@ -56,9 +56,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // Authentication
     connect(ui->auth_password_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
     connect(ui->auth_email_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
-    connect(ui->register_username_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
-    connect(ui->register_password_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
-    connect(ui->register_email_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));
+    connect(ui->register_username_edit, SIGNAL(returnPressed()), this, SLOT(register_button_released()));
+    connect(ui->register_password_edit, SIGNAL(returnPressed()), this, SLOT(register_button_released()));
+    connect(ui->register_email_edit, SIGNAL(returnPressed()), this, SLOT(register_button_released()));
     connect(ui->sign_in_button, SIGNAL(released()), this, SLOT(sign_in_button_released()));
     connect(ui->register_button, SIGNAL(released()), this, SLOT(register_button_released()));
     connect(ui->switch_auth_button, SIGNAL(released()), this, SLOT(switch_auth_button_released()));
