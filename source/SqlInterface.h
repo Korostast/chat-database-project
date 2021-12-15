@@ -41,6 +41,9 @@ void sqlMessageEdited(int messageId, const QString &newContent);
 // Админ или модератор удалил сообщение
 void sqlDeleteMessage(int messageId);
 
+// Админ воспользовался поиском сообщений и решил удалить все найденные сообщения
+void sqlDeleteMessagesByPattern(int chatId, const QString &pattern);
+
 // Текущий юзер нажал кнопку 'выйти из чата'
 void sqlLeaveChat(int userId, int chatId);
 

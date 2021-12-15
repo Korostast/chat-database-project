@@ -122,6 +122,10 @@ void sqlDeleteMessage(int messageId) {
 
 }
 
+void sqlDeleteMessagesByPattern(int chatId, const QString &pattern) {
+
+}
+
 void sqlLeaveChat(int userId, int chatId) {
 
 }

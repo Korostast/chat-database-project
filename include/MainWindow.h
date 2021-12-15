@@ -140,6 +140,8 @@ private slots:
     void loadSearchInterface();
 
     void searchMessages();
+
+    void deleteMessagesInSearch() const;
 };
 
 #endif // MAINWINDOW_H

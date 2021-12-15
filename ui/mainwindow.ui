@@ -482,12 +482,17 @@
               <height>40</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(42, 42, 42);
 color: rgb(231, 231, 231);</string>
             </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string>   Database Test Chat App</string>
             </property>
            </widget>
           </item>
@@ -548,7 +553,6 @@ color: rgb(231, 231, 231);</string>
               </property>
               <property name="font">
                <font>
-                <family>Roboto</family>
                 <pointsize>11</pointsize>
                 <bold>false</bold>
                </font>
@@ -574,7 +578,6 @@ color: rgb(231, 231, 231);</string>
               </property>
               <property name="font">
                <font>
-                <family>Roboto</family>
                 <pointsize>11</pointsize>
                </font>
               </property>
@@ -599,7 +602,6 @@ color: rgb(231, 231, 231);</string>
               </property>
               <property name="font">
                <font>
-                <family>Roboto</family>
                 <pointsize>11</pointsize>
                </font>
               </property>
@@ -701,7 +703,7 @@ color: rgb(231, 231, 231);</string>
              </size>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>4</number>
             </property>
             <widget class="QWidget" name="personal_chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0,0,0,0" columnstretch="0">
@@ -1749,6 +1751,13 @@ color: rgb(231, 231, 231);</string>
                  <widget class="QPushButton" name="messages_search_button">
                   <property name="text">
                    <string>Поиск</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="messages_search_remove_messages">
+                  <property name="text">
+                   <string>Удалить все</string>
                   </property>
                  </widget>
                 </item>

@@ -23,7 +23,7 @@
    <item>
     <widget class="QStackedWidget" name="chat_dialog_stacked_widget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="chat_dialog_info_page">
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -33,13 +33,6 @@
           <widget class="QLabel" name="chat_dialog_info_label">
            <property name="text">
             <string>Информация</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="chat_dialog_close_button">
-           <property name="text">
-            <string>(Закрыть)</string>
            </property>
           </widget>
          </item>

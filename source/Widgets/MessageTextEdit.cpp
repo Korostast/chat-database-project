@@ -55,7 +55,7 @@ void MessageTextEdit::removeMessage(UserMessageWidget *message) {
     // TODO database delete message
     sqlDeleteMessage(message->getMessageId());
 
-    qDebug() << QString("Removing message with messageId").arg(message->getMessageId());
+    qDebug() << QString("Removing message with messageId = %1").arg(message->getMessageId());
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     mainWindow->deleteMessage(message);
 }

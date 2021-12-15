@@ -104,6 +104,10 @@ void MainWindow::friends_button_released() {
     ui->incoming_requests_list->clear();
     ui->outcoming_requests_list->clear();
 
+    ui->switch_actual_friends->setText(QString("Друзья (%1)").arg(friends.count()));
+    ui->switch_incoming_requests->setText(QString("Входящие (%1)").arg(incomingRequests.count()));
+    ui->switch_outcoming_requests->setText(QString("Друзья (%1)").arg(outcomingRequests.count()));
+
     for (const auto& fr: friends)
         addToList<FriendWidget>(fr.getId(), fr.getUsername(), fr.getAvatar(), ui->actual_friends_list);
     for (const auto& in: incomingRequests)
