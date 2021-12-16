@@ -5,7 +5,7 @@
 #include "ui_deletedatabasemessagebox.h"
 #include "SqlInterface.h"
 
-bool DatabaseChooserDialog::isDatabaseNameCorrect(const QString& databaseName) {
+bool DatabaseChooserDialog::isDatabaseNameCorrect(const QString &databaseName) {
     QString errorMessage("Название базы данных может состоять только из латинских букв, цифр и нижнего подчёркивания");
     if (databaseName.isEmpty()) {
         QMessageBox::critical(this, "Ошибка", QString(errorMessage));
@@ -29,7 +29,8 @@ void DatabaseChooserDialog::add_database() {
     for (int i = 0; i < ui->database_creation_list->count(); ++i) {
         if (ui->database_creation_list->item(i)->data(Qt::DisplayRole) == databaseName) {
             qWarning() << QString("Database name %1 is already in list").arg(databaseName);
-            QMessageBox::warning(this, "Ошибка", QString("База данных с названием '%1' уже существует").arg(databaseName));
+            QMessageBox::warning(this, "Ошибка",
+                                 QString("База данных с названием '%1' уже существует").arg(databaseName));
             return;
         }
     }
@@ -75,7 +76,7 @@ void DatabaseChooserDialog::admin_auth() {
         ui->admin_database_creation_stacked_widget->setCurrentIndex(1);
         ui->database_creation_list->clear();
         QList<QString> databases = sqlLoadDatabaseList();
-        for (const auto &db : databases) {
+        for (const auto &db: databases) {
             ui->database_creation_list->addItem(db);
         }
     } else {
@@ -100,7 +101,12 @@ void DatabaseChooserDialog::choose_database() {
     if (reply == QMessageBox::Yes) {
         qDebug() << QString("Chose database with name: %1").arg(databaseName);
         auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
-        mainWindow->ui->current_database_name_label->setText(databaseName);
+
+        QFontMetrics metrics(mainWindow->ui->current_database_name_label->font());
+        QString elidedText = metrics.elidedText("Текущая БД: " + databaseName,
+                                                Qt::ElideRight, mainWindow->ui->current_database_name_label->width());
+        mainWindow->ui->current_database_name_label->setText(elidedText);
+        mainWindow->ui->current_database_name_label->setToolTip(databaseName);
 
         // TODO database choose database
         sqlChooseDatabase(databaseName);

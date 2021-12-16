@@ -1,6 +1,10 @@
 <!DOCTYPE RCC><RCC version="1.0">
     <qresource>
         <file alias="chatDefaultImage.png">images/testImage.png</file>
-        <file alias="Roboto font">fonts/Roboto-Regular.ttf</file>
+        <file alias="Search Icon">images/icons/search-icon-24px-grey.png</file>
+        <file alias="Segoe UI">fonts/Segoe UI.ttf</file>
+        <file alias="Segoe UI Bold">fonts/Segoe UI Bold.ttf</file>
+        <file alias="Roboto">fonts/Roboto-Regular.ttf</file>
+        <file alias="QSS">CSS/MainTheme.qss</file>
     </qresource>
 </RCC>

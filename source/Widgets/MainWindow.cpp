@@ -98,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->message_text_edit, SIGNAL(returnKeyPressedEvent()), this, SLOT(sendMessage()));
     connect(ui->chat_search_label, &ClickableLabel::released, this, [this]() {
         ui->chat_bar_search_edit->clear();
+        ui->chat_bar_search_edit->setFocus();
         ui->chat_bar_stacked_widget->setCurrentIndex(1);
     });
     connect(ui->chat_bar_search_cancel, &QPushButton::released, this, [this]() {

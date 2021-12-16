@@ -52,8 +52,8 @@
      </property>
      <property name="font">
       <font>
-       <family>Roboto</family>
-       <pointsize>10</pointsize>
+       <family>Segoe UI</family>
+       <pointsize>12</pointsize>
       </font>
      </property>
      <property name="text">

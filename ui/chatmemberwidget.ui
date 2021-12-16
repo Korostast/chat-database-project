@@ -41,6 +41,11 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -61,6 +66,11 @@
    </item>
    <item>
     <widget class="QPushButton" name="chat_members_remove_button">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Исключить</string>
      </property>
@@ -74,6 +84,11 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -81,6 +96,11 @@
    </item>
    <item alignment="Qt::AlignRight">
     <widget class="QComboBox" name="chat_members_roles_combobox">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="editable">
       <bool>false</bool>
      </property>

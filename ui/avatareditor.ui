@@ -32,7 +32,7 @@
    <item row="0" column="1">
     <widget class="QStackedWidget" name="avatar_editor_stacked_widget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="choose_file_page">
       <property name="sizePolicy">
@@ -59,6 +59,11 @@
         </property>
         <item alignment="Qt::AlignLeft|Qt::AlignTop">
          <widget class="QLabel" name="label_4">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>Загрузка аватарки</string>
           </property>
@@ -74,6 +79,11 @@
          <width>691</width>
          <height>81</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>Загрузите вашу будущую аватарку. Вы можете загрузить изображение в формате PNG.</string>
@@ -96,6 +106,11 @@
          <width>141</width>
          <height>41</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
        </property>
        <property name="text">
         <string>Выбрать файл</string>
@@ -166,6 +181,9 @@
          <width>400</width>
          <height>200</height>
         </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
        </property>
        <property name="verticalScrollBarPolicy">
         <enum>Qt::ScrollBarAlwaysOff</enum>
