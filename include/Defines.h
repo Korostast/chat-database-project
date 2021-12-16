@@ -112,7 +112,8 @@ struct PersonalChatInfo {
 struct GroupChatInfo {
     GroupChatInfo(int chatID, QString name, QImage avatar = QImage(":chatDefaultImage"), int countMembers = 2,
                   ROLE role = PARTICIPANT)
-            : chatID(chatID), name(std::move(name)), avatar(std::move(avatar)), countMembers(countMembers), role(role){}
+            : chatID(chatID), name(std::move(name)), avatar(std::move(avatar)), countMembers(countMembers),
+              role(role) {}
 
     int chatID;
     QString name;
@@ -124,8 +125,8 @@ struct GroupChatInfo {
 
 struct MessageInfo {
     MessageInfo(int messageID, QString content, QString time, MESSAGE_TYPE type, int chatID, int userID,
-                int replyID = -1, QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"))
-            : chatID(chatID), userID(userID), replyID(replyID), messageID(messageID), username(std::move(username)),
+                QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"))
+            : chatID(chatID), userID(userID), messageID(messageID), username(std::move(username)),
               time(std::move(time)), avatar(std::move(avatar)), content(std::move(content)), type(type) {}
 
     int messageID;
@@ -134,7 +135,6 @@ struct MessageInfo {
     MESSAGE_TYPE type;
     int chatID;
     int userID;
-    int replyID;
     QString username;
     QImage avatar;
 };

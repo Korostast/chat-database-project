@@ -133,10 +133,26 @@ QList<QString> sqlLoadDatabaseList() {
 }
 
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userID) {
-    PersonalChatInfo chat5(4, 1, "Личная беседа (не работает имя ещё)", QImage(":chatDefaultImage"));
-    PersonalChatInfo chat6(5, 2, "Личная беседа", QImage(":chatDefaultImage"));
+    qDebug() << "Loading personal chats for user" << userID;
+    QString qStr;
+    QSqlQuery q;
 
-    return QList<PersonalChatInfo>({chat5, chat6});
+    qStr = QString("call getPersonalChats(%1)")
+            .arg(userID);
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+
+    QList<PersonalChatInfo> result;
+    while (q.next())
+        result.append(PersonalChatInfo(q.value(0).toInt(),
+                                       q.value(1).toInt(),
+                                       q.value(2).toString(),
+                                       QImage::fromData(q.value(3).toByteArray())
+                      )
+        );
+
+    return result;
 }
 
 QList<GroupChatInfo> sqlLoadGroupChats(int chatID) {
@@ -166,8 +182,8 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
                                   MESSAGE_TYPE(q.value(3).toInt()),
                                   q.value(4).toInt(),
                                   q.value(5).toInt(),
-                                  q.value(6).toInt(),
-                                  q.value(7).toString())
+                                  q.value(6).toString()
+                      )
         );
 
     return result;
@@ -175,9 +191,9 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
 
 QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &request) {
     MessageInfo message1(0, "Hello world!", "2021-03-31 22:10",
-                         USER_MESSAGE, 0, 10, -1, "Korostast");
+                         USER_MESSAGE, 0, 10, "Korostast");
     MessageInfo message2(1, "Hello world!", "2021-03-31 22:10",
-                         USER_MESSAGE, 0, 10, -1, "Korostast");
+                         USER_MESSAGE, 0, 10, "Korostast");
 
     return QList<MessageInfo>({message1, message2});
 }
@@ -293,12 +309,11 @@ QList<std::pair<UserInfo, QString> > sqlPeopleInSearch(const QString &substring)
 int sqlSendMessage(const MessageInfo &message) {
     qDebug() << "Sending message from" << message.userID << "to chat" << message.chatID;
 
-    QString qStr = QString("call sendMessage(%1,%2,'%3',%4,%5)")
+    QString qStr = QString("call sendMessage(%1,%2,'%3','%4')")
             .arg(message.chatID)
             .arg(message.userID)
             .arg(message.content)
-            .arg(message.type)
-            .arg(message.replyID);
+            .arg(message.type ? "system_info" : "user_message");
 
     QSqlQuery q;
     if (!q.exec(qStr))
