@@ -44,6 +44,8 @@ void MainWindow::showProfile(const UserInfo *user) const {
         qDebug() << "Current state changed to PROFILE";
     }
 
+    ui->profile_avatar->setPositiveIntData(user->getID());
+
     currentChat = nullptr;
     ui->main_stacked_widget->setCurrentIndex(PROFILE_PAGE);
 }

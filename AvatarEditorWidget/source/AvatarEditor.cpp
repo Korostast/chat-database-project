@@ -138,7 +138,7 @@ void AvatarEditor::saveImage() {
                                QImage(), content,
                                SYSTEM_MESSAGE);
     } else if (MainWindow::currentState == CHAT_CREATION) {
-        mainWindow->setChatCreationAvatar(result);
+        mainWindow->ui->chat_creation_avatar->setPixmap(getCircularPixmap(result, CHAT_CREATION_CHAT_IMAGE_SIZE));
     } else if (MainWindow::currentState == MY_PROFILE) {
         // TODO user avatar
         mainWindow->ui->profile_avatar->setPixmap(QPixmap::fromImage(result)

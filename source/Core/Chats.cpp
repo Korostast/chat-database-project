@@ -101,10 +101,6 @@ void MainWindow::openChat() {
         ui->chat_online_or_members_label->show();
     } else {
         ui->chat_online_or_members_label->hide();
-        // TODO database searchMessages person id | nope
-        //int friendID = sqlGetPersonID(currentChat->getID(), currentUser->getID());
-        int friendId = currentChat->getFriendID();
-        ui->chat_name_label->setPersonalChatUserId(friendId);
     }
     if (currentChat->getRole() == VIEWER) {
         ui->message_text_edit->hide();

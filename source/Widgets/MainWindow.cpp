@@ -3,6 +3,7 @@
 #include "FriendWidget.h"
 #include "IncomingRequestWidget.h"
 #include "SqlInterface.h"
+#include "OutcomingRequestWidget.h"
 #include <QScrollBar>
 
 STATE MainWindow::currentState = AUTHORIZATION;
@@ -73,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->settings_button, SIGNAL(released()), this, SLOT(settings_button_released()));
     connect(ui->chat_creation_button, SIGNAL(released()), this, SLOT(chat_creation_open_ui()));
     connect(ui->chat_creation_create_button, SIGNAL(released()), this, SLOT(group_chat_create()));
+    connect(ui->refresh_label, SIGNAL(released()), this, SLOT(repeat_sql_request()));
     connect(ui->unused_switch_personal_chats, &QPushButton::released, this, [this]() {
         ui->unused_switch_personal_chats->setChecked(true);
     });
@@ -163,11 +165,6 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event) {
     return false;
 }
 
-void MainWindow::setChatCreationAvatar(const QImage &avatar) const {
-    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(avatar, CHAT_CREATION_CHAT_IMAGE_SIZE);
-    ui->chat_creation_avatar->setPixmap(resultPixmap);
-}
-
 // Debug functions behavior
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
     QByteArray localMsg = msg.toLocal8Bit();
@@ -189,5 +186,91 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
         case QtFatalMsg:
             fprintf(stderr, "FATAL: %s (%s:%u, %s)\n\n", localMsg.constData(), file, context.line, function);
             break;
+    }
+}
+
+void MainWindow::repeat_sql_request() {
+    switch (currentState) {
+        case CHATS:
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing chats..";
+
+            chats_button_released();
+
+            QApplication::restoreOverrideCursor();
+            break;
+        case MESSAGES:
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing messages..";
+
+            openChat();
+
+            QApplication::restoreOverrideCursor();
+            break;
+        case PROFILE: {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing profile..";
+
+            UserInfo user = sqlLoadProfile(ui->profile_avatar->getPositiveIntData());
+            showProfile(&user);
+
+            QApplication::restoreOverrideCursor();
+            break;
+        }
+        case FRIENDS: {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing friends..";
+
+            int currentId = currentUser->getID();
+            QList<UserInfo> friends = sqlLoadFriends(currentId);
+            ui->actual_friends_list->clear();
+            ui->switch_actual_friends->setText(QString("Друзья (%1)").arg(friends.count()));
+            for (const auto &fr: friends)
+                addToList<FriendWidget>(fr.getID(), fr.getUsername(), fr.getAvatar(), ui->actual_friends_list);
+
+            QApplication::restoreOverrideCursor();
+            break;
+        }
+        case INCOMING_REQUESTS: {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing incoming requests..";
+
+            int currentId = currentUser->getID();
+            QList<UserInfo> incomingRequests = sqlLoadIncomingRequests(currentId);
+            ui->incoming_requests_list->clear();
+            ui->switch_incoming_requests->setText(QString("Входящие (%1)").arg(incomingRequests.count()));
+            for (const auto &in: incomingRequests)
+                addToList<IncomingRequestWidget>(in.getID(), in.getUsername(), in.getAvatar(),
+                                                 ui->incoming_requests_list);
+
+            QApplication::restoreOverrideCursor();
+            break;
+        }
+        case OUTCOMING_REQUESTS: {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing outcoming requests..";
+
+            int currentId = currentUser->getID();
+            QList<UserInfo> outcomingRequests = sqlLoadOutgoingRequests(currentId);
+            ui->outcoming_requests_list->clear();
+            ui->switch_outcoming_requests->setText(QString("Исходящие (%1)").arg(outcomingRequests.count()));
+            for (const auto &out: outcomingRequests)
+                addToList<OutcomingRequestWidget>(out.getID(), out.getUsername(), out.getAvatar(),
+                                                  ui->outcoming_requests_list);
+
+            QApplication::restoreOverrideCursor();
+            break;
+        }
+        case SETTINGS:
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing settings..";
+
+            settings_button_released();
+
+            QApplication::restoreOverrideCursor();
+            break;
+        default:
+            qWarning() << "There is no sql request for current state "
+                          "(nothing to update or you should do update by pressing specific button)";
     }
 }

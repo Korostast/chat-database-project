@@ -591,6 +591,9 @@ border-radius: 12px;</string>
                 <bold>false</bold>
                </font>
               </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="styleSheet">
                <string notr="true">padding: 0;</string>
               </property>
@@ -617,6 +620,9 @@ border-radius: 12px;</string>
                <font>
                 <pointsize>11</pointsize>
                </font>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="styleSheet">
                <string notr="true">padding: 0;</string>
@@ -645,6 +651,9 @@ border-radius: 12px;</string>
                 <pointsize>11</pointsize>
                </font>
               </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
+              </property>
               <property name="styleSheet">
                <string notr="true">padding: 0;</string>
               </property>
@@ -671,6 +680,9 @@ border-radius: 12px;</string>
                <font>
                 <pointsize>11</pointsize>
                </font>
+              </property>
+              <property name="cursor">
+               <cursorShape>PointingHandCursor</cursorShape>
               </property>
               <property name="styleSheet">
                <string notr="true">padding: 0;</string>
@@ -755,7 +767,7 @@ border-radius: 12px;</string>
              </size>
             </property>
             <property name="currentIndex">
-             <number>7</number>
+             <number>3</number>
             </property>
             <widget class="QWidget" name="personal_chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0,0,0,0" columnstretch="0">
@@ -1375,7 +1387,16 @@ border-radius: 12px;</string>
                  </layout>
                 </item>
                 <item>
-                 <widget class="Line" name="line_2">
+                 <widget class="Line" name="profile_line">
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>2</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -1729,7 +1750,8 @@ border-radius: 12px;</string>
                   </property>
                   <property name="font">
                    <font>
-                    <pointsize>12</pointsize>
+                    <pointsize>14</pointsize>
+                    <bold>true</bold>
                    </font>
                   </property>
                   <property name="text">
@@ -1750,7 +1772,7 @@ border-radius: 12px;</string>
                    <widget class="QLabel" name="label_3">
                     <property name="font">
                      <font>
-                      <pointsize>11</pointsize>
+                      <pointsize>12</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -1787,7 +1809,7 @@ border-radius: 12px;</string>
                    <widget class="QLabel" name="label_4">
                     <property name="font">
                      <font>
-                      <pointsize>11</pointsize>
+                      <pointsize>12</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -1824,7 +1846,7 @@ border-radius: 12px;</string>
                    <widget class="QLabel" name="label_6">
                     <property name="font">
                      <font>
-                      <pointsize>11</pointsize>
+                      <pointsize>12</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -1861,7 +1883,7 @@ border-radius: 12px;</string>
                    <widget class="QLabel" name="label_7">
                     <property name="font">
                      <font>
-                      <pointsize>11</pointsize>
+                      <pointsize>12</pointsize>
                      </font>
                     </property>
                     <property name="text">
@@ -2194,6 +2216,28 @@ color: rgb(231, 231, 231);</string>
                </property>
                <property name="text">
                 <string>username</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="ClickableLabel" name="refresh_label">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap resource="../resources/image.qrc">:/Refresh Icon</pixmap>
                </property>
               </widget>
              </item>

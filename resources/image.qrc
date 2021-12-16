@@ -6,5 +6,6 @@
         <file alias="Segoe UI Bold">fonts/Segoe UI Bold.ttf</file>
         <file alias="Roboto">fonts/Roboto-Regular.ttf</file>
         <file alias="QSS">CSS/MainTheme.qss</file>
+        <file alias="Refresh Icon">images/icons/refresh.png</file>
     </qresource>
 </RCC>

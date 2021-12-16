@@ -83,11 +83,7 @@ public:
 
     void showProfile(const UserInfo *user) const;
 
-    void setChatCreationAvatar(const QImage &avatar) const;
-
     Ui::MainWindow *ui;
-
-    void tests();
 
 private:
 
@@ -151,6 +147,8 @@ private slots:
     void searchMessages();
 
     void deleteMessagesInSearch() const;
+
+    void repeat_sql_request();
 };
 
 #endif // MAINWINDOW_H

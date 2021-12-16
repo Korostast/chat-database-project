@@ -115,7 +115,7 @@ void MainWindow::friends_button_released() {
 
     ui->switch_actual_friends->setText(QString("Друзья (%1)").arg(friends.count()));
     ui->switch_incoming_requests->setText(QString("Входящие (%1)").arg(incomingRequests.count()));
-    ui->switch_outcoming_requests->setText(QString("Друзья (%1)").arg(outcomingRequests.count()));
+    ui->switch_outcoming_requests->setText(QString("Исходящие (%1)").arg(outcomingRequests.count()));
 
     for (const auto& fr: friends)
         addToList<FriendWidget>(fr.getID(), fr.getUsername(), fr.getAvatar(), ui->actual_friends_list);
@@ -131,66 +131,4 @@ void MainWindow::friends_button_released() {
     switch_friends_page(ACTUAL_FRIENDS_PAGE);
 
     qDebug() << "Current state changed to FRIENDS";
-}
-
-// TODO remove it
-void MainWindow::tests() {
-    // Test
-    for (int i = 0; i < 5; ++i) {
-        addChat(i, QString::fromStdString(std::to_string(i)), QImage(":chatDefaultImage"), true, 0, PARTICIPANT, -1);
-    }
-    addChat(5, "5", QImage(":chatDefaultImage"), true, 0, VIEWER, -1);
-    addChat(6, "6", QImage(":chatDefaultImage"), true, 0, ADMIN, -1);
-    addChat(7, "Личная беседа", QImage(":chatDefaultImage"), false, 0, PARTICIPANT, -1);
-    //updateChat(2, nullptr, QImage(":chatDefaultImage"), PARTICIPANT);
-
-    // Test
-    addMessage(0, currentUser->getID(), 0, "Korostast", "2021-03-31 22:10", QImage(":chatDefaultImage"), "Hello world!",
-               USER_MESSAGE);
-    addMessage(0, currentUser->getID(), 1, "Korostast", "2021-03-31 22:11", QImage(":chatDefaultImage"), "Hello world!",
-               USER_MESSAGE);
-    QString test("Он белый\n"
-                 "Пушистый\n"
-                 "Мягкий\n"
-                 "Падает красиво\n"
-                 "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими\n"
-                 "Он безумно красивый\n"
-                 "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, currentUser->getID(), 2, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test,
-               USER_MESSAGE);
-
-    QString test2("Он белый"
-                  "Пушистый"
-                  "Мягкий"
-                  "Падает красиво"
-                  "Особенно когда в темноте, медленно-медленно и хлопьями, в ресницах застревающими"
-                  "Он безумно красивый"
-                  "И из него можно сделать снежок и запустить в какого-нибудь очень хорошего человека");
-    addMessage(0, currentUser->getID(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test2,
-               USER_MESSAGE);
-
-    QString test3(
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-            "aaaaaaaaaaaaaaaaaaaaaaa");
-    addMessage(0, currentUser->getID(), 3, "Korostast", "2021-03-31 23:59", QImage(":chatDefaultImage"), test3,
-               USER_MESSAGE);
-
-    addToList<FriendWidget>(0, "Lalala", QImage(":chatDefaultImage"), ui->actual_friends_list);
-    addToList<FriendWidget>(1, "Another one", QImage(":chatDefaultImage"), ui->actual_friends_list);
-    addToList<FriendWidget>(2, "Second", QImage(":chatDefaultImage"), ui->actual_friends_list);
-
-    addToList<IncomingRequestWidget>(3, "This_is_request", QImage(":chatDefaultImage"), ui->incoming_requests_list);
-    addToList<IncomingRequestWidget>(4, "Kriper2003", QImage(":chatDefaultImage"), ui->incoming_requests_list);
-
-    addToList<OutcomingRequestWidget>(5, "Masha", QImage(":chatDefaultImage"), ui->outcoming_requests_list);
-    addToList<OutcomingRequestWidget>(6, "Java", QImage(":chatDefaultImage"), ui->outcoming_requests_list);
-
-    /*addPersonInSearch(0, "Lalala", QImage(":chatDefaultImage"), <#initializer#>);
-    addPersonInSearch(1, "Another one", QImage(":chatDefaultImage"), <#initializer#>);
-    addPersonInSearch(2, "Second", QImage(":chatDefaultImage"), <#initializer#>);
-    addPersonInSearch(3, "This_is_request", QImage(":chatDefaultImage"), <#initializer#>);
-    addPersonInSearch(4, "Kriper2003", QImage(":chatDefaultImage"), <#initializer#>);*/
 }
