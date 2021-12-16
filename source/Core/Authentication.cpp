@@ -135,7 +135,6 @@ void MainWindow::switch_auth_button_released() const {
 }
 
 void MainWindow::switch_register_button_released() const {
-    qWarning() << currentState;
     if (currentState == AUTHORIZATION) {
         qDebug() << "SWITCH TO REGISTER";
         ui->switch_register_button->setChecked(true);

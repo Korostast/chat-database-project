@@ -122,6 +122,9 @@
            <pointsize>14</pointsize>
           </font>
          </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
         </widget>
        </item>
        <item>
@@ -174,6 +177,12 @@
           <font>
            <pointsize>14</pointsize>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
         </widget>
        </item>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>215</width>
-    <height>138</height>
+    <width>351</width>
+    <height>180</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,12 +34,15 @@
          </property>
          <property name="font">
           <font>
-           <family>Roboto</family>
-           <pointsize>10</pointsize>
+           <family>Segoe UI</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="cursor">
           <cursorShape>ArrowCursor</cursorShape>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">padding-left: 1px;</string>
          </property>
          <property name="text">
           <string>TextLabel</string>
@@ -75,8 +78,8 @@
          </property>
          <property name="font">
           <font>
-           <family>Roboto</family>
-           <pointsize>10</pointsize>
+           <family>Segoe UI</family>
+           <pointsize>12</pointsize>
           </font>
          </property>
          <property name="text">
@@ -89,16 +92,21 @@
        </item>
       </layout>
      </item>
-     <item>
+     <item alignment="Qt::AlignTop">
       <widget class="MessageTextEdit" name="message_content">
        <property name="font">
         <font>
-         <family>Roboto</family>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="contextMenuPolicy">
         <enum>Qt::CustomContextMenu</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: transparent;
+border-color: transparent;
+padding: 0;
+color: rgb(231, 231, 231);</string>
        </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>

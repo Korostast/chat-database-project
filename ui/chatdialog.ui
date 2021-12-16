@@ -31,6 +31,12 @@
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="chat_dialog_info_label">
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Информация</string>
            </property>
@@ -69,6 +75,12 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="font">
+              <font>
+               <family>Segoe UI</family>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
              <property name="focusPolicy">
               <enum>Qt::ClickFocus</enum>
              </property>
@@ -82,6 +94,12 @@
            </item>
            <item alignment="Qt::AlignLeft|Qt::AlignTop">
             <widget class="QLabel" name="chat_dialog_count_members">
+             <property name="font">
+              <font>
+               <family>Segoe UI</family>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
              <property name="text">
               <string>MemberCount</string>
              </property>
@@ -95,6 +113,12 @@
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="chat_dialog_members">
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Участники</string>
            </property>
@@ -102,6 +126,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="chat_dialog_add_member_button">
+           <property name="font">
+            <font>
+             <family>Segoe UI</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Добавить участника</string>
            </property>
@@ -118,6 +148,12 @@
        </item>
        <item>
         <widget class="QPushButton" name="chat_dialog_leave_button">
+         <property name="font">
+          <font>
+           <family>Segoe UI</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Выйти из беседы</string>
          </property>

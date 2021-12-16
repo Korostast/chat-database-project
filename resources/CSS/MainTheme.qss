@@ -1,0 +1,208 @@
+/*-----QWidget-----*/
+QWidget {
+    background-color: #242424;
+    color: rgb(255, 255, 255);
+    selection-background-color: #6d6d6d;
+    selection-color: rgb(0, 0, 0);
+}
+
+
+/*-----QLabel-----*/
+QLabel {
+    background-color: transparent;
+    color: #b9b9bb;
+    border-color: #000000;
+}
+
+/*-----QListWidget-----*/
+QListWidget {
+    show-decoration-selected: 1; /* make the selection span the entire width of the view */
+    background: #212121;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+QListWidget::item:alternate {
+    background: #EEEEEE;
+}
+
+QListWidget::item:selected {
+    border-radius: 6px;
+    color: #111111;
+}
+
+QListWidget::item:selected:!active {
+    background: rgb(121, 135, 170);
+}
+
+QListWidget::item:selected:active {
+    background: rgb(121, 135, 170);
+}
+
+QListWidget::item:hover {
+    background: rgb(41, 50, 66);
+}
+
+
+/*-----QPushButton-----*/
+QPushButton {
+    background-color: rgb(19, 161, 115);
+    color: #dcdcdc;
+    font-weight: bold;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 17px;
+    border-color: rgb(19, 161, 115);
+    padding: 10px;
+}
+
+#sign_in_button, #register_button {
+    background-color: rgb(20, 80, 161);
+    border-color: rgb(20, 80, 161);
+}
+
+#sign_in_button::hover, #register_button::hover {
+    background-color: rgb(17, 68, 139);
+    border-color: rgb(17, 68, 139);
+}
+
+QPushButton::hover {
+    background-color: rgb(23, 127, 92);
+    border-color: rgb(23, 127, 92);
+    color: #dcdcdc;
+}
+
+
+QPushButton::pressed {
+    background-color: rgb(5, 87, 60);
+    border-color: rgb(5, 87, 60);
+    color: #dcdcdc;
+}
+
+QPushButton::checked {
+    background-color: rgb(5, 87, 60);
+    border-color: rgb(5, 87, 60);
+    color: #dcdcdc;
+}
+
+QPushButton#chat_back_button, #chat_bar_search_button, #chat_bar_search_cancel, #messages_search_button,
+#messages_search_remove_messages, #messages_search_cancel {
+    background: transparent;
+    border-style: solid;
+    border-width: 2px;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 8px 8px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-color: #b9b9bb;
+    padding: 2px;
+}
+
+QPushButton#chat_back_button::hover, #chat_bar_search_button::hover, #chat_bar_search_cancel::hover,
+#messages_search_button::hover, #messages_search_remove_messages::hover, #messages_search_cancel::hover {
+    background: #393737;
+    border-radius: 8px 8px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#chat_bar_search_edit, #messages_search_edit {
+    padding: 0;
+}
+
+/*-----QLineEdit-----*/
+QLineEdit {
+    background-color: #292f45;
+    color: #b9b9bb;
+    font-weight: bold;
+    border-style: solid;
+    border-width: 2px;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 4px;
+    border-color: #b9b9bb;
+    padding: 10px;
+}
+
+/* VERTICAL SCROLLBAR */
+QScrollBar:vertical {
+    border: none;
+    background: rgb(45, 45, 68);
+    width: 14px;
+    margin: 15px 0 15px 0;
+    border-radius: 0;
+}
+
+/*  HANDLE BAR VERTICAL */
+QScrollBar::handle:vertical {
+    background-color: rgb(80, 80, 122);
+    min-height: 30px;
+    border-radius: 7px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: rgb(23, 127, 92);
+}
+
+QScrollBar::handle:vertical:pressed {
+    background-color: rgb(19, 161, 115);
+}
+
+/* BTN TOP - SCROLLBAR */
+QScrollBar::sub-line:vertical {
+    border: none;
+    background-color: rgb(59, 59, 90);
+    height: 15px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical:hover {
+    background-color: rgb(23, 127, 92);
+}
+
+QScrollBar::sub-line:vertical:pressed {
+    background-color: rgb(19, 161, 115);
+}
+
+/* BTN BOTTOM - SCROLLBAR */
+QScrollBar::add-line:vertical {
+    border: none;
+    background-color: rgb(59, 59, 90);
+    height: 15px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:vertical:hover {
+    background-color: rgb(23, 127, 92);
+}
+
+QScrollBar::add-line:vertical:pressed {
+    background-color: rgb(19, 161, 115);
+}
+
+/* RESET ARROW */
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    background: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+/*-----QPlainTExtEdit-----*/
+QPlainTextEdit {
+    background-color: #1a1818;
+    color: #cecece;
+    border: 1px solid #1d1d1d;
+    padding: 3px 3px 3px 5px;
+    border-radius: 4px;
+}
