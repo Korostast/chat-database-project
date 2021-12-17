@@ -24,7 +24,7 @@ MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGr
     auto *widget = new ChatWidget(this);
     widget->setID(id);
     widget->setName(name);
-    widget->setAvatar(avatar);
+    widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
     widget->setGroup(isGroup);
     widget->setCountMembers(countMembers);
     widget->setRole(role);
@@ -252,9 +252,9 @@ void MainWindow::chat_name_label_released() {
     }
 
     // TODO it doesn't work properly | but don't remove it, maybe this will be helpful in the future
-//    QGraphicsBlurEffect *effect = new QGraphicsBlurEffect;
-//    effect->setBlurRadius(5);
-//    this->setGraphicsEffect(effect);
+    /*QGraphicsBlurEffect *effect = new QGraphicsBlurEffect;
+    effect->setBlurRadius(5);
+    this->setGraphicsEffect(effect);*/
 }
 
 // If message is correct
@@ -389,7 +389,7 @@ void MainWindow::loadSearchInterface() {
     searchMessages();
 
     currentState = SEARCH_MESSAGES;
-    if (currentChat->getRole() >= ADMIN)
+    if (currentChat->getRole() >= MODERATOR)
         ui->messages_search_remove_messages->show();
     else
         ui->messages_search_remove_messages->hide();

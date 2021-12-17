@@ -11,9 +11,9 @@ int main(int argc, char *argv[]) {
 
     qInstallMessageHandler(myMessageOutput);
 
-    QFontDatabase::addApplicationFont(":Segoe UI");
+    /*QFontDatabase::addApplicationFont(":Segoe UI");
     QFontDatabase::addApplicationFont(":Segoe UI Bold");
-    QFontDatabase::addApplicationFont(":Roboto");
+    QFontDatabase::addApplicationFont(":Roboto");*/
 
     MainWindow window;
     window.show();
