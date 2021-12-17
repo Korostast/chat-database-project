@@ -209,7 +209,7 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>344</width>
+                  <width>340</width>
                   <height>48</height>
                  </size>
                 </property>
@@ -245,7 +245,7 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>344</width>
+                  <width>340</width>
                   <height>48</height>
                  </size>
                 </property>
@@ -257,7 +257,9 @@
                 </property>
                 <property name="font">
                  <font>
+                  <family>Segoe UI</family>
                   <pointsize>11</pointsize>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="placeholderText">
@@ -275,7 +277,7 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>344</width>
+                  <width>340</width>
                   <height>48</height>
                  </size>
                 </property>
@@ -457,6 +459,12 @@
          <layout class="QVBoxLayout" name="verticalLayout_11">
           <item alignment="Qt::AlignTop">
            <widget class="QPushButton" name="authentification_choose_database_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>80</width>
@@ -767,7 +775,7 @@ border-radius: 12px;</string>
              </size>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>6</number>
             </property>
             <widget class="QWidget" name="personal_chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0,0,0,0" columnstretch="0">

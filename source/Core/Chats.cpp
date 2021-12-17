@@ -252,9 +252,9 @@ void MainWindow::chat_name_label_released() {
     }
 
     // TODO it doesn't work properly | but don't remove it, maybe this will be helpful in the future
-    QGraphicsBlurEffect *effect = new QGraphicsBlurEffect;
+    /*QGraphicsBlurEffect *effect = new QGraphicsBlurEffect;
     effect->setBlurRadius(5);
-    this->setGraphicsEffect(effect);
+    this->setGraphicsEffect(effect);*/
 }
 
 // If message is correct

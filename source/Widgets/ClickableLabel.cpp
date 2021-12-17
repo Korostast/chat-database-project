@@ -23,14 +23,12 @@ void ClickableLabel::setPositiveIntData(int intData) {
 }
 
 void ClickableLabel::enterEvent(QEnterEvent *event) {
-    qDebug() << "Entering Clickable";
     QFont f = font();
     f.setUnderline(true);
     setFont(f);
 }
 
 void ClickableLabel::leaveEvent(QEvent *event) {
-    qDebug() << "Left";
     QFont f = font();
     f.setUnderline(false);
     setFont(f);
