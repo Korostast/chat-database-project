@@ -1,9 +1,21 @@
 #include "ui_usermessageform.h"
 #include "UserMessageWidget.h"
 #include "MainWindow.h"
+#include "SqlInterface.h"
 
 UserMessageWidget::UserMessageWidget(QWidget *parent) : QWidget(parent), ui(new Ui::UserMessageWidget), userID(-1), chatID(-1), messageID(-1) {
     ui->setupUi(this);
+    auto *mainWindow = qobject_cast<MainWindow *>(parent);
+    connect(ui->message_username, &ClickableLabel::released, this, [this, mainWindow]() {
+        // TODO database searchMessages profile
+        UserInfo user = sqlLoadProfile(getUserID());
+        mainWindow->showProfile(&user);
+    });
+    connect(ui->message_avatar, &ClickableLabel::released, this, [this, mainWindow]() {
+        // TODO database searchMessages profile
+        UserInfo user = sqlLoadProfile(getUserID());
+        mainWindow->showProfile(&user);
+    });
 }
 
 UserMessageWidget::~UserMessageWidget() {

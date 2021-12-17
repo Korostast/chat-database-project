@@ -3,8 +3,12 @@
 
 // We opened a profile of the user. Awful code.
 void MainWindow::showProfile(const UserInfo *user) const {
-    ui->profile_avatar->setPixmap(QPixmap::fromImage(user->getAvatar())
-                                          .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+    const auto &avatar = user->getAvatar();
+    ui->profile_avatar->setPixmap(QPixmap::fromImage(avatar.isNull() ? QImage(":chatDefaultImage") : avatar)
+                                          .scaled(PROFILE_IMAGE_SIZE,
+                                                  PROFILE_IMAGE_SIZE,
+                                                  Qt::IgnoreAspectRatio,
+                                                  Qt::SmoothTransformation));
     ui->profile_username->setText(user->getUsername());
     ui->profile_status->setText(user->getStatus());
     if (!user->getFirstName().isEmpty()) {
