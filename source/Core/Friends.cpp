@@ -41,43 +41,56 @@ void MainWindow::addPersonInSearch(int personID, const QString &username, const 
 
     auto *item = new QListWidgetItem;
     auto *widget = new SearchPeopleWidget(this);
+    widget->ui->search_people_additional_info->hide();
 
     if (!status.isEmpty()) {
         if (status == "friend") {
             widget->ui->search_people_action->setText("Удалить из друзей");
             auto *friendWidget = MainWindow::findInList<FriendWidget>(personID, ui->actual_friends_list);
             if (friendWidget != nullptr)
-                connect(widget->ui->search_people_action, &QPushButton::released, this, [friendWidget]() {
+                connect(widget->ui->search_people_action, &QPushButton::released, this, [friendWidget, widget]() {
                     QMetaObject::invokeMethod(friendWidget->ui->friend_remove, "released");
+                    widget->ui->search_people_action->hide();
+                    widget->ui->search_people_additional_info->setText("Вы больше не друзья");
+                    widget->ui->search_people_additional_info->show();
                 });
             else
                 qWarning() << QString("Friend with id = %1 was not found").arg(personID);
         } else if (status == "incoming") {
             widget->ui->search_people_action->setText("Принять заявку");
             auto *incomingRequestWidget = MainWindow::findInList<IncomingRequestWidget>(personID,
-                                                                                        ui->actual_friends_list);
+                                                                                        ui->incoming_requests_list);
             if (incomingRequestWidget != nullptr) {
-                connect(widget->ui->search_people_action, &QPushButton::released, this, [incomingRequestWidget]() {
+                connect(widget->ui->search_people_action, &QPushButton::released, this, [incomingRequestWidget, widget]() {
                     QMetaObject::invokeMethod(incomingRequestWidget->ui->incoming_request_accept, "released");
+                    widget->ui->search_people_action->hide();
+                    widget->ui->search_people_additional_info->setText("Заявка принята");
+                    widget->ui->search_people_additional_info->show();
                 });
             } else {
                 qWarning() << QString("Incoming request with id = %1 was not found").arg(personID);
             }
-        } else if (status == "outcoming") {
+        } else if (status == "outgoing") {
             widget->ui->search_people_action->setText("Отменить заявку");
             auto *outcomingRequestWidget = MainWindow::findInList<OutcomingRequestWidget>(personID,
-                                                                                          ui->actual_friends_list);
+                                                                                          ui->outcoming_requests_list);
             if (outcomingRequestWidget != nullptr) {
-                connect(widget->ui->search_people_action, &QPushButton::released, this, [outcomingRequestWidget]() {
+                connect(widget->ui->search_people_action, &QPushButton::released, this, [outcomingRequestWidget, widget]() {
                     QMetaObject::invokeMethod(outcomingRequestWidget->ui->outcoming_request_remove, "released");
+                    widget->ui->search_people_action->hide();
+                    widget->ui->search_people_additional_info->setText("Заявка отклонена");
+                    widget->ui->search_people_additional_info->show();
                 });
             } else {
-                qWarning() << QString("Friend with id = %1 was not found").arg(personID);
+                qWarning() << QString("Outgoing request with id = %1 was not found").arg(personID);
             }
         } else if (status == "stranger") {
             widget->ui->search_people_action->setText("Добавить в друзья");
             connect(widget->ui->search_people_action, &QPushButton::released, this, [widget]() {
                 widget->add_friend_button_released();
+                widget->ui->search_people_action->hide();
+                widget->ui->search_people_additional_info->setText("Заявка в друзья отправлена");
+                widget->ui->search_people_additional_info->show();
             });
         }
     } else {
@@ -114,6 +127,23 @@ void MainWindow::switch_friends_page(int page) const {
     ui->switch_search_people->setChecked(page == SEARCH_PEOPLE_PAGE);
 
     currentState = static_cast<STATE>(FRIENDS + page);
+
+    switch (currentState) {
+        case FRIENDS:
+            qDebug() << "Current state is FRIENDS";
+            break;
+        case INCOMING_REQUESTS:
+            qDebug() << "Current state is INCOMING_REQUESTS";
+            break;
+        case OUTCOMING_REQUESTS:
+            qDebug() << "Current state is OUTCOMING_REQUESTS";
+            break;
+        case SEARCH_PEOPLE:
+            qDebug() << "Current state is SEARCH_PEOPLE";
+            break;
+        default:
+            qCritical() << "Incorrect state = " << currentState;
+    }
 }
 
 void FriendWidget::friend_remove_button_released() {

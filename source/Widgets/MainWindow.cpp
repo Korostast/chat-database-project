@@ -261,6 +261,16 @@ void MainWindow::repeat_sql_request() {
             QApplication::restoreOverrideCursor();
             break;
         }
+        case SEARCH_PEOPLE: {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing outcoming requests..";
+
+            friends_button_released();
+            switch_friends_page(SEARCH_PEOPLE_PAGE);
+
+            QApplication::restoreOverrideCursor();
+            break;
+        }
         case SETTINGS:
             QApplication::setOverrideCursor(Qt::WaitCursor);
             qInfo() << "Refreshing settings..";
