@@ -14,6 +14,7 @@ void MainWindow::settings_button_released() const {
     currentState = SETTINGS;
 }
 
+// TODO refactor
 void MainWindow::settings_save_button_released() {
     const QString firstname(ui->settings_firstname_edit->text());
     const QString lastname(ui->settings_lastname_edit->text());
@@ -30,6 +31,7 @@ void MainWindow::settings_save_button_released() {
     }
 }
 
+// TODO refactor
 void MainWindow::change_password() {
     QString oldPassword(ui->settings_old_password_edit->text());
     QString newPassword(ui->settings_new_password_edit->text());
