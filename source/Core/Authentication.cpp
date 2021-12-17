@@ -84,10 +84,11 @@ void MainWindow::sign_in_button_released() {
 
     // Change screen to chat list
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
+    this->currentPassword = password;
     chats_button_released();
 }
 
-void MainWindow::register_button_released() const {
+void MainWindow::register_button_released() {
     qDebug() << "REGISTER BUTTON CLICKED";
 
     QString username = ui->register_username_edit->text();
@@ -116,6 +117,7 @@ void MainWindow::register_button_released() const {
     }
 
     // Change screen to chat list
+    this->currentPassword = password;
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
 }
 

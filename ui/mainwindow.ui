@@ -257,7 +257,6 @@
                 </property>
                 <property name="font">
                  <font>
-                  <family>Segoe UI</family>
                   <pointsize>11</pointsize>
                   <bold>false</bold>
                  </font>
@@ -1663,6 +1662,18 @@ border-radius: 12px;</string>
             </widget>
             <widget class="QWidget" name="chat_creation_page">
              <layout class="QGridLayout" name="gridLayout_13">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item row="1" column="0">
                <widget class="QListWidget" name="chat_creation_friends_list">
                 <property name="frameShape">
@@ -1758,9 +1769,9 @@ border-radius: 12px;</string>
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-202</y>
+                   <y>-292</y>
                    <width>505</width>
-                   <height>746</height>
+                   <height>846</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2193,7 +2204,19 @@ border-radius: 12px;</string>
                         <number>12</number>
                        </property>
                        <item alignment="Qt::AlignHCenter">
-                        <widget class="QLabel" name="label">
+                        <widget class="QLabel" name="settings_password_error_label">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>50</height>
+                          </size>
+                         </property>
                          <property name="font">
                           <font>
                            <pointsize>12</pointsize>
@@ -2237,7 +2260,7 @@ border-radius: 12px;</string>
                           </widget>
                          </item>
                          <item row="1" column="1">
-                          <widget class="QLineEdit" name="settings_firstname_edit_4">
+                          <widget class="QLineEdit" name="settings_old_password_edit">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -2254,6 +2277,9 @@ border-radius: 12px;</string>
                             <font>
                              <pointsize>11</pointsize>
                             </font>
+                           </property>
+                           <property name="echoMode">
+                            <enum>QLineEdit::Password</enum>
                            </property>
                           </widget>
                          </item>
@@ -2271,7 +2297,7 @@ border-radius: 12px;</string>
                           </spacer>
                          </item>
                          <item row="3" column="1">
-                          <widget class="QLineEdit" name="settings_firstname_edit_6">
+                          <widget class="QLineEdit" name="settings_repeat_password_edit">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -2288,6 +2314,9 @@ border-radius: 12px;</string>
                             <font>
                              <pointsize>11</pointsize>
                             </font>
+                           </property>
+                           <property name="echoMode">
+                            <enum>QLineEdit::Password</enum>
                            </property>
                           </widget>
                          </item>
@@ -2340,7 +2369,7 @@ border-radius: 12px;</string>
                           </widget>
                          </item>
                          <item row="2" column="1">
-                          <widget class="QLineEdit" name="settings_firstname_edit_5">
+                          <widget class="QLineEdit" name="settings_new_password_edit">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -2357,6 +2386,9 @@ border-radius: 12px;</string>
                             <font>
                              <pointsize>11</pointsize>
                             </font>
+                           </property>
+                           <property name="echoMode">
+                            <enum>QLineEdit::Password</enum>
                            </property>
                           </widget>
                          </item>
@@ -2389,7 +2421,7 @@ border-radius: 12px;</string>
                         </layout>
                        </item>
                        <item alignment="Qt::AlignHCenter">
-                        <widget class="QPushButton" name="pushButton">
+                        <widget class="QPushButton" name="settings_change_password_button">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -2399,7 +2431,7 @@ border-radius: 12px;</string>
                          <property name="minimumSize">
                           <size>
                            <width>150</width>
-                           <height>32</height>
+                           <height>36</height>
                           </size>
                          </property>
                          <property name="font">
@@ -2425,7 +2457,7 @@ border-radius: 12px;</string>
                        <property name="sizeHint" stdset="0">
                         <size>
                          <width>20</width>
-                         <height>20</height>
+                         <height>30</height>
                         </size>
                        </property>
                       </spacer>
@@ -2436,7 +2468,13 @@ border-radius: 12px;</string>
                         <number>12</number>
                        </property>
                        <item alignment="Qt::AlignHCenter">
-                        <widget class="QLabel" name="label_11">
+                        <widget class="QLabel" name="settings_username_error_label">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>50</height>
+                          </size>
+                         </property>
                          <property name="font">
                           <font>
                            <pointsize>12</pointsize>
@@ -2453,7 +2491,7 @@ border-radius: 12px;</string>
                        <item>
                         <layout class="QGridLayout" name="gridLayout_19">
                          <item row="0" column="1">
-                          <widget class="QLineEdit" name="settings_lastname_edit_2">
+                          <widget class="QLineEdit" name="settings_username_edit">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -2513,7 +2551,7 @@ border-radius: 12px;</string>
                         </layout>
                        </item>
                        <item alignment="Qt::AlignHCenter">
-                        <widget class="QPushButton" name="pushButton_2">
+                        <widget class="QPushButton" name="settings_change_username_button">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -2523,7 +2561,7 @@ border-radius: 12px;</string>
                          <property name="minimumSize">
                           <size>
                            <width>150</width>
-                           <height>32</height>
+                           <height>36</height>
                           </size>
                          </property>
                          <property name="font">
@@ -2540,6 +2578,22 @@ border-radius: 12px;</string>
                      </item>
                     </layout>
                    </widget>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer_8">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </widget>
@@ -2895,6 +2949,53 @@ color: rgb(231, 231, 231);</string>
   <tabstop>chats_button</tabstop>
   <tabstop>profile_button</tabstop>
   <tabstop>additional_info_list</tabstop>
+  <tabstop>authentification_admin_button</tabstop>
+  <tabstop>authentification_choose_database_button</tabstop>
+  <tabstop>friends_button</tabstop>
+  <tabstop>settings_button</tabstop>
+  <tabstop>unused_switch_personal_chats</tabstop>
+  <tabstop>switch_group_chats</tabstop>
+  <tabstop>chat_creation_button</tabstop>
+  <tabstop>group_chat_list</tabstop>
+  <tabstop>switch_personal_chats</tabstop>
+  <tabstop>unused_switch_group_chats</tabstop>
+  <tabstop>chat_back_button</tabstop>
+  <tabstop>chat_bar_search_edit</tabstop>
+  <tabstop>chat_bar_search_button</tabstop>
+  <tabstop>chat_bar_search_cancel</tabstop>
+  <tabstop>messageList</tabstop>
+  <tabstop>message_text_edit</tabstop>
+  <tabstop>send_message_button</tabstop>
+  <tabstop>switch_actual_friends</tabstop>
+  <tabstop>switch_incoming_requests</tabstop>
+  <tabstop>switch_outcoming_requests</tabstop>
+  <tabstop>switch_search_people</tabstop>
+  <tabstop>actual_friends_list</tabstop>
+  <tabstop>incoming_requests_list</tabstop>
+  <tabstop>outcoming_requests_list</tabstop>
+  <tabstop>search_people_line</tabstop>
+  <tabstop>search_people_button</tabstop>
+  <tabstop>search_people_list</tabstop>
+  <tabstop>chat_creation_friends_list</tabstop>
+  <tabstop>chat_creation_name_edit</tabstop>
+  <tabstop>chat_creation_create_button</tabstop>
+  <tabstop>settings_firstname_edit</tabstop>
+  <tabstop>settings_lastname_edit</tabstop>
+  <tabstop>settings_phonenumber_edit</tabstop>
+  <tabstop>settings_status_edit</tabstop>
+  <tabstop>settings_old_password_edit</tabstop>
+  <tabstop>settings_new_password_edit</tabstop>
+  <tabstop>settings_repeat_password_edit</tabstop>
+  <tabstop>settings_change_password_button</tabstop>
+  <tabstop>settings_username_edit</tabstop>
+  <tabstop>settings_change_username_button</tabstop>
+  <tabstop>settings_save_button</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>messages_search_edit</tabstop>
+  <tabstop>messages_search_button</tabstop>
+  <tabstop>messages_search_remove_messages</tabstop>
+  <tabstop>messages_search_cancel</tabstop>
+  <tabstop>messages_search_list</tabstop>
  </tabstops>
  <resources>
   <include location="../resources/image.qrc"/>

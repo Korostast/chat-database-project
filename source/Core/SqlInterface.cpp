@@ -564,3 +564,11 @@ void sqlChooseDatabase(const QString &databaseName) {
     dbClose();
     dbConnect(databaseName);
 }
+
+void sqlChangePassword(int userId, const QString &newPassword) {
+
+}
+
+void sqlChangeUsername(int userId, const QString &newUsername) {
+    throw QSqlException("Данное имя уже занято");
+}
