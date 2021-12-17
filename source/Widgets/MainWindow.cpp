@@ -144,6 +144,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->profile_avatar, &ClickableLabel::released, this, [this]() {
         chatDialog->openFileChooser();
     });
+    connect(ui->settings_change_password_button, SIGNAL(released()), this, SLOT(change_password()));
+    connect(ui->settings_change_username_button, SIGNAL(released()), this, SLOT(change_username()));
+    ui->settings_password_error_label->hide();
+    ui->settings_username_error_label->hide();
 }
 
 MainWindow::~MainWindow() {

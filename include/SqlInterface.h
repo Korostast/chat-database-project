@@ -117,4 +117,11 @@ void sqlDeleteDatabase(const QString &databaseName);
 // Юзер выбрал базу данных
 void sqlChooseDatabase(const QString &databaseName);
 
+// Юзер сменил пароль. Проверка на корректность проведена
+void sqlChangePassword(int userId, const QString &newPassword);
+
+// Юзер сменил имя пользователя. Проверка на корректность имени проведена
+// Функция должна выкидывать исключение, если такое имя уже используется
+void sqlChangeUsername(int userId, const QString &newUsername);
+
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

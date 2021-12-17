@@ -22,10 +22,16 @@ AvatarEditor::~AvatarEditor() {
 
 // Set graphics view scene: upload an image and selecting ellipse to the scene
 void AvatarEditor::loadImageIntoScene(const QString &pathToImage) {
+    //ui->graphicsView->setScene(new QGraphicsScene(this));
+    //ui->graphicsView->resetTransform();
+    scaleFactor = 1;
+    GraphicsView::zoomFactor = 1;
+    //image = new QImage;
     image->load(pathToImage);
 
     // Calculate scale factor
     {
+        // TODO Simplify with fit in view
         qreal viewWidth = ui->graphicsView->width();
         qreal viewHeight = ui->graphicsView->height();
         qreal imageWidth = image->width();
@@ -37,6 +43,8 @@ void AvatarEditor::loadImageIntoScene(const QString &pathToImage) {
             scaleFactor *= viewHeight / newHeight;
         }
         qDebug() << "Scale factor =" << scaleFactor;
+        if (scaleFactor == 0)
+            scaleFactor = 1;
     }
 
     // Convert image into GraphicsItem and upload it to the scene
@@ -46,6 +54,7 @@ void AvatarEditor::loadImageIntoScene(const QString &pathToImage) {
         // Accurate smooth scaling, high quality
         imageItem->setTransformationMode(Qt::SmoothTransformation);
         ui->graphicsView->scene()->addItem(imageItem);
+        ui->graphicsView->fitInView(imageItem, Qt::KeepAspectRatio);
     }
 
     // Draw an ellipse and display it
@@ -186,5 +195,6 @@ void AvatarEditor::editorFileChooserOpen() {
 void AvatarEditor::closeEvent(QCloseEvent *e) {
     QDialog::closeEvent(e);
     ui->graphicsView->scene()->clear();
+    ui->graphicsView->update();
     qDebug() << "Editor closed";
 }
