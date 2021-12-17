@@ -443,7 +443,7 @@ void sqlChangeRole(int userID, int chatID, int newRole) {
     QString qStr = QString("call updateRole(%1,%2,%3)")
             .arg(chatID)
             .arg(userID)
-            .arg(newRole);
+            .arg(newRole + 1);
 
     QSqlQuery q;
     if (!q.exec(qStr))
