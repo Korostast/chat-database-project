@@ -31,7 +31,7 @@ QList<QString> sqlLoadDatabaseList();
 
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userID);
 
-QList<GroupChatInfo> sqlLoadGroupChats(int chatID);
+QList<GroupChatInfo> sqlLoadGroupChats(int userID);
 
 QList<MessageInfo> sqlLoadMessages(int chatID);
 
