@@ -155,13 +155,28 @@ QList<PersonalChatInfo> sqlLoadPersonalChats(int userID) {
     return result;
 }
 
-QList<GroupChatInfo> sqlLoadGroupChats(int chatID) {
-    GroupChatInfo chat1(0, "Самая первая обычная беседа", QImage(":chatDefaultImage"), 3);
-    GroupChatInfo chat2(1, "Админская", QImage(":chatDefaultImage"), 4, ADMIN);
-    GroupChatInfo chat3(2, "Зрительская", QImage(":chatDefaultImage"), 5, VIEWER);
-    GroupChatInfo chat4(3, "Модераторская", QImage(":chatDefaultImage"), 10, MODERATOR);
+QList<GroupChatInfo> sqlLoadGroupChats(int userID) {
+    qDebug() << "Loading group chats for user" << userID;
+    QString qStr;
+    QSqlQuery q;
 
-    return QList<GroupChatInfo>({chat1, chat2, chat3, chat4});
+    qStr = QString("call getGroupChats(%1)")
+            .arg(userID);
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+
+    QList<GroupChatInfo> result;
+    while (q.next())
+        result.append(GroupChatInfo(q.value(0).toInt(),
+                                    q.value(1).toString(),
+                                    QImage::fromData(q.value(2).toByteArray()),
+                                    q.value(3).toInt(),
+                                    ROLE(q.value(4).toInt())
+                      )
+        );
+
+    return result;
 }
 
 QList<MessageInfo> sqlLoadMessages(int chatID) {
