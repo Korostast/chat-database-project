@@ -230,12 +230,27 @@ QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &request) {
     return result;
 }
 
-QList<UserChatMember> sqlLoadChatMembers(int userID) {
-    UserChatMember user1(0, "Lalala", QImage(":chatDefaultImage"), PARTICIPANT);
-    UserChatMember user2(1, "Another one", QImage(":chatDefaultImage"), VIEWER);
-    UserChatMember user3(2, "Second", QImage(":chatDefaultImage"), MODERATOR);
+QList<UserChatMember> sqlLoadChatMembers(int chatID) {
+    qDebug() << "Loading members of " << chatID;
 
-    return QList<UserChatMember>({user1, user2, user3});
+    QString qStr = QString("call getChatMembers(%1)")
+            .arg(chatID);
+
+    QSqlQuery q;
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+
+    QList<UserChatMember> result;
+
+    while (q.next())
+        result.append(UserChatMember(q.value(0).toInt(),
+                                     q.value(1).toString(),
+                                     QImage::fromData(q.value(2).toByteArray()),
+                                     ROLE(q.value(3).toInt())
+                      )
+        );
+
+    return result;
 }
 
 UserInfo sqlLoadProfile(int userID) {
@@ -301,7 +316,8 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID) {
     while (q.next())
         result.append(UserInfo(q.value(0).toInt(),
                                q.value(1).toString(),
-                               QImage::fromData(q.value(2).toByteArray()))
+                               QImage::fromData(q.value(2).toByteArray())
+                      )
         );
 
     return result;
@@ -321,17 +337,18 @@ QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
     while (q.next())
         result.append(UserInfo(q.value(0).toInt(),
                                q.value(1).toString(),
-                               QImage::fromData(q.value(2).toByteArray()))
+                               QImage::fromData(q.value(2).toByteArray())
+                      )
         );
 
     return result;
 }
 
-QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userId, const QString &substring) {
-    qDebug() << "Searching for people for userID =" << userId;
+QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userID, const QString &substring) {
+    qDebug() << "Searching for people for userID =" << userID;
 
     QString qStr = QString("call searchUsers(%1, '%2')")
-            .arg(userId)
+            .arg(userID)
             .arg(substring);
 
     QSqlQuery q;
@@ -342,7 +359,8 @@ QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userId, const QString &s
     while (q.next())
         result.append(std::make_pair(UserInfo(q.value(0).toInt(),
                                               q.value(1).toString(),
-                                              QImage::fromData(q.value(2).toByteArray())), q.value(3).toString())
+                                              QImage::fromData(q.value(2).toByteArray())), q.value(3).toString()
+                      )
         );
 
     return result;
