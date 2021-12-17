@@ -205,12 +205,29 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
 }
 
 QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &request) {
-    MessageInfo message1(0, "Hello world!", "2021-03-31 22:10",
-                         USER_MESSAGE, 0, 10, "Korostast");
-    MessageInfo message2(1, "Hello world!", "2021-03-31 22:10",
-                         USER_MESSAGE, 0, 10, "Korostast");
+    qDebug() << "Searching for messages in" << chatID << "with pattern" << request;
 
-    return QList<MessageInfo>({message1, message2});
+    QString qStr = QString("call searchMessage(%1, '%2')")
+            .arg(chatID)
+            .arg(request);
+
+    QSqlQuery q;
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+
+    QList<MessageInfo> result;
+    while (q.next())
+        result.append(MessageInfo(q.value(0).toInt(),
+                                  q.value(1).toString(),
+                                  q.value(2).toDateTime().toString("yyyy-MM-dd HH:mm:ss"),
+                                  MESSAGE_TYPE(q.value(3).toInt()),
+                                  q.value(4).toInt(),
+                                  q.value(5).toInt(),
+                                  q.value(6).toString()
+                      )
+        );
+
+    return result;
 }
 
 QList<UserChatMember> sqlLoadChatMembers(int userID) {
@@ -324,8 +341,8 @@ QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userId, const QString &s
     QList<std::pair<UserInfo, QString> > result;
     while (q.next())
         result.append(std::make_pair(UserInfo(q.value(0).toInt(),
-                               q.value(1).toString(),
-                               QImage::fromData(q.value(2).toByteArray())), q.value(3).toString())
+                                              q.value(1).toString(),
+                                              QImage::fromData(q.value(2).toByteArray())), q.value(3).toString())
         );
 
     return result;
@@ -374,7 +391,7 @@ void sqlDeleteMessage(int messageID) {
 }
 
 void sqlDeleteMessagesByPattern(int chatID, const QString &pattern) {
-    qDebug() << "Deleting messages in"<<chatID<<"witt pattern"<<pattern;
+    qDebug() << "Deleting messages in" << chatID << "witt pattern" << pattern;
 
     QString qStr = QString("call deleteMessageByPattern(%1, '%2')")
             .arg(chatID)
