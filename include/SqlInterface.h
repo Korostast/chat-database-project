@@ -40,7 +40,7 @@ QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &request);
 
 // Юзер открыл информацию о беседе, загружается список участников. Используется структура UserChatMember, потому что
 // она содержит роль участника. Можно объединить с UserInfo, но вроде смысла нет
-QList<UserChatMember> sqlLoadChatMembers(int userID);
+QList<UserChatMember> sqlLoadChatMembers(int chatID);
 
 UserInfo sqlLoadProfile(int userID);
 
@@ -50,7 +50,7 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID);
 
 QList<UserInfo> sqlLoadOutgoingRequests(int userID);
 
-QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userId, const QString &substring);
+QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userID, const QString &substring);
 
 // TODO удалить комментарии. А лучше на англ перевести
 // Функции, отправляющие POST запросы в БД
