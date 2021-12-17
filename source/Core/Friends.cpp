@@ -122,6 +122,8 @@ void FriendWidget::friend_remove_button_released() {
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<FriendWidget>(getFriendID(), mainWindow->ui->actual_friends_list);
+    mainWindow->ui->switch_actual_friends->setText(
+            QString("Друзья (%1)").arg(mainWindow->ui->incoming_requests_list->count()));
 }
 
 void IncomingRequestWidget::accept_request_button_released() {
@@ -130,6 +132,8 @@ void IncomingRequestWidget::accept_request_button_released() {
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<IncomingRequestWidget>(getFriendID(), mainWindow->ui->incoming_requests_list);
+    mainWindow->ui->switch_incoming_requests->setText(
+            QString("Входящие (%1)").arg(mainWindow->ui->incoming_requests_list->count()));
 }
 
 void IncomingRequestWidget::decline_request_button_released() {
@@ -138,6 +142,8 @@ void IncomingRequestWidget::decline_request_button_released() {
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<IncomingRequestWidget>(getFriendID(), mainWindow->ui->incoming_requests_list);
+    mainWindow->ui->switch_incoming_requests->setText(
+            QString("Входящие (%1)").arg(mainWindow->ui->incoming_requests_list->count()));
 }
 
 void OutcomingRequestWidget::remove_request_button_released() {
@@ -146,6 +152,8 @@ void OutcomingRequestWidget::remove_request_button_released() {
 
     auto *mainWindow = qobject_cast<MainWindow *>(window());
     MainWindow::removeFromList<OutcomingRequestWidget>(getFriendID(), mainWindow->ui->outcoming_requests_list);
+    mainWindow->ui->switch_outcoming_requests->setText(
+            QString("Исходящие (%1)").arg(mainWindow->ui->outcoming_requests_list->count()));
 }
 
 void MainWindow::search_people() {
