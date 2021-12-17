@@ -30,7 +30,7 @@
     <item>
      <widget class="QStackedWidget" name="app_stacked_widget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0">
@@ -175,7 +175,7 @@
              <set>Qt::AlignBottom|Qt::AlignHCenter</set>
             </property>
             <property name="wordWrap">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>

@@ -6,7 +6,6 @@
 
 SearchPeopleWidget::SearchPeopleWidget(QWidget *parent) : ui(new Ui::SearchPeopleWidget) {
     ui->setupUi(this);
-    connect(ui->search_people_add, SIGNAL(released()), this, SLOT(add_friend_button_released()));
 }
 
 SearchPeopleWidget::~SearchPeopleWidget() {
@@ -22,12 +21,4 @@ void SearchPeopleWidget::setAvatar(const QImage &avatar) {
     QPixmap resultPixmap = AvatarEditor::getCircularPixmap(avatar, SEARCH_PEOPLE_IMAGE_SIZE);
     ui->search_people_avatar->setPixmap(resultPixmap);
     AbstractFriendWidget::setAvatar(avatar);
-}
-
-void SearchPeopleWidget::add_friend_button_released() {
-    // TODO database send friend request
-    sqlSendFriendRequest(MainWindow::currentUser->getID(), getFriendID());
-
-    // TODO change ui of search people widget
-    ui->search_people_add->hide();
 }
