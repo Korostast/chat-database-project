@@ -68,7 +68,7 @@ public:
         widget->setUsername(username);
 
         // TODO avatars | done ?
-        widget->setAvatar(avatar.isNull() ? QImage("chatDefaultImage") : avatar);
+        widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
 
         item->setSizeHint(widget->sizeHint());
 
@@ -78,6 +78,9 @@ public:
 
     template<typename T>
     static void removeFromList(int requestID, QListWidget *list);
+
+    template<typename T>
+    static T * findInList(int requestID, QListWidget *list);
 
     void addPersonInSearch(int personID, const QString &username, const QImage &avatar, const QString &status);
 

@@ -26,7 +26,6 @@ public:
 
     void setAvatar(const QImage &avatar) override;
 
-private slots:
     void add_friend_button_released();
 
 };

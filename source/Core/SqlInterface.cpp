@@ -260,7 +260,7 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID) {
 }
 
 QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
-    qDebug() << "Loading friends for userID =" << userID;
+    qDebug() << "Loading outgoing friend requests for userID =" << userID;
 
     QString qStr = QString("call getOutgoingRequests(%1)")
             .arg(userID);
@@ -279,15 +279,25 @@ QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
     return result;
 }
 
-QList<std::pair<UserInfo, QString> > sqlPeopleInSearch(const QString &substring) {
-    std::pair<UserInfo, QString> user1({UserInfo(0, "Lalala", QImage(":chatDefaultImage"))}, "Уже в друзьях");
-    std::pair<UserInfo, QString> user2({UserInfo(1, "Another one", QImage(":chatDefaultImage"))}, nullptr);
-    std::pair<UserInfo, QString> user3({UserInfo(2, "Second", QImage(":chatDefaultImage"))}, nullptr);
-    std::pair<UserInfo, QString> user4({UserInfo(3, "This_is_request", QImage(":chatDefaultImage"))},
-                                       "Вы уже послали запрос");
-    std::pair<UserInfo, QString> user5({UserInfo(4, "Kriper2003", QImage(":chatDefaultImage"))}, nullptr);
+QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userId, const QString &substring) {
+    qDebug() << "Searching for people for userID =" << userId;
 
-    return QList<std::pair<UserInfo, QString> >({user1, user2, user3, user4, user5});
+    QString qStr = QString("call searchUsers(%1, '%2')")
+            .arg(userId)
+            .arg(substring);
+
+    QSqlQuery q;
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+
+    QList<std::pair<UserInfo, QString> > result;
+    while (q.next())
+        result.append(std::make_pair(UserInfo(q.value(0).toInt(),
+                               q.value(1).toString(),
+                               QImage::fromData(q.value(2).toByteArray())), q.value(3).toString())
+        );
+
+    return result;
 }
 
 int sqlSendMessage(const MessageInfo &message) {
@@ -374,7 +384,7 @@ void sqlUpdateChat(int chatID, const QString &newName, const QImage &newAvatar) 
 void sqlAcceptFriendRequest(int currentUserID, int newFriendID) {
     qDebug() << "userID =" << currentUserID << "accepts friend request from" << newFriendID;
 
-    QString qStr = QString("call acceptRequest(%1,%1)")
+    QString qStr = QString("call acceptRequest(%1,%2)")
             .arg(newFriendID)
             .arg(currentUserID);
 

@@ -1,6 +1,9 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "ui_searchpeoplewidget.h"
+#include "ui_friendwidget.h"
+#include "ui_incomingrequestwidget.h"
+#include "ui_outcomingrequestwidget.h"
 #include "FriendWidget.h"
 #include "IncomingRequestWidget.h"
 #include "OutcomingRequestWidget.h"
@@ -20,29 +23,86 @@ void MainWindow::removeFromList(int requestID, QListWidget *list) {
     }
 }
 
+template<typename T>
+T *MainWindow::findInList(int requestID, QListWidget *list) {
+    for (int i = 0; i < list->count(); ++i) {
+        auto *friendWidget = qobject_cast<T *>(list->itemWidget(list->item(i)));
+        if (friendWidget->getFriendID() == requestID) {
+            return friendWidget;
+        }
+    }
+    return nullptr;
+}
+
 // Add person widget to the search list
 void MainWindow::addPersonInSearch(int personID, const QString &username, const QImage &avatar, const QString &status) {
-    auto *item = new QListWidgetItem;
+    if (personID == currentUser->getID())
+        return;
 
+    auto *item = new QListWidgetItem;
     auto *widget = new SearchPeopleWidget(this);
+
     if (!status.isEmpty()) {
-        widget->ui->search_people_add->hide();
-        widget->ui->friend_request_unavailable_label->setText(status);
+        if (status == "friend") {
+            widget->ui->search_people_action->setText("Удалить из друзей");
+            auto *friendWidget = MainWindow::findInList<FriendWidget>(personID, ui->actual_friends_list);
+            if (friendWidget != nullptr)
+                connect(widget->ui->search_people_action, &QPushButton::released, this, [friendWidget]() {
+                    QMetaObject::invokeMethod(friendWidget->ui->friend_remove, "released");
+                });
+            else
+                qWarning() << QString("Friend with id = %1 was not found").arg(personID);
+        } else if (status == "incoming") {
+            widget->ui->search_people_action->setText("Принять заявку");
+            auto *incomingRequestWidget = MainWindow::findInList<IncomingRequestWidget>(personID,
+                                                                                        ui->actual_friends_list);
+            if (incomingRequestWidget != nullptr) {
+                connect(widget->ui->search_people_action, &QPushButton::released, this, [incomingRequestWidget]() {
+                    QMetaObject::invokeMethod(incomingRequestWidget->ui->incoming_request_accept, "released");
+                });
+            } else {
+                qWarning() << QString("Incoming request with id = %1 was not found").arg(personID);
+            }
+        } else if (status == "outcoming") {
+            widget->ui->search_people_action->setText("Отменить заявку");
+            auto *outcomingRequestWidget = MainWindow::findInList<OutcomingRequestWidget>(personID,
+                                                                                          ui->actual_friends_list);
+            if (outcomingRequestWidget != nullptr) {
+                connect(widget->ui->search_people_action, &QPushButton::released, this, [outcomingRequestWidget]() {
+                    QMetaObject::invokeMethod(outcomingRequestWidget->ui->outcoming_request_remove, "released");
+                });
+            } else {
+                qWarning() << QString("Friend with id = %1 was not found").arg(personID);
+            }
+        } else if (status == "stranger") {
+            widget->ui->search_people_action->setText("Добавить в друзья");
+            connect(widget->ui->search_people_action, &QPushButton::released, this, [widget]() {
+                widget->add_friend_button_released();
+            });
+        }
     } else {
-        widget->ui->friend_request_unavailable_label->hide();
+        widget->ui->search_people_action->hide();
+        qWarning() << QString("Unknown state: %1").arg(status);
     }
     widget->setFriendID(personID);
     widget->setUsername(username);
-
-    // TODO avatars
-    widget->setAvatar(avatar);
+    widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
 
     // TODO Check if this person is already in the list of outcoming_requests_list and friends list and incoming_requests_list ?
+
 
     item->setSizeHint(widget->sizeHint());
 
     ui->search_people_list->insertItem(0, item);
     ui->search_people_list->setItemWidget(item, widget);
+}
+
+void SearchPeopleWidget::add_friend_button_released() {
+    // TODO database send friend request
+    sqlSendFriendRequest(MainWindow::currentUser->getID(), getFriendID());
+
+    // TODO change ui of search people widget
+    ui->search_people_action->hide();
 }
 
 void MainWindow::switch_friends_page(int page) const {
@@ -94,7 +154,7 @@ void MainWindow::search_people() {
         return;
 
     // TODO database search people
-    QList<std::pair<UserInfo, QString> > users = sqlPeopleInSearch(input);
+    QList<std::pair<UserInfo, QString> > users = sqlSearchUsers(currentUser->getID(), input);
 
     ui->search_people_list->clear();
 
@@ -117,11 +177,11 @@ void MainWindow::friends_button_released() {
     ui->switch_incoming_requests->setText(QString("Входящие (%1)").arg(incomingRequests.count()));
     ui->switch_outcoming_requests->setText(QString("Исходящие (%1)").arg(outcomingRequests.count()));
 
-    for (const auto& fr: friends)
+    for (const auto &fr: friends)
         addToList<FriendWidget>(fr.getID(), fr.getUsername(), fr.getAvatar(), ui->actual_friends_list);
-    for (const auto& in: incomingRequests)
+    for (const auto &in: incomingRequests)
         addToList<IncomingRequestWidget>(in.getID(), in.getUsername(), in.getAvatar(), ui->incoming_requests_list);
-    for (const auto& out: outcomingRequests)
+    for (const auto &out: outcomingRequests)
         addToList<OutcomingRequestWidget>(out.getID(), out.getUsername(), out.getAvatar(), ui->outcoming_requests_list);
 
     ui->main_stacked_widget->setCurrentIndex(FRIENDS_PAGE);
