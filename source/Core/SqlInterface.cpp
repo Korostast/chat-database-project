@@ -374,7 +374,15 @@ void sqlDeleteMessage(int messageID) {
 }
 
 void sqlDeleteMessagesByPattern(int chatID, const QString &pattern) {
+    qDebug() << "Deleting messages in"<<chatID<<"witt pattern"<<pattern;
 
+    QString qStr = QString("call deleteMessageByPattern(%1, '%2')")
+            .arg(chatID)
+            .arg(pattern);
+
+    QSqlQuery q;
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlLeaveChat(int userID, int chatID) {
