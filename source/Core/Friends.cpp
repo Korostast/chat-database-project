@@ -192,7 +192,7 @@ void MainWindow::search_people() {
         return;
 
     // TODO database search people
-    QList<std::pair<UserInfo, QString> > users = sqlSearchUsers(currentUser->getID(), input);
+    QList<std::pair<UserInfo, QString> > users = sqlSearchUsersByPattern(currentUser->getID(), input);
 
     ui->search_people_list->clear();
 

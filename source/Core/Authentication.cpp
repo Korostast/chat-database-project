@@ -70,7 +70,7 @@ void MainWindow::sign_in_button_released() {
 
     try {
         // TODO database authorization
-        currentUser = new UserInfo(sqlAuthenticate(password, emailOrUsername));
+        currentUser = new UserInfo(sqlAuthenticateUser(password, emailOrUsername));
         if (currentUser->getAvatar().isNull())
             currentUser->setAvatar(QImage(":chatDefaultImage"));
         ui->current_user_name_label->setText(currentUser->getUsername());
@@ -104,7 +104,7 @@ void MainWindow::register_button_released() {
     // Send request to database
     try {
         // TODO database register account
-        currentUser = new UserInfo(sqlRegister(username, email, password));
+        currentUser = new UserInfo(sqlRegisterUser(username, email, password));
         if (currentUser->getAvatar().isNull())
             currentUser->setAvatar(QImage(":chatDefaultImage"));
         ui->current_user_name_label->setText(currentUser->getUsername());

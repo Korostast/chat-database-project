@@ -9,24 +9,22 @@ class QSqlException : std::exception {
 public:
     explicit QSqlException(std::string message);
 
-    const char *what() const noexcept override;
+    [[nodiscard]] const char *what() const noexcept override;
 };
 
 // Create a database connection session
-// Errors are handled by the function
-void dbConnect(const QString &dbName = "information_schema");
+void dbConnect(const QString &dbName);
 
 // Close the default database connection session
 void dbClose();
 
-// Authorization and registration
-UserInfo sqlRegister(const QString &username, const QString &email, const QString &password);
+// Returns the name of the currently used database
+QString dbName();
 
-UserInfo sqlAuthenticate(const QString &password, const QString &emailOrUsername);
+UserInfo sqlRegisterUser(const QString &username, const QString &email, const QString &password);
 
-// Функции отправляющие GET запросы в БД
+UserInfo sqlAuthenticateUser(const QString &password, const QString &emailOrUsername);
 
-// Админ или юзер открыл окно выбора базы данных (в структуре id и имя базы)
 QList<QString> sqlLoadDatabaseList();
 
 QList<PersonalChatInfo> sqlLoadPersonalChats(int userID);
@@ -35,11 +33,8 @@ QList<GroupChatInfo> sqlLoadGroupChats(int userID);
 
 QList<MessageInfo> sqlLoadMessages(int chatID);
 
-// Юзер ищет сообщения по паттерну request
-QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &request);
+QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &pattern);
 
-// Юзер открыл информацию о беседе, загружается список участников. Используется структура UserChatMember, потому что
-// она содержит роль участника. Можно объединить с UserInfo, но вроде смысла нет
 QList<UserChatMember> sqlLoadChatMembers(int chatID);
 
 UserInfo sqlLoadProfile(int userID);
@@ -50,75 +45,50 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID);
 
 QList<UserInfo> sqlLoadOutgoingRequests(int userID);
 
-QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userID, const QString &substring);
+QList<std::pair<UserInfo, QString> > sqlSearchUsersByPattern(int userID, const QString &pattern);
 
-// TODO удалить комментарии. А лучше на англ перевести
-// Функции, отправляющие POST запросы в БД
-// Вызывается в функции 'sendMessage', когда текущий юзер отправляет сообщение. Возвращает messageID
-// Сообщение вставляется в интерфейс уже ПОСЛЕ возвращения. Надо бы добавить анимацию загрузки хотя бы к курсору, но потом
 int sqlSendMessage(const MessageInfo &message);
 
-// Если сообщение было отредактировано
-void sqlMessageEdited(int messageID, const QString &newContent);
+void sqlEditMessage(int messageID, const QString &newContent);
 
-// Админ или модератор удалил сообщение
 void sqlDeleteMessage(int messageID);
 
-// Админ воспользовался поиском сообщений и решил удалить все найденные сообщения
 void sqlDeleteMessagesByPattern(int chatID, const QString &pattern);
 
-// Текущий юзер нажал кнопку 'выйти из чата'
 void sqlLeaveChat(int userID, int chatID);
 
-// Админ исключает участника
 void sqlRemoveChatMember(int userID, int chatID);
 
-// Админ меняет роль юзера в чате
 void sqlChangeRole(int chatID, int userID, int newRole);
 
-// Админ обновил имя или аватарку чата
 void sqlUpdateChat(int chatID, const QString &newName, const QImage &newAvatar);
 
-// Юзер принял заявку в друзья
-void sqlAcceptFriendRequest(int currentUserID, int newFriendID);
+void sqlAcceptFriendRequest(int userID, int senderID);
 
-// Юзер отклонил заявку в друзья
-void sqlDeclineFriendRequest(int currentUserID, int notFriendID);
+void sqlDeclineFriendRequest(int userID, int declinedID);
 
-// Юзер отменил заявку в друзья
-void sqlCancelFriendRequest(int currentUserID, int notFriendID);
+void sqlCancelFriendRequest(int senderID, int requestedID);
 
-// Юзер отправил заявку в друзья (в поиске людей кнопка, пока не определяет, есть ли друг или заявка уже)
 void sqlSendFriendRequest(int userID, int requestedID);
 
-// Юзер удалил друга
 void sqlRemoveFriend(int userID, int friendID);
 
-// Юзер с id = creatorID создаёт групповой диалог. Participants - список id участников (т.е. по умолчанию роль PARTICIPANT)
-// Функция возвращает id беседы. Это нужно для того, чтобы лишний раз не загружать заново список диалогов после создания
-int
-sqlCreateGroupChat(int creatorID, const QString &chatName, const QImage &avatar, const std::vector<int> &participants);
+int sqlCreateGroupChat(int creatorID, const QString &chatName,
+                       const QImage &avatar, const std::vector<int> &participants);
 
-// Админ беседы с id = chatID добавил новых участников в беседу. Id новых участников перечислены в participants
 void sqlAddMembers(int chatID, const std::vector<int> &participants);
 
-// Админ авторизуется в окне создания баз данных. Возвращает true, если получилось авторизоваться, false в ином случае
 bool sqlAdminAuth(const QString &password);
 
-// Админ создаёт базу данных
 void sqlCreateDatabase(const QString &databaseName);
 
-// Админ удаляет базу данных
 void sqlDeleteDatabase(const QString &databaseName);
 
-// Юзер выбрал базу данных
 void sqlChooseDatabase(const QString &databaseName);
 
-// Юзер изменил один или более атрибутов аккаунта. userID не изменяется
 void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
                       const QString &status, const QImage &avatar);
 
-// Юзер сменил пароль или имя пользователя, или электронный адрес. Проверка на корректность проведена
 void sqlUpdateAccount(int userId, const QString &username, const QString &password, const QString &email);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H
