@@ -7,6 +7,7 @@
 #include <QSqlError>
 #include <QFile>
 #include <QDateTime>
+#include <QBuffer>
 
 QSqlException::QSqlException(std::string message) : msg(std::move(message)) {}
 
@@ -566,7 +567,20 @@ void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastn
     QSqlQuery q;
     QString qStr;
 
+    qStr = QString("call updateProfile(%1, '%2', '%3', %4, '%5')");
+    if (!phoneNumber.isEmpty())
+        qStr.replace("%4", "\'%4\'");
 
+    qStr = qStr.arg(userId)
+            .arg(firstname)
+            .arg(lastname)
+            .arg(phoneNumber.isEmpty() ? "null" : phoneNumber)
+            .arg(status);
+
+    qDebug() << qStr;
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlUpdateAccount(int userId, const QString &username, const QString &password, const QString &email) {

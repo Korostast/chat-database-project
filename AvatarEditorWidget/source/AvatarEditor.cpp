@@ -156,6 +156,11 @@ void AvatarEditor::saveImage() {
         sqlUpdateProfile(MainWindow::currentUser->getID(), MainWindow::currentUser->getFirstName(),
                          MainWindow::currentUser->getLastName(), MainWindow::currentUser->getPhoneNumber(),
                          MainWindow::currentUser->getStatus(), result);
+
+        QString path("../resources/images/users/%1.png");
+        if (!result.save(QString(path).arg(MainWindow::currentUser->getID()), "png")) {
+            qCritical() << "Error: can't save image";
+        }
     } else {
         QString path("../resources/images/users/%1.png");
         if (!result.save(QString(path).arg(MainWindow::currentUser->getID()), "png")) {
