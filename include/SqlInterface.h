@@ -114,14 +114,13 @@ void sqlDeleteDatabase(const QString &databaseName);
 // Юзер выбрал базу данных
 void sqlChooseDatabase(const QString &databaseName);
 
-// Юзер изменил один или более атрибутов аккаунта. userID не изменяется
-void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
-                      const QString &status, const QImage &avatar);
+void sqlUpdateUsername(int userID, const QString &newUsername);
 
-// Юзер сменил пароль или имя пользователя, или электронный адрес. Проверка на корректность проведена
-void sqlUpdateAccount(int userId, const QString &username, const QString &password, const QString &email);
+void sqlUpdatePassword(int userID, const QString &newPassword);
 
-// Юзер изменил пароль
-void sqlChangePassword(int userId, const QString &newPassword);
+void sqlUpdateAvatar(int userID, const QImage &newAvatar);
+
+void sqlUpdateOther(int userID, const QString &newStatus, const QString &newPhoneNumber, const QString &newFirstName,
+                    const QString &newLastName);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

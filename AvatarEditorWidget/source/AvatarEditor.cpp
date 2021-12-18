@@ -152,9 +152,8 @@ void AvatarEditor::saveImage() {
         mainWindow->ui->profile_avatar->setPixmap(QPixmap::fromImage(result)
                                                           .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE,
                                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-        sqlUpdateProfile(MainWindow::currentUser->getID(), MainWindow::currentUser->getFirstName(),
-                         MainWindow::currentUser->getLastName(), MainWindow::currentUser->getPhoneNumber(),
-                         MainWindow::currentUser->getStatus(), result);
+
+        sqlUpdateAvatar(MainWindow::currentUser->getID(), result);
 
         QString path("../resources/images/users/profile_%1.png");
         if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {

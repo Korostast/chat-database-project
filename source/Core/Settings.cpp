@@ -56,7 +56,7 @@ void MainWindow::settings_save_button_released() {
             return;
         }
 
-        sqlUpdateProfile(currentUser->getID(), firstname, lastname, phoneNumber, status, currentUser->getAvatar());
+        sqlUpdateOther(currentUser->getID(), status, phoneNumber, firstname, lastname);
         currentUser->setFirstName(firstname);
         currentUser->setLastName(lastname);
         currentUser->setPhoneNumber(phoneNumber);
@@ -101,7 +101,7 @@ void MainWindow::change_password() const {
 
     // TODO database change password
     try {
-        sqlChangePassword(currentUser->getID(), newPassword);
+        sqlUpdatePassword(currentUser->getID(), newPassword);
     } catch (QSqlException &error) {
         ui->settings_password_error_label->setText(error.what());
         ui->settings_password_error_label->show();
@@ -140,7 +140,7 @@ void MainWindow::change_username() {
 
     // TODO database change username
     try {
-        sqlUpdateAccount(currentUser->getID(), newUsername, nullptr, nullptr);
+        sqlUpdateUsername(currentUser->getID(), newUsername);
         currentUser->setUsername(newUsername);
     } catch (QSqlException &error) {
         ui->settings_username_error_label->setText(error.what());
