@@ -577,8 +577,6 @@ void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastn
             .arg(phoneNumber.isEmpty() ? "null" : phoneNumber)
             .arg(status);
 
-    qDebug() << qStr;
-
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }

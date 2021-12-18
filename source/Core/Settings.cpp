@@ -3,18 +3,19 @@
 #include "SqlInterface.h"
 
 void MainWindow::settings_button_released() const {
-    ui->settings_firstname_edit->setText(currentUser->getFirstName());
-    ui->settings_lastname_edit->setText(currentUser->getLastName());
-    ui->settings_phonenumber_edit->setText(currentUser->getPhoneNumber());
-    ui->settings_status_edit->setText(currentUser->getStatus());
-    ui->settings_username_edit->setText(currentUser->getUsername());
+    UserInfo curUser = sqlLoadProfile(currentUser->getID());
+    ui->settings_firstname_edit->setText(curUser.getFirstName());
+    ui->settings_lastname_edit->setText(curUser.getLastName());
+    ui->settings_phonenumber_edit->setText(curUser.getPhoneNumber());
+    ui->settings_status_edit->setText(curUser.getStatus());
+    ui->settings_username_edit->setText(curUser.getUsername());
+
     ui->settings_password_error_label->hide();
     ui->settings_username_error_label->hide();
     ui->settings_profile_info_error_label->hide();
     ui->settings_old_password_edit->clear();
     ui->settings_new_password_edit->clear();
     ui->settings_repeat_password_edit->clear();
-    ui->settings_username_edit->clear();
     ui->main_stacked_widget->setCurrentIndex(SETTINGS_PAGE);
     currentState = SETTINGS;
 }
