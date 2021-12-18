@@ -98,8 +98,6 @@ private:
 
     QMap<int, QListWidgetItem *> chatMap;
 
-    QString currentPassword;
-
     static QString checkRegisterInput(const QString &username, const QString &password, const QString &email);
 
     static QString checkAuthInput(const QString &password, const QString &emailOrUsername);
@@ -159,9 +157,11 @@ private slots:
 
     void repeat_sql_request();
 
-    void change_password();
+    void change_password() const;
 
     void change_username();
+
+    void change_password_return_pressed() const;
 };
 
 #endif // MAINWINDOW_H

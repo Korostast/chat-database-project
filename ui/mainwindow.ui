@@ -184,7 +184,7 @@
         <item row="3" column="1">
          <widget class="QStackedWidget" name="authentification_stacked_widget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="page_3">
            <layout class="QGridLayout" name="gridLayout_8">
@@ -227,6 +227,12 @@
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="maxLength">
+                 <number>32</number>
+                </property>
                 <property name="echoMode">
                  <enum>QLineEdit::Password</enum>
                 </property>
@@ -260,6 +266,9 @@
                   <pointsize>11</pointsize>
                   <bold>false</bold>
                  </font>
+                </property>
+                <property name="maxLength">
+                 <number>320</number>
                 </property>
                 <property name="placeholderText">
                  <string>Электронный адрес или имя пользователя</string>
@@ -341,6 +350,9 @@
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
+                <property name="maxLength">
+                 <number>32</number>
+                </property>
                 <property name="placeholderText">
                  <string>Имя пользователя</string>
                 </property>
@@ -377,6 +389,9 @@
                 <property name="styleSheet">
                  <string notr="true"/>
                 </property>
+                <property name="maxLength">
+                 <number>32</number>
+                </property>
                 <property name="frame">
                  <bool>true</bool>
                 </property>
@@ -412,6 +427,9 @@
                  <font>
                   <pointsize>12</pointsize>
                  </font>
+                </property>
+                <property name="maxLength">
+                 <number>320</number>
                 </property>
                 <property name="placeholderText">
                  <string>Электронный адрес</string>
@@ -1187,6 +1205,9 @@ border-radius: 12px;</string>
                     <property name="inputMask">
                      <string/>
                     </property>
+                    <property name="maxLength">
+                     <number>4000</number>
+                    </property>
                     <property name="clearButtonEnabled">
                      <bool>true</bool>
                     </property>
@@ -1298,6 +1319,9 @@ border-radius: 12px;</string>
                   </property>
                   <property name="sizeAdjustPolicy">
                    <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                  </property>
+                  <property name="placeholderText">
+                   <string>Напишите сообщение...</string>
                   </property>
                  </widget>
                 </item>
@@ -1625,6 +1649,9 @@ border-radius: 12px;</string>
                         <pointsize>11</pointsize>
                        </font>
                       </property>
+                      <property name="maxLength">
+                       <number>16</number>
+                      </property>
                       <property name="clearButtonEnabled">
                        <bool>true</bool>
                       </property>
@@ -1730,6 +1757,9 @@ border-radius: 12px;</string>
                    <font>
                     <pointsize>11</pointsize>
                    </font>
+                  </property>
+                  <property name="maxLength">
+                   <number>32</number>
                   </property>
                  </widget>
                 </item>
@@ -1851,7 +1881,7 @@ border-radius: 12px;</string>
                        </property>
                        <property name="minimumSize">
                         <size>
-                         <width>0</width>
+                         <width>300</width>
                          <height>50</height>
                         </size>
                        </property>
@@ -1888,6 +1918,9 @@ border-radius: 12px;</string>
                           <font>
                            <pointsize>11</pointsize>
                           </font>
+                         </property>
+                         <property name="maxLength">
+                          <number>32</number>
                          </property>
                         </widget>
                        </item>
@@ -1956,6 +1989,9 @@ border-radius: 12px;</string>
                           <font>
                            <pointsize>11</pointsize>
                           </font>
+                         </property>
+                         <property name="maxLength">
+                          <number>32</number>
                          </property>
                         </widget>
                        </item>
@@ -2055,6 +2091,9 @@ border-radius: 12px;</string>
                            <pointsize>11</pointsize>
                           </font>
                          </property>
+                         <property name="maxLength">
+                          <number>15</number>
+                         </property>
                         </widget>
                        </item>
                        <item row="0" column="2">
@@ -2122,6 +2161,9 @@ border-radius: 12px;</string>
                           <font>
                            <pointsize>11</pointsize>
                           </font>
+                         </property>
+                         <property name="maxLength">
+                          <number>400</number>
                          </property>
                         </widget>
                        </item>
@@ -2240,7 +2282,7 @@ border-radius: 12px;</string>
                          </property>
                          <property name="minimumSize">
                           <size>
-                           <width>0</width>
+                           <width>300</width>
                            <height>50</height>
                           </size>
                          </property>
@@ -2305,6 +2347,9 @@ border-radius: 12px;</string>
                              <pointsize>11</pointsize>
                             </font>
                            </property>
+                           <property name="maxLength">
+                            <number>32</number>
+                           </property>
                            <property name="echoMode">
                             <enum>QLineEdit::Password</enum>
                            </property>
@@ -2341,6 +2386,9 @@ border-radius: 12px;</string>
                             <font>
                              <pointsize>11</pointsize>
                             </font>
+                           </property>
+                           <property name="maxLength">
+                            <number>32</number>
                            </property>
                            <property name="echoMode">
                             <enum>QLineEdit::Password</enum>
@@ -2413,6 +2461,9 @@ border-radius: 12px;</string>
                             <font>
                              <pointsize>11</pointsize>
                             </font>
+                           </property>
+                           <property name="maxLength">
+                            <number>32</number>
                            </property>
                            <property name="echoMode">
                             <enum>QLineEdit::Password</enum>
@@ -2498,7 +2549,7 @@ border-radius: 12px;</string>
                         <widget class="QLabel" name="settings_username_error_label">
                          <property name="minimumSize">
                           <size>
-                           <width>0</width>
+                           <width>300</width>
                            <height>50</height>
                           </size>
                          </property>
@@ -2535,6 +2586,9 @@ border-radius: 12px;</string>
                             <font>
                              <pointsize>11</pointsize>
                             </font>
+                           </property>
+                           <property name="maxLength">
+                            <number>16</number>
                            </property>
                           </widget>
                          </item>
@@ -2705,6 +2759,9 @@ border-radius: 12px;</string>
                    <font>
                     <pointsize>11</pointsize>
                    </font>
+                  </property>
+                  <property name="maxLength">
+                   <number>4000</number>
                   </property>
                   <property name="clearButtonEnabled">
                    <bool>true</bool>
