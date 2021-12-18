@@ -437,7 +437,7 @@ void sqlRemoveChatMember(int userID, int chatID) {
     sqlLeaveChat(userID, chatID);
 }
 
-void sqlChangeRole(int userID, int chatID, int newRole) {
+void sqlChangeRole(int chatID, int userID, int newRole) {
     qDebug() << "Setting role of userID =" << userID << "in chatID =" << chatID << "to" << newRole;
 
     QString qStr = QString("call updateRole(%1,%2,%3)")
@@ -507,12 +507,48 @@ void sqlRemoveFriend(int userID, int friendID) {
         qWarning() << q.lastError().databaseText();
 }
 
-int sqlCreateChat(int adminID, const QString &chatName, const QImage &avatar, const std::vector<int> &participants) {
-    return 99;
+int
+sqlCreateGroupChat(int creatorID, const QString &chatName, const QImage &avatar, const std::vector<int> &participants) {
+    qDebug() << "Creating new chat with the name" << chatName;
+
+    // Step 1 - Create new entry in 'Chat'
+    QString qStr = QString("call createGroupChat('%1', '%2')")
+            .arg(chatName)
+            .arg(QString(QByteArray::fromRawData((const char *) avatar.bits(), avatar.sizeInBytes())).replace("'",
+                                                                                                              "''"));
+
+    QSqlQuery q;
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+
+    q.next();
+    int chatID = q.value(0).toInt();
+
+    // Step 3 - Add creator to the chat
+    sqlAddMembers(chatID, {creatorID});
+
+    // Step 4 - Give the creator 'admin' role
+    sqlChangeRole(chatID, creatorID, ADMIN);
+
+    // Step 5 - Add all the invited members to the chat
+    sqlAddMembers(chatID, participants);
+
+    return chatID;
 }
 
-void sqlAddMembers(int chatID, std::vector<int> &newParticipants) {
+void sqlAddMembers(int chatID, const std::vector<int> &participants) {
+    qDebug() << "Adding new members to" << chatID;
+    QString qStr;
+    QSqlQuery q;
 
+    for (auto now: participants) {
+        qStr = QString("call joinChat(%1, %2)")
+                .arg(chatID)
+                .arg(now);
+
+        if (!q.exec(qStr))
+            qWarning() << q.lastError().databaseText();
+    }
 }
 
 void sqlUpdateProfile(int userID, const QString &firstname, const QString &lastname, const QString &phoneNumber,
