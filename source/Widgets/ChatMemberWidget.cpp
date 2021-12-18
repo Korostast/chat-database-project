@@ -92,7 +92,7 @@ void ChatMemberWidget::removeMember() {
 // Admin change chat member role
 void ChatMemberWidget::changeMemberRole(int index) const {
     if (ui->chat_members_roles_combobox->hasFocus()) {// TODO database change chat member role
-        sqlChangeRole(getID(), MainWindow::currentChat->getID(), index);
+        sqlChangeRole(MainWindow::currentChat->getID(), getID(), index);
 
         qInfo() << QString("Admin change role of user with messageID - %1, username - %2. Old role - %3, new role - %4")
                 .arg(getID()).arg(getName(), ui->chat_members_roles_combobox->currentText(),

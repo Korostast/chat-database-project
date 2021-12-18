@@ -74,7 +74,7 @@ void sqlLeaveChat(int userID, int chatID);
 void sqlRemoveChatMember(int userID, int chatID);
 
 // Админ меняет роль юзера в чате
-void sqlChangeRole(int userID, int chatID, int newRole);
+void sqlChangeRole(int chatID, int userID, int newRole);
 
 // Админ обновил имя или аватарку чата
 void sqlUpdateChat(int chatID, const QString &newName, const QImage &newAvatar);
@@ -94,12 +94,13 @@ void sqlSendFriendRequest(int userID, int requestedID);
 // Юзер удалил друга
 void sqlRemoveFriend(int userID, int friendID);
 
-// Юзер с id = adminID создаёт групповой диалог. Participants - список id участников (т.е. по умолчанию роль PARTICIPANT)
+// Юзер с id = creatorID создаёт групповой диалог. Participants - список id участников (т.е. по умолчанию роль PARTICIPANT)
 // Функция возвращает id беседы. Это нужно для того, чтобы лишний раз не загружать заново список диалогов после создания
-int sqlCreateChat(int adminID, const QString &chatName, const QImage &avatar, const std::vector<int> &participants);
+int
+sqlCreateGroupChat(int creatorID, const QString &chatName, const QImage &avatar, const std::vector<int> &participants);
 
-// Админ беседы с id = chatID добавил новых участников в беседу. Id новых участников перечислены в newParticipants
-void sqlAddMembers(int chatID, std::vector<int> &newParticipants);
+// Админ беседы с id = chatID добавил новых участников в беседу. Id новых участников перечислены в participants
+void sqlAddMembers(int chatID, const std::vector<int> &participants);
 
 // Юзер изменил один или более атрибутов аккаунта. userID не изменяется
 void sqlUpdateProfile(int userID, const QString &firstname, const QString &lastname, const QString &phoneNumber,

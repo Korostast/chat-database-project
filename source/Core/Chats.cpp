@@ -362,8 +362,8 @@ void MainWindow::group_chat_create() {
 
     // Check if at least one user is selected
     int countMembers = (int) ui->chat_creation_friends_list->selectedItems().size();
-    if (countMembers < 1)
-        return;
+    // if (countMembers < 1)
+    // return;
 
     // Success
     std::vector<int> users;
@@ -371,7 +371,8 @@ void MainWindow::group_chat_create() {
         users.push_back(qobject_cast<ChatCreationFriendWidget *>(
                 ui->chat_creation_friends_list->itemWidget(user))->getFriendID());
 
-    int chatID = sqlCreateChat(currentUser->getID(), chatName, ui->chat_creation_avatar->pixmap().toImage(), users);
+    int chatID = sqlCreateGroupChat(currentUser->getID(), chatName, ui->chat_creation_avatar->pixmap().toImage(),
+                                    users);
     addChat(chatID, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN, -1);
 
     // Debug information
