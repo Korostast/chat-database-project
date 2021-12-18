@@ -7,6 +7,7 @@
 #include <QSqlError>
 #include <QFile>
 #include <QDateTime>
+#include <QBuffer>
 
 QSqlException::QSqlException(std::string message) : msg(std::move(message)) {}
 
@@ -551,11 +552,6 @@ void sqlAddMembers(int chatID, const std::vector<int> &participants) {
     }
 }
 
-void sqlUpdateProfile(int userID, const QString &firstname, const QString &lastname, const QString &phoneNumber,
-                      const QString &status, const QImage &avatar) {
-
-}
-
 bool sqlAdminAuth(const QString &password) {
     return true;
 }
@@ -601,10 +597,59 @@ void sqlChooseDatabase(const QString &databaseName) {
     dbConnect(databaseName);
 }
 
-void sqlChangePassword(int userId, const QString &newPassword) {
+void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
+                      const QString &status, const QImage &avatar) {
+    qDebug() << "Updating profile information for user with id = " << userId;
+    QSqlQuery q;
+    QString qStr;
 
+    qStr = QString("call updateProfile(%1, '%2', '%3', %4, '%5')");
+    if (!phoneNumber.isEmpty())
+        qStr.replace("%4", "\'%4\'");
+
+    qStr = qStr.arg(userId)
+            .arg(firstname)
+            .arg(lastname)
+            .arg(phoneNumber.isEmpty() ? "null" : phoneNumber)
+            .arg(status);
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }
 
-void sqlChangeUsername(int userId, const QString &newUsername) {
-    throw QSqlException("Данное имя уже занято");
+void sqlUpdateAccount(int userId, const QString &username, const QString &password, const QString &email) {
+    qDebug() << "Updating account information for user with id = " << userId;
+    QSqlQuery q;
+    QString qStr;
+
+    // Step 1: check username
+    if (username != MainWindow::currentUser->getUsername()) {
+        // Check if user with such username exists
+        qStr = QString("call existsUser('%1')")
+                .arg(username);
+
+        if (!q.exec(qStr))
+            qWarning() << q.lastError().databaseText();
+        if (q.next())
+            throw QSqlException("User with this username already exists");
+    }
+
+    // Step 2: check email
+    if (email != MainWindow::currentUser->getEmail()) {
+        // Check if user with such email exists
+        qStr = QString("call existsUser('%1')")
+                .arg(email);
+
+        if (!q.exec(qStr))
+            qWarning() << q.lastError().databaseText();
+        if (q.next())
+            throw QSqlException("User with this email already exists");
+    }
+
+    // Step 3: update account
+    qStr = QString("call updateAccount(%1, '%2', '%3', '%4')")
+            .arg(userId)
+            .arg(username, password, email);
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }

@@ -221,6 +221,16 @@ void MainWindow::repeat_sql_request() {
             QApplication::restoreOverrideCursor();
             break;
         }
+        case MY_PROFILE: {
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+            qInfo() << "Refreshing profile..";
+
+            UserInfo user = sqlLoadProfile(currentUser->getID());
+            showProfile(&user);
+
+            QApplication::restoreOverrideCursor();
+            break;
+        }
         case FRIENDS: {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             qInfo() << "Refreshing friends..";

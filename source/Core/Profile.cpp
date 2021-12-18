@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
+#include "SqlInterface.h"
 
 // We opened a profile of the user. Awful code.
 void MainWindow::showProfile(const UserInfo *user) const {
@@ -56,5 +57,6 @@ void MainWindow::showProfile(const UserInfo *user) const {
 
 
 void MainWindow::profile_button_released() const {
-    showProfile(currentUser);
+    UserInfo user = sqlLoadProfile(currentUser->getID());
+    showProfile(&user);
 }

@@ -37,7 +37,7 @@ void ChatDialog::setupCurrentChatUI(ChatWidget *chat) {
         auto *widget = new ChatMemberWidget(this);
         widget->setID(user.id);
         widget->setName(user.username);
-        widget->setAvatar(user.avatar);
+        widget->setAvatar(user.avatar.isNull() ?  QImage(":chatDefaultImage") : user.avatar);
         widget->setRole(user.role);
         if (MainWindow::currentChat->getRole() == ADMIN)
             widget->hideRoleLabelFromAdmin();

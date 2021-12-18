@@ -3,15 +3,43 @@
 #include "SqlInterface.h"
 
 void MainWindow::settings_button_released() const {
-    ui->settings_firstname_edit->setText(currentUser->getFirstName());
-    ui->settings_lastname_edit->setText(currentUser->getLastName());
-    ui->settings_phonenumber_edit->setText(currentUser->getPhoneNumber());
-    ui->settings_status_edit->setText(currentUser->getStatus());
-    ui->settings_username_edit->setText(currentUser->getUsername());
+    UserInfo curUser = sqlLoadProfile(currentUser->getID());
+    ui->settings_firstname_edit->setText(curUser.getFirstName());
+    ui->settings_lastname_edit->setText(curUser.getLastName());
+    ui->settings_phonenumber_edit->setText(curUser.getPhoneNumber());
+    ui->settings_status_edit->setText(curUser.getStatus());
+    ui->settings_username_edit->setText(curUser.getUsername());
+
     ui->settings_password_error_label->hide();
     ui->settings_username_error_label->hide();
+    ui->settings_profile_info_error_label->hide();
+    ui->settings_old_password_edit->clear();
+    ui->settings_new_password_edit->clear();
+    ui->settings_repeat_password_edit->clear();
     ui->main_stacked_widget->setCurrentIndex(SETTINGS_PAGE);
     currentState = SETTINGS;
+}
+
+bool MainWindow::checkPhoneNumber(const QString& phoneNumber) const {
+    for (const auto &letter : phoneNumber) {
+        if (!letter.isDigit()) {
+            ui->settings_profile_info_error_label->setText("Номер телефона может состоять только из цифр");
+            ui->settings_profile_info_error_label->show();
+            return false;
+        }
+    }
+    return true;
+}
+
+bool MainWindow::checkName(const QString& name) const {
+    for (const auto &letter : name) {
+        if (!letter.isLetter()) {
+            ui->settings_profile_info_error_label->setText("Имя может состоять только из букв");
+            ui->settings_profile_info_error_label->show();
+            return false;
+        }
+    }
+    return true;
 }
 
 // TODO refactor
@@ -23,11 +51,18 @@ void MainWindow::settings_save_button_released() {
 
     if (currentUser->getFirstName() != firstname || currentUser->getLastName() != lastname ||
         currentUser->getPhoneNumber() != phoneNumber || currentUser->getStatus() != status) {
+        // Checks TODO
+        if (!checkPhoneNumber(phoneNumber) || !checkName(firstname) || !checkName(lastname)) {
+            return;
+        }
+
         sqlUpdateProfile(currentUser->getID(), firstname, lastname, phoneNumber, status, currentUser->getAvatar());
         currentUser->setFirstName(firstname);
         currentUser->setLastName(lastname);
         currentUser->setPhoneNumber(phoneNumber);
         currentUser->setStatus(status);
+
+        ui->settings_profile_info_error_label->hide();
     }
 }
 
@@ -55,7 +90,7 @@ void MainWindow::change_password() {
             return;
         }
     }
-    if (newPassword != oldPassword) {
+    if (newPassword == oldPassword) {
         ui->settings_password_error_label->setText("Пароль не может быть изменён на старый");
         ui->settings_password_error_label->show();
         return;
@@ -68,8 +103,8 @@ void MainWindow::change_password() {
 
 
     // TODO database change password
-    sqlChangePassword(currentUser->getID(), newPassword);
     currentPassword = newPassword;
+    sqlUpdateAccount(currentUser->getID(), currentUser->getUsername(), newPassword, currentUser->getEmail());
 
     // Success
     ui->settings_password_error_label->setText("Пароль успешно сменён");
@@ -99,7 +134,7 @@ void MainWindow::change_username() {
 
     // TODO database change username
     try {
-        sqlChangeUsername(currentUser->getID(), newUsername);
+        sqlUpdateAccount(currentUser->getID(), newUsername, currentPassword, currentUser->getEmail());
         currentUser->setUsername(newUsername);
     } catch (QSqlException &error) {
         ui->settings_username_error_label->setText(error.what());

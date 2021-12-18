@@ -111,6 +111,10 @@ private:
 
     void switch_friends_page(int page) const;
 
+    bool checkPhoneNumber(const QString &phoneNumber) const;
+
+    bool checkName(const QString &name) const;
+
 private slots:
 
     void sign_in_button_released();
