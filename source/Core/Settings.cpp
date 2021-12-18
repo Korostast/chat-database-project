@@ -18,6 +18,14 @@ void MainWindow::settings_button_released() const {
     currentState = SETTINGS;
 }
 
+void checkPhoneNumber(const QString& phoneNumber) {
+    // TODO
+}
+
+void checkName(const QString& name) {
+    // TODO
+}
+
 // TODO refactor
 void MainWindow::settings_save_button_released() {
     const QString firstname(ui->settings_firstname_edit->text());
@@ -27,6 +35,11 @@ void MainWindow::settings_save_button_released() {
 
     if (currentUser->getFirstName() != firstname || currentUser->getLastName() != lastname ||
         currentUser->getPhoneNumber() != phoneNumber || currentUser->getStatus() != status) {
+        // Checks TODO
+        checkPhoneNumber(phoneNumber);
+        checkName(firstname);
+        checkName(lastname);
+
         sqlUpdateProfile(currentUser->getID(), firstname, lastname, phoneNumber, status, currentUser->getAvatar());
         currentUser->setFirstName(firstname);
         currentUser->setLastName(lastname);
