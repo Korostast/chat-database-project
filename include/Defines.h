@@ -42,6 +42,9 @@
 
 #define MESSAGE_LINE_WIDTH 435
 
+
+#define DEFAULT_DATABASE "template"
+
 #include <QImage>
 #include <utility>
 

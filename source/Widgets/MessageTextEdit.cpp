@@ -104,7 +104,7 @@ void MessageTextEdit::editingFinish() {
         userMessageWidget->setContent(message.getContent());
 
         // TODO database message is edited
-        sqlMessageEdited(message.getMessageID(), message.getContent());
+        sqlEditMessage(message.getMessageID(), message.getContent());
 
         int rowNumber = mainWindow->deleteMessage(userMessageWidget);
         qDebug() << userMessageWidget->getContent();

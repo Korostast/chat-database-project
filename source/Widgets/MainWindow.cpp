@@ -14,7 +14,7 @@ UserInfo *MainWindow::currentUser;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     // Open database connection
-    dbConnect();
+    dbConnect(DEFAULT_DATABASE);
 
     // Initialize Main Window variables
     avatarEditor = new AvatarEditor(this);
