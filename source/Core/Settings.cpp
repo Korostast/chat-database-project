@@ -10,6 +10,7 @@ void MainWindow::settings_button_released() const {
     ui->settings_username_edit->setText(currentUser->getUsername());
     ui->settings_password_error_label->hide();
     ui->settings_username_error_label->hide();
+    ui->settings_profile_info_error_label->hide();
     ui->settings_old_password_edit->clear();
     ui->settings_new_password_edit->clear();
     ui->settings_repeat_password_edit->clear();
@@ -18,12 +19,26 @@ void MainWindow::settings_button_released() const {
     currentState = SETTINGS;
 }
 
-void checkPhoneNumber(const QString& phoneNumber) {
-    // TODO
+bool MainWindow::checkPhoneNumber(const QString& phoneNumber) const {
+    for (const auto &letter : phoneNumber) {
+        if (!letter.isDigit()) {
+            ui->settings_profile_info_error_label->setText("Номер телефона может состоять только из цифр");
+            ui->settings_profile_info_error_label->show();
+            return false;
+        }
+    }
+    return true;
 }
 
-void checkName(const QString& name) {
-    // TODO
+bool MainWindow::checkName(const QString& name) const {
+    for (const auto &letter : name) {
+        if (!letter.isLetter()) {
+            ui->settings_profile_info_error_label->setText("Имя может состоять только из букв");
+            ui->settings_profile_info_error_label->show();
+            return false;
+        }
+    }
+    return true;
 }
 
 // TODO refactor
@@ -36,15 +51,17 @@ void MainWindow::settings_save_button_released() {
     if (currentUser->getFirstName() != firstname || currentUser->getLastName() != lastname ||
         currentUser->getPhoneNumber() != phoneNumber || currentUser->getStatus() != status) {
         // Checks TODO
-        checkPhoneNumber(phoneNumber);
-        checkName(firstname);
-        checkName(lastname);
+        if (!checkPhoneNumber(phoneNumber) || !checkName(firstname) || !checkName(lastname)) {
+            return;
+        }
 
         sqlUpdateProfile(currentUser->getID(), firstname, lastname, phoneNumber, status, currentUser->getAvatar());
         currentUser->setFirstName(firstname);
         currentUser->setLastName(lastname);
         currentUser->setPhoneNumber(phoneNumber);
         currentUser->setStatus(status);
+
+        ui->settings_profile_info_error_label->hide();
     }
 }
 
