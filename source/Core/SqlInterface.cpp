@@ -653,3 +653,7 @@ void sqlUpdateAccount(int userId, const QString &username, const QString &passwo
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
+
+void sqlChangePassword(int userId, const QString &newPassword) {
+    throw QSqlException("Password is not changed because it cannot be the same as the old password");
+}

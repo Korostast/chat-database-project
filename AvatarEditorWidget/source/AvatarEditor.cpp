@@ -144,8 +144,7 @@ void AvatarEditor::saveImage() {
         int messageId = sqlSendMessage(message);
 
         mainWindow->addMessage(MainWindow::currentChat->getID(), MainWindow::currentUser->getID(), messageId, "", "",
-                               QImage(), content,
-                               SYSTEM_MESSAGE);
+                               QImage(), content, SYSTEM_MESSAGE);
     } else if (MainWindow::currentState == CHAT_CREATION) {
         mainWindow->ui->chat_creation_avatar->setPixmap(getCircularPixmap(result, CHAT_CREATION_CHAT_IMAGE_SIZE));
     } else if (MainWindow::currentState == MY_PROFILE) {
@@ -157,13 +156,13 @@ void AvatarEditor::saveImage() {
                          MainWindow::currentUser->getLastName(), MainWindow::currentUser->getPhoneNumber(),
                          MainWindow::currentUser->getStatus(), result);
 
-        QString path("../resources/images/users/%1.png");
-        if (!result.save(QString(path).arg(MainWindow::currentUser->getID()), "png")) {
+        QString path("../resources/images/users/profile_%1.png");
+        if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
             qCritical() << "Error: can't save image";
         }
     } else {
-        QString path("../resources/images/users/%1.png");
-        if (!result.save(QString(path).arg(MainWindow::currentUser->getID()), "png")) {
+        QString path("../resources/images/users/other_%1.png");
+        if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
             qCritical() << "Error: can't save image";
         }
     }

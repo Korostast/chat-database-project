@@ -20,30 +20,29 @@ void MainWindow::settings_button_released() const {
     currentState = SETTINGS;
 }
 
-bool MainWindow::checkPhoneNumber(const QString& phoneNumber) const {
-    for (const auto &letter : phoneNumber) {
-        if (!letter.isDigit()) {
-            ui->settings_profile_info_error_label->setText("Номер телефона может состоять только из цифр");
-            ui->settings_profile_info_error_label->show();
-            return false;
-        }
+bool MainWindow::checkPhoneNumber(const QString &phoneNumber) const {
+    if (std::ranges::all_of(phoneNumber.begin(), phoneNumber.end(), [](QChar letter) { return letter.isDigit(); })) {
+        return true;
+    } else {
+        ui->settings_profile_info_error_label->setText("Номер телефона может состоять только из цифр");
+        ui->settings_profile_info_error_label->show();
+        return false;
     }
-    return true;
 }
 
-bool MainWindow::checkName(const QString& name) const {
-    for (const auto &letter : name) {
-        if (!letter.isLetter()) {
-            ui->settings_profile_info_error_label->setText("Имя может состоять только из букв");
-            ui->settings_profile_info_error_label->show();
-            return false;
-        }
+bool MainWindow::checkName(const QString &name) const {
+    if (std::ranges::all_of(name.begin(), name.end(), [](QChar letter) { return letter.isLetter(); })) {
+        return true;
+    } else {
+        ui->settings_profile_info_error_label->setText("Имя может состоять только из букв");
+        ui->settings_profile_info_error_label->show();
+        return false;
     }
-    return true;
 }
 
 // TODO refactor
 void MainWindow::settings_save_button_released() {
+    qDebug() << "Trying to save settings..";
     const QString firstname(ui->settings_firstname_edit->text());
     const QString lastname(ui->settings_lastname_edit->text());
     const QString phoneNumber(ui->settings_phonenumber_edit->text());
@@ -53,6 +52,7 @@ void MainWindow::settings_save_button_released() {
         currentUser->getPhoneNumber() != phoneNumber || currentUser->getStatus() != status) {
         // Checks TODO
         if (!checkPhoneNumber(phoneNumber) || !checkName(firstname) || !checkName(lastname)) {
+            qInfo() << "Settings are unsaved, because some fields are incorrect";
             return;
         }
 
@@ -64,18 +64,15 @@ void MainWindow::settings_save_button_released() {
 
         ui->settings_profile_info_error_label->hide();
     }
+    qInfo() << "Settings are saved successfully";
 }
 
 // TODO refactor
-void MainWindow::change_password() {
+void MainWindow::change_password() const {
+    qDebug() << "Trying to save settings..";
     QString oldPassword(ui->settings_old_password_edit->text());
     QString newPassword(ui->settings_new_password_edit->text());
     QString repeatPassword(ui->settings_repeat_password_edit->text());
-    if (oldPassword != currentPassword) {
-        ui->settings_password_error_label->setText("Пароль не изменён, так как прежний пароль введён неправильно");
-        ui->settings_password_error_label->show();
-        return;
-    }
     if (newPassword.isEmpty()) {
         ui->settings_password_error_label->setText("Пароль не изменён, "
                                                    "так как новый пароль пустой"); // TODO at least six characters
@@ -103,15 +100,24 @@ void MainWindow::change_password() {
 
 
     // TODO database change password
-    currentPassword = newPassword;
-    sqlUpdateAccount(currentUser->getID(), currentUser->getUsername(), newPassword, currentUser->getEmail());
+    try {
+        sqlChangePassword(currentUser->getID(), newPassword);
+    } catch (QSqlException &error) {
+        ui->settings_password_error_label->setText(error.what());
+        ui->settings_password_error_label->show();
+        qInfo() << "Password is not unchanged: " << error.what();
+        return;
+    }
 
     // Success
     ui->settings_password_error_label->setText("Пароль успешно сменён");
     ui->settings_password_error_label->show();
+
+    qInfo() << "Password is changed successfully";
 }
 
 void MainWindow::change_username() {
+    qDebug() << "Trying to change username..";
     QString newUsername = ui->settings_username_edit->text();
     if (currentUser->getUsername() == newUsername) {
         ui->settings_username_error_label->setText("Имя пользователя не может быть сменено на старое");
@@ -134,15 +140,31 @@ void MainWindow::change_username() {
 
     // TODO database change username
     try {
-        sqlUpdateAccount(currentUser->getID(), newUsername, currentPassword, currentUser->getEmail());
+        sqlUpdateAccount(currentUser->getID(), newUsername, nullptr, nullptr);
         currentUser->setUsername(newUsername);
     } catch (QSqlException &error) {
         ui->settings_username_error_label->setText(error.what());
         ui->settings_username_error_label->show();
+        qInfo() << "Username is not changed: " << error.what();
         return;
     }
 
     // Success
     ui->settings_username_error_label->setText("Имя пользователя успешно сменено");
     ui->settings_username_error_label->show();
+    qInfo() << "Username is changed successfully";
+}
+
+void MainWindow::change_password_return_pressed() const {
+    QList<QLineEdit *> passwordEdits{ui->settings_old_password_edit, ui->settings_new_password_edit,
+                                     ui->settings_repeat_password_edit};
+
+    for (const auto &edit: passwordEdits) {
+        if (edit->text().isEmpty()) {
+            edit->setFocus();
+            return;
+        }
+    }
+
+    change_password();
 }

@@ -15,6 +15,10 @@ QString MainWindow::checkAuthInput(const QString &password, const QString &email
                 return "Username can consist only of latin characters and digits";
             }
         }
+    } else {
+        if (emailOrUsername.count() > 32) {
+            return "Username can not be more than 32 characters long";
+        }
     }
     if (password.isEmpty()) {
         return "Password field is empty";
@@ -84,7 +88,6 @@ void MainWindow::sign_in_button_released() {
 
     // Change screen to chat list
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
-    this->currentPassword = password;
     chats_button_released();
 }
 
@@ -117,7 +120,6 @@ void MainWindow::register_button_released() {
     }
 
     // Change screen to chat list
-    this->currentPassword = password;
     ui->app_stacked_widget->setCurrentIndex(APP_PAGE);
 }
 

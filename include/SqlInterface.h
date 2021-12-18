@@ -121,4 +121,7 @@ void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastn
 // Юзер сменил пароль или имя пользователя, или электронный адрес. Проверка на корректность проведена
 void sqlUpdateAccount(int userId, const QString &username, const QString &password, const QString &email);
 
+// Юзер изменил пароль
+void sqlChangePassword(int userId, const QString &newPassword);
+
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H
