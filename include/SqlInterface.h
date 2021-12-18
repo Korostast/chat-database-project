@@ -101,10 +101,6 @@ int sqlCreateChat(int adminID, const QString &chatName, const QImage &avatar, co
 // Админ беседы с id = chatID добавил новых участников в беседу. Id новых участников перечислены в newParticipants
 void sqlAddMembers(int chatID, std::vector<int> &newParticipants);
 
-// Юзер изменил один или более атрибутов аккаунта. userID не изменяется
-void sqlUpdateProfile(int userID, const QString &firstname, const QString &lastname, const QString &phoneNumber,
-                      const QString &status, const QImage &avatar);
-
 // Админ авторизуется в окне создания баз данных. Возвращает true, если получилось авторизоваться, false в ином случае
 bool sqlAdminAuth(const QString &password);
 
@@ -117,11 +113,11 @@ void sqlDeleteDatabase(const QString &databaseName);
 // Юзер выбрал базу данных
 void sqlChooseDatabase(const QString &databaseName);
 
-// Юзер сменил пароль. Проверка на корректность проведена
-void sqlChangePassword(int userId, const QString &newPassword);
+// Юзер изменил один или более атрибутов аккаунта. userID не изменяется
+void sqlUpdateProfile(int userId, const QString &firstname, const QString &lastname, const QString &phoneNumber,
+                      const QString &status, const QImage &avatar);
 
-// Юзер сменил имя пользователя. Проверка на корректность имени проведена
-// Функция должна выкидывать исключение, если такое имя уже используется
-void sqlChangeUsername(int userId, const QString &newUsername);
+// Юзер сменил пароль или имя пользователя, или электронный адрес. Проверка на корректность проведена
+void sqlUpdateAccount(int userId, const QString &username, const QString &password, const QString &email);
 
 #endif //CHATDATABASEPROJECT_SQLINTERFACE_H

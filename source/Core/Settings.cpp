@@ -10,6 +10,10 @@ void MainWindow::settings_button_released() const {
     ui->settings_username_edit->setText(currentUser->getUsername());
     ui->settings_password_error_label->hide();
     ui->settings_username_error_label->hide();
+    ui->settings_old_password_edit->clear();
+    ui->settings_new_password_edit->clear();
+    ui->settings_repeat_password_edit->clear();
+    ui->settings_username_edit->clear();
     ui->main_stacked_widget->setCurrentIndex(SETTINGS_PAGE);
     currentState = SETTINGS;
 }
@@ -55,7 +59,7 @@ void MainWindow::change_password() {
             return;
         }
     }
-    if (newPassword != oldPassword) {
+    if (newPassword == oldPassword) {
         ui->settings_password_error_label->setText("Пароль не может быть изменён на старый");
         ui->settings_password_error_label->show();
         return;
@@ -68,8 +72,8 @@ void MainWindow::change_password() {
 
 
     // TODO database change password
-    sqlChangePassword(currentUser->getID(), newPassword);
     currentPassword = newPassword;
+    sqlUpdateAccount(currentUser->getID(), currentUser->getUsername(), newPassword, currentUser->getEmail());
 
     // Success
     ui->settings_password_error_label->setText("Пароль успешно сменён");
@@ -99,7 +103,7 @@ void MainWindow::change_username() {
 
     // TODO database change username
     try {
-        sqlChangeUsername(currentUser->getID(), newUsername);
+        sqlUpdateAccount(currentUser->getID(), newUsername, currentPassword, currentUser->getEmail());
         currentUser->setUsername(newUsername);
     } catch (QSqlException &error) {
         ui->settings_username_error_label->setText(error.what());
