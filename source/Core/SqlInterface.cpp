@@ -14,6 +14,18 @@ const char *QSqlException::what() const noexcept {
     return msg.c_str();
 }
 
+QString nullHandler(const QString &s) {
+    if (s.isEmpty())
+        return "null";
+    else
+        return QString("'%1'").arg(s);
+}
+
+QString toBlob(const QImage &img) {
+    return QString(QByteArray::fromRawData((const char *) img.bits(), img.sizeInBytes()))
+            .replace("'", "''")
+}
+
 void dbConnect(const QString &dbName) {
     QFile qFile("db_access.txt");
     if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -66,10 +78,10 @@ UserInfo sqlRegister(const QString &username, const QString &email, const QStrin
         throw QSqlException("User with this email already exists");
 
     // Register the account
-    qStr = QString("call registerAccount('%1','%2','%3')")
+    qStr = QString("call registerAccount('%1', '%2', %3)")
             .arg(username)
             .arg(password)
-            .arg(email);
+            .arg(nullHandler(email));
 
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
@@ -207,9 +219,9 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
 QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &request) {
     qDebug() << "Searching for messages in" << chatID << "with pattern" << request;
 
-    QString qStr = QString("call searchMessage(%1, '%2')")
+    QString qStr = QString("call searchMessage(%1, %2)")
             .arg(chatID)
-            .arg(request);
+            .arg(nullHandler(request));
 
     QSqlQuery q;
     if (!q.exec(qStr))
@@ -347,9 +359,9 @@ QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
 QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userID, const QString &substring) {
     qDebug() << "Searching for people for userID =" << userID;
 
-    QString qStr = QString("call searchUsers(%1, '%2')")
+    QString qStr = QString("call searchUsers(%1, %2)")
             .arg(userID)
-            .arg(substring);
+            .arg(nullHandler(substring));
 
     QSqlQuery q;
     if (!q.exec(qStr))
@@ -359,7 +371,8 @@ QList<std::pair<UserInfo, QString> > sqlSearchUsers(int userID, const QString &s
     while (q.next())
         result.append(std::make_pair(UserInfo(q.value(0).toInt(),
                                               q.value(1).toString(),
-                                              QImage::fromData(q.value(2).toByteArray())), q.value(3).toString()
+                                              QImage::fromData(q.value(2).toByteArray())),
+                                     q.value(3).toString()
                       )
         );
 
@@ -372,7 +385,7 @@ int sqlSendMessage(const MessageInfo &message) {
     QString qStr = QString("call sendMessage(%1,%2,'%3','%4')")
             .arg(message.chatID)
             .arg(message.userID)
-            .arg(message.content)
+            .arg(nullHandler(message.content))
             .arg(message.type ? "system_info" : "user_message");
 
     QSqlQuery q;
@@ -388,9 +401,9 @@ int sqlSendMessage(const MessageInfo &message) {
 void sqlMessageEdited(int messageID, const QString &newContent) {
     qDebug() << "Editing message with messageID =" << messageID;
 
-    QString qStr = QString("call editMessage(%1,'%2')")
+    QString qStr = QString("call editMessage(%1, %2)")
             .arg(messageID)
-            .arg(newContent);
+            .arg(nullHandler(newContent));
 
     QSqlQuery q;
     if (!q.exec(qStr))
@@ -413,7 +426,7 @@ void sqlDeleteMessagesByPattern(int chatID, const QString &pattern) {
 
     QString qStr = QString("call deleteMessageByPattern(%1, '%2')")
             .arg(chatID)
-            .arg(pattern);
+            .arg(nullHandler(pattern));
 
     QSqlQuery q;
     if (!q.exec(qStr))
@@ -507,15 +520,14 @@ void sqlRemoveFriend(int userID, int friendID) {
         qWarning() << q.lastError().databaseText();
 }
 
-int
-sqlCreateGroupChat(int creatorID, const QString &chatName, const QImage &avatar, const std::vector<int> &participants) {
+int sqlCreateGroupChat(int creatorID, const QString &chatName,
+                       const QImage &avatar, const std::vector<int> &participants) {
     qDebug() << "Creating new chat with the name" << chatName;
 
     // Step 1 - Create new entry in 'Chat'
     QString qStr = QString("call createGroupChat('%1', '%2')")
             .arg(chatName)
-            .arg(QString(QByteArray::fromRawData((const char *) avatar.bits(), avatar.sizeInBytes())).replace("'",
-                                                                                                              "''"));
+            .arg(toBlob(avatar));
 
     QSqlQuery q;
     if (!q.exec(qStr))
