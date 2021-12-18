@@ -24,7 +24,7 @@ QString nullHandler(const QString &s) {
 
 QString toBlob(const QImage &img) {
     return QString(QByteArray::fromRawData((const char *) img.bits(), img.sizeInBytes()))
-            .replace("'", "''")
+            .replace("'", "''");
 }
 
 void dbConnect(const QString &dbName) {
