@@ -3,12 +3,26 @@
 #include "MainWindow.h"
 #include "ui_chatmemberwidget.h"
 #include "SqlInterface.h"
+#include "ClickableLabel.h"
 
 ChatMemberWidget::ChatMemberWidget(QWidget *parent)
         : QWidget(parent), ui(new Ui::ChatMemberWidget), id(-1), role(VIEWER) {
     ui->setupUi(this);
+    auto *mainWindow = qobject_cast<MainWindow *>(parent->parent());
     connect(ui->chat_members_remove_button, SIGNAL(released()), this, SLOT(removeMember()));
     connect(ui->chat_members_roles_combobox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeMemberRole(int)));
+    connect(ui->chat_members_avatar, &ClickableLabel::released, this, [this, mainWindow, parent]() {
+        // TODO database searchMessages profile
+        UserInfo user = sqlLoadProfile(getID());
+        mainWindow->showProfile(&user);
+        parent->close();
+    });
+    connect(ui->chat_members_name, &ClickableLabel::released, this, [this, mainWindow, parent]() {
+        // TODO database searchMessages profile
+        UserInfo user = sqlLoadProfile(getID());
+        mainWindow->showProfile(&user);
+        parent->close();
+    });
 }
 
 ChatMemberWidget::~ChatMemberWidget() {
@@ -54,7 +68,8 @@ void ChatMemberWidget::setRole(ROLE role) {
     ui->chat_members_role->setText(ui->chat_members_roles_combobox->currentText());
     if (MainWindow::currentChat->getRole() < ADMIN || id == MainWindow::currentUser->getID())
         ui->chat_members_roles_combobox->hide();
-    if (MainWindow::currentChat->getRole() < MODERATOR || id == MainWindow::currentUser->getID())
+    if (MainWindow::currentChat->getRole() < MODERATOR || id == MainWindow::currentUser->getID()
+        || getRole() >= MainWindow::currentChat->getRole())
         ui->chat_members_remove_button->hide();
 }
 

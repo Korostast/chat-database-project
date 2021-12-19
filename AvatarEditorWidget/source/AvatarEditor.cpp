@@ -121,14 +121,8 @@ void AvatarEditor::saveImage() {
 
     auto *mainWindow = qobject_cast<MainWindow *>(this->parentWidget());
 
-    // TODO switch case
     switch (MainWindow::currentState) {
         case MESSAGES: {
-            QString path("../resources/images/chats/%1.png");
-            if (!result.save(QString(path).arg(MainWindow::currentChat->getID()), "png")) {
-                qCritical() << "Error: can't save image. Please, throw away your MacBook";
-                return;
-            }
             // TODO database update chat avatar
             sqlUpdateChatAvatar(MainWindow::currentChat->getID(), result);
 
@@ -148,32 +142,19 @@ void AvatarEditor::saveImage() {
         }
         case CHAT_CREATION: {
             mainWindow->ui->chat_creation_avatar->setPixmap(getCircularPixmap(result, CHAT_CREATION_CHAT_IMAGE_SIZE));
-
-            QString path("../resources/images/chats/chat_%1.png");
-            if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
-                qCritical() << "Error: can't save image. Please, throw away your MacBook";
-            }
+            mainWindow->tempImage = QImage(result);
             break;
         }
         case MY_PROFILE: {
-            // TODO user avatar
             mainWindow->ui->profile_avatar->setPixmap(QPixmap::fromImage(result)
                                                               .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE,
                                                                       Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
             sqlUpdateAvatar(MainWindow::currentUser->getID(), result);
-
-            QString path("../resources/images/users/profile_%1.png");
-            if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
-                qCritical() << "Error: can't save image. Please, throw away your MacBook";
-            }
             break;
         }
         default: {
-            QString path("../resources/images/users/other_%1.png");
-            if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
-                qCritical() << "Error: can't save image. Please, throw away your MacBook";
-            }
+            qWarning() << "Unknown state. Cannot save image";
         }
     }
 

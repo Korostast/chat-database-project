@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->friends_button, SIGNAL(released()), this, SLOT(friends_button_released()));
     connect(ui->settings_button, SIGNAL(released()), this, SLOT(settings_button_released()));
     connect(ui->chat_creation_button, SIGNAL(released()), this, SLOT(chat_creation_open_ui()));
+    connect(ui->chat_creation_name_edit, SIGNAL(returnPressed()), this, SLOT(group_chat_create()));
     connect(ui->chat_creation_create_button, SIGNAL(released()), this, SLOT(group_chat_create()));
     connect(ui->refresh_label, SIGNAL(released()), this, SLOT(repeat_sql_request()));
     connect(ui->unused_switch_personal_chats, &QPushButton::released, this, [this]() {
@@ -200,15 +201,18 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 void MainWindow::repeat_sql_request() {
     switch (currentState) {
-        case CHATS:
+        case CHATS: {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             qInfo() << "Refreshing chats..";
 
+            int curPage = ui->main_stacked_widget->currentIndex();
             chats_button_released();
+            ui->main_stacked_widget->setCurrentIndex(curPage);
 
             QApplication::restoreOverrideCursor();
             break;
-        case MESSAGES:
+        }
+        case MESSAGES: {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             qInfo() << "Refreshing messages..";
 
@@ -216,6 +220,7 @@ void MainWindow::repeat_sql_request() {
 
             QApplication::restoreOverrideCursor();
             break;
+        }
         case PROFILE: {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             qInfo() << "Refreshing profile..";
@@ -290,7 +295,7 @@ void MainWindow::repeat_sql_request() {
             QApplication::restoreOverrideCursor();
             break;
         }
-        case SETTINGS:
+        case SETTINGS: {
             QApplication::setOverrideCursor(Qt::WaitCursor);
             qInfo() << "Refreshing settings..";
 
@@ -298,6 +303,7 @@ void MainWindow::repeat_sql_request() {
 
             QApplication::restoreOverrideCursor();
             break;
+        }
         default:
             qWarning() << "There is no sql request for current state "
                           "(nothing to update or you should do update by pressing specific button)";

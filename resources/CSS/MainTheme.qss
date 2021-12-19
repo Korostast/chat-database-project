@@ -109,7 +109,7 @@ QPushButton#chat_back_button::hover, #chat_bar_search_button::hover, #chat_bar_s
 }
 
 #chat_bar_search_edit, #messages_search_edit {
-    padding: 0;
+    padding: 0 0 0 4px;
 }
 
 /*-----QLineEdit-----*/
@@ -203,13 +203,18 @@ QPlainTextEdit {
     background-color: #1a1818;
     color: #cecece;
     border: 1px solid #1d1d1d;
-    padding: 3px 3px 3px 5px;
+    padding: 8px;
     border-radius: 4px;
 }
 
-/*-----Line-----*/
+/*-----Profile-----*/
 #profile_line {
     background-color: #3b3b3b;
+}
+
+#profile_frame {
+    background-color: #212121;
+    border-radius: 16px;
 }
 
 /*-----GraphicsView-----*/
@@ -221,6 +226,6 @@ QPlainTextEdit {
 
 /*-----Settings frames-----*/
 #settings_general_frame, #settings_profile_frame {
-    background: #212121;
+    background-color: #212121;
     border-radius: 16px;
 }

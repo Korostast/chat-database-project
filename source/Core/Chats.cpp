@@ -66,19 +66,21 @@ void MainWindow::updateChat(int id, const QString &name, const QImage &avatar, R
             .arg(id).arg(name).arg(role);
 
     //putOnTop(id);
-    auto *widget = qobject_cast<ChatWidget *>(ui->personal_chat_list->itemWidget(chatMap[id]));
+    /*auto *widget = qobject_cast<ChatWidget *>(ui->personal_chat_list->itemWidget(chatMap[id]));
 
     widget->setName(name);
     if (id == currentChat->getID())
         ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(avatar, AVATAR_IN_CHAT_IMAGE_SIZE));
     widget->setAvatar(avatar);
-    widget->setRole(role);
+    widget->setRole(role);*/
+    if (id == currentChat->getID())
+        ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(avatar, AVATAR_IN_CHAT_IMAGE_SIZE));
     ui->chat_name_label->setText(name);
 }
 
 // Load chat ui
 void MainWindow::openChat() {
-    qInfo() << QString("Opened chat: messageID - %1, username - %2, isGroup - %3, countMembers - %4 and your role - %5")
+    qInfo() << QString("Opened chat: chatID - %1, name - %2, isGroup - %3, countMembers - %4 and your role - %5")
             .arg(currentChat->getID()).arg(currentChat->getName()).arg(currentChat->isGroup())
             .arg(currentChat->getCountMembers()).arg(currentChat->getRole());
 
@@ -313,8 +315,10 @@ void MainWindow::setFocusToTextEdit() const {
 
 // Return to chat list
 void MainWindow::chats_button_released() {
+    // Clear temp variables
+    tempImage = QImage();
+
     // TODO database searchMessages chats
-    //QList<ChatInfo> chats = sqlLoadChats(currentUser->getID());
     QList<PersonalChatInfo> personalChats = sqlLoadPersonalChats(currentUser->getID());
     QList<GroupChatInfo> groupChats = sqlLoadGroupChats(currentUser->getID());
 
@@ -362,8 +366,6 @@ void MainWindow::group_chat_create() {
 
     // Check if at least one user is selected
     int countMembers = (int) ui->chat_creation_friends_list->selectedItems().size();
-    // if (countMembers < 1)
-    // return;
 
     // Success
     std::vector<int> users;
@@ -371,17 +373,20 @@ void MainWindow::group_chat_create() {
         users.push_back(qobject_cast<ChatCreationFriendWidget *>(
                 ui->chat_creation_friends_list->itemWidget(user))->getFriendID());
 
-    int chatID = sqlCreateGroupChat(currentUser->getID(), chatName, ui->chat_creation_avatar->pixmap().toImage(),
-                                    users);
-    addChat(chatID, chatName, ui->chat_creation_avatar->pixmap().toImage(), true, countMembers, ADMIN, -1);
+    int chatID = sqlCreateGroupChat(currentUser->getID(), chatName, tempImage, users);
+    addChat(chatID, chatName, tempImage, true, countMembers, ADMIN, -1);
 
     // Debug information
     for (auto userId: users)
         printf("%d ", userId);
 
+    // Clear temp variables
+    tempImage = QImage();
+
     // Return to chat list ui
     currentState = CHATS;
-    ui->main_stacked_widget->setCurrentIndex(PERSONAL_CHAT_LIST_PAGE);
+    chats_button_released();
+    ui->main_stacked_widget->setCurrentIndex(GROUP_CHAT_LIST_PAGE);
 }
 
 void MainWindow::loadSearchInterface() {

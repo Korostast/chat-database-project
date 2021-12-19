@@ -527,9 +527,9 @@ int sqlCreateGroupChat(int creatorID, const QString &chatName,
     QString qStr;
 
     // Step 1 - Create new entry in 'Chat'
-    qStr = QString("call createGroupChat(%1, %2)")
+    qStr = QString("call createGroupChat(%1, '%2')")
             .arg(insertString(chatName))
-            .arg(insertString(imageToBase64(avatar)));
+            .arg(imageToBase64(avatar));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
@@ -657,10 +657,13 @@ void sqlUpdatePassword(int userID, const QString &newPassword) {
     qStr = QString("call checkPassword(%1, %2)")
             .arg(userID)
             .arg(insertString(newPassword));
+
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
-    if (q.value("result").toBool())
-        throw QSqlException("Password is not changed because it cannot be the same as the old password");
+    if (!q.next())
+        throw QSqlException("Changing password failed");
+    if (!q.value("result").toBool()){
+        throw QSqlException("Password is not changed because old password is incorrect");}
 
     // Step 2 - Update password
     qStr = QString("call updatePassword(%1, %2)")

@@ -201,6 +201,9 @@ void MainWindow::search_people() {
 }
 
 void MainWindow::friends_button_released() {
+    // Clear temp variables
+    tempImage = QImage();
+
     // TODO database searchMessages requests / friends
     int currentId = currentUser->getID();
     QList<UserInfo> friends = sqlLoadFriends(currentId);

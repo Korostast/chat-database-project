@@ -16,7 +16,10 @@ void errorLabelSetText(QLabel *label, const QString &error, bool isError) {
     label->show();
 }
 
-void MainWindow::settings_button_released() const {
+void MainWindow::settings_button_released() {
+    // Clear temp variables
+    tempImage = QImage();
+
     UserInfo curUser = sqlLoadProfile(currentUser->getID());
     ui->settings_firstname_edit->setText(curUser.getFirstName());
     ui->settings_lastname_edit->setText(curUser.getLastName());
@@ -118,7 +121,7 @@ void MainWindow::change_password() const {
 
     // TODO database change password
     try {
-        sqlUpdatePassword(currentUser->getID(), newPassword);
+        sqlUpdatePassword(currentUser->getID(), oldPassword, newPassword);
     } catch (QSqlException &error) {
         errorLabelSetText(ui->settings_password_error_label, error.what(), true);
         ui->settings_old_password_edit->setFocus();
