@@ -61,8 +61,6 @@ void sqlRemoveChatMember(int userID, int chatID);
 
 void sqlChangeRole(int chatID, int userID, int newRole);
 
-void sqlUpdateChat(int chatID, const QString &newName, const QImage &newAvatar);
-
 void sqlAcceptFriendRequest(int userID, int senderID);
 
 void sqlDeclineFriendRequest(int userID, int declinedID);
@@ -85,6 +83,10 @@ void sqlCreateDatabase(const QString &databaseName);
 void sqlDeleteDatabase(const QString &databaseName);
 
 void sqlChooseDatabase(const QString &databaseName);
+
+void sqlUpdateChatName(int chatID, const QString &newName);
+
+void sqlUpdateChatAvatar(int chatID, const QImage &newAvatar);
 
 void sqlUpdateUsername(int userID, const QString &newUsername);
 

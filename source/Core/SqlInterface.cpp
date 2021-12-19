@@ -50,8 +50,8 @@ void dbConnect(const QString &dbName) {
     db.setPassword(qTextStream.readLine());
 
     if (!db.open()) {
-        qCritical()
-                << "Could not connect to the database\nPlease check your access credentials\n";
+        qCritical() << "Could not connect to the database\n"
+                       "Please check your access credentials\n";
         exit(100);
     }
     qDebug() << "Connected to database" << dbName;
@@ -59,6 +59,7 @@ void dbConnect(const QString &dbName) {
 
 void dbClose() {
     QSqlDatabase::database().close();
+    QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
     qDebug() << "Database connection closed";
 }
 
@@ -140,8 +141,8 @@ QList<QString> sqlLoadDatabaseList() {
     qDebug() << "Loading database list from 'information_schema'";
     QSqlQuery q;
 
-    if (!q.exec("select SCHEMA_NAME"
-                "from information_schema.SCHEMATA"
+    if (!q.exec("select SCHEMA_NAME "
+                "from information_schema.SCHEMATA "
                 "where SCHEMA_NAME not in ('information_schema','mysql','performance_schema','sys')"))
         qWarning() << q.lastError().databaseText();
 
@@ -216,7 +217,7 @@ QList<MessageInfo> sqlLoadMessages(int chatID) {
                                   q.value("chat_id").toInt(),
                                   q.value("user_id").toInt(),
                                   q.value("username").toString(),
-                                  QImage::fromData(q.value("avatar").toByteArray())
+                                  base64ToImage(q.value("avatar").toByteArray())
                       )
         );
 
@@ -243,7 +244,7 @@ QList<MessageInfo> sqlLoadSearchedMessages(int chatID, QString &pattern) {
                                   q.value("chat_id").toInt(),
                                   q.value("user_id").toInt(),
                                   q.value("username").toString(),
-                                  QImage::fromData(q.value("avatar").toByteArray())
+                                  base64ToImage(q.value("avatar").toByteArray())
                       )
         );
 
@@ -264,7 +265,7 @@ QList<UserChatMember> sqlLoadChatMembers(int chatID) {
     while (q.next())
         result.append(UserChatMember(q.value("id").toInt(),
                                      q.value("username").toString(),
-                                     QImage::fromData(q.value("avatar").toByteArray()),
+                                     base64ToImage(q.value("avatar").toByteArray()),
                                      ROLE(q.value("user_role").toInt())
                       )
         );
@@ -288,7 +289,7 @@ UserInfo sqlLoadProfile(int userID) {
 
     UserInfo result(q.value("id").toInt(),
                     q.value("username").toString(),
-                    QImage::fromData(q.value("avatar").toByteArray()),
+                    base64ToImage(q.value("avatar").toByteArray()),
                     q.value("status").toString(),
                     q.value("email").toString(),
                     q.value("phone_number").toString(),
@@ -314,7 +315,7 @@ QList<UserInfo> sqlLoadFriends(int userID) {
     while (q.next())
         result.append(UserInfo(q.value("id").toInt(),
                                q.value("username").toString(),
-                               QImage::fromData(q.value("avatar").toByteArray()))
+                               base64ToImage(q.value("avatar").toByteArray()))
         );
 
     return result;
@@ -334,7 +335,7 @@ QList<UserInfo> sqlLoadIncomingRequests(int userID) {
     while (q.next())
         result.append(UserInfo(q.value("id").toInt(),
                                q.value("username").toString(),
-                               QImage::fromData(q.value("avatar").toByteArray())
+                               base64ToImage(q.value("avatar").toByteArray())
                       )
         );
 
@@ -355,7 +356,7 @@ QList<UserInfo> sqlLoadOutgoingRequests(int userID) {
     while (q.next())
         result.append(UserInfo(q.value("id").toInt(),
                                q.value("username").toString(),
-                               QImage::fromData(q.value("avatar").toByteArray())
+                               base64ToImage(q.value("avatar").toByteArray())
                       )
         );
 
@@ -367,7 +368,7 @@ QList<std::pair<UserInfo, QString> > sqlSearchUsersByPattern(int userID, const Q
     QSqlQuery q;
     QString qStr;
 
-    qStr = QString("call searchUsers(%1, %2)")
+    qStr = QString("call searchUsersByPattern(%1, %2)")
             .arg(userID)
             .arg(insertString(pattern));
     if (!q.exec(qStr))
@@ -377,7 +378,7 @@ QList<std::pair<UserInfo, QString> > sqlSearchUsersByPattern(int userID, const Q
     while (q.next())
         result.append(std::make_pair(UserInfo(q.value("id").toInt(),
                                               q.value("username").toString(),
-                                              QImage::fromData(q.value("avatar").toByteArray())),
+                                              base64ToImage(q.value("avatar").toByteArray())),
                                      q.value("relation").toString()
                       )
         );
@@ -466,10 +467,6 @@ void sqlChangeRole(int chatID, int userID, int newRole) {
             .arg(newRole + 1);
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
-}
-
-void sqlUpdateChat(int chatID, const QString &newName, const QImage &newAvatar) {
-
 }
 
 void sqlAcceptFriendRequest(int userID, int senderID) {
@@ -579,7 +576,7 @@ void sqlCreateDatabase(const QString &databaseName) {
 
     // Step 1 - Create the database itself
     qStr = QString("create database %1")
-            .arg(databaseName);
+            .arg(insertString(databaseName));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
@@ -601,7 +598,7 @@ void sqlDeleteDatabase(const QString &databaseName) {
     qWarning() << "DELETING DATABASE" << databaseName;
 
     QString qStr = QString("drop database %1")
-            .arg(databaseName);
+            .arg(insertString(databaseName));
 
     QSqlQuery q;
     if (!q.exec(qStr))
@@ -613,19 +610,100 @@ void sqlChooseDatabase(const QString &databaseName) {
     dbConnect(databaseName);
 }
 
-void sqlUpdateUsername(int userID, const QString &newUsername) {
+void sqlUpdateChatName(int chatID, const QString &newName) {
+    qDebug() << "Updating avatar of chat with id =" << chatID;
 
+    QSqlQuery q;
+    QString qStr;
+
+    qStr = QString("call updateChatName(%1, %2)")
+            .arg(chatID)
+            .arg(insertString(newName));
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+}
+
+void sqlUpdateChatAvatar(int chatID, const QImage &newAvatar) {
+    qDebug() << "Updating avatar of chat with id =" << chatID;
+
+    QSqlQuery q;
+    QString qStr;
+
+    qStr = QString("call updateChatAvatar(%1, '%2')")
+            .arg(chatID)
+            .arg(imageToBase64(newAvatar));
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+}
+
+void sqlUpdateUsername(int userID, const QString &newUsername) {
+    qDebug() << "Trying to change username of user with id =" << userID;
+
+    QSqlQuery q;
+    QString qStr;
+
+    qStr = QString("call updateUsername(%1, %2)")
+            .arg(userID)
+            .arg(insertString(newUsername));
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlUpdatePassword(int userID, const QString &newPassword) {
-    throw QSqlException("Password is not changed because it cannot be the same as the old password");
+    qDebug() << "Trying to change password of user with id =" << userID;
+
+    QSqlQuery q;
+    QString qStr;
+
+    // Check that old password and new password do not match
+    qStr = QString("call checkPassword(%1, %2)")
+            .arg(userID)
+            .arg(insertString(newPassword));
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+    if (q.value("result").toBool())
+        throw QSqlException("Password is not changed because it cannot be the same as the old password");
+
+    // Update password
+    qStr = QString("call updatePassword(%1, %2)")
+            .arg(userID)
+            .arg(insertString(newPassword));
+
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlUpdateAvatar(int userID, const QImage &newAvatar) {
+    qDebug() << "Updating avatar of user with id =" << userID;
 
+    QSqlQuery q;
+    QString qStr;
+
+    // Check that old password and new password do not match
+    qStr = QString("call updateAvatar(%1, '%2')")
+            .arg(userID)
+            .arg(imageToBase64(newAvatar));
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }
 
 void sqlUpdateOther(int userID, const QString &newStatus, const QString &newPhoneNumber, const QString &newFirstName,
                     const QString &newLastName) {
+    qDebug() << "Updating other information of user with id =" << userID;
 
+    QSqlQuery q;
+    QString qStr;
+
+    // Check that old password and new password do not match
+    qStr = QString("call updateOther(%1, %2, %3, %4, %5)")
+            .arg(userID)
+            .arg(insertString(newStatus),
+                 insertString(newPhoneNumber),
+                 insertString(newFirstName),
+                 insertString(newLastName));
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
 }

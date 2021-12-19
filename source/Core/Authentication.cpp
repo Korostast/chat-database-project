@@ -125,7 +125,7 @@ void MainWindow::register_button_released() {
 
 void MainWindow::switch_auth_button_released() const {
     if (currentState == REGISTRATION) {
-        qDebug() << "SWITCH TO AUTH";
+        qDebug() << "Switch to authorization page";
         ui->switch_auth_button->setChecked(true);
         ui->authentification_stacked_widget->setCurrentIndex(AUTHENTICATION_PAGE);
         ui->switch_register_button->setChecked(false);
@@ -140,7 +140,7 @@ void MainWindow::switch_auth_button_released() const {
 
 void MainWindow::switch_register_button_released() const {
     if (currentState == AUTHORIZATION) {
-        qDebug() << "SWITCH TO REGISTER";
+        qDebug() << "Switch to registration page";
         ui->switch_register_button->setChecked(true);
         ui->authentification_stacked_widget->setCurrentIndex(REGISTRATION_PAGE);
         ui->switch_auth_button->setChecked(false);

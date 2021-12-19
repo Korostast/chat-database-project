@@ -63,9 +63,16 @@ void ChatDialog::changeChatName() {
                            MainWindow::currentChat->getAvatar(), MainWindow::currentChat->getRole());
 
     // TODO database new chat name
-    sqlUpdateChat(MainWindow::currentChat->getID(), ui->chat_dialog_name->text(), MainWindow::currentChat->getAvatar());
+    sqlUpdateChatName(MainWindow::currentChat->getID(), ui->chat_dialog_name->text());
 
-    // TODO system message
+    QString content = QString("%1 изменил название беседы на %2").arg(MainWindow::currentUser->getUsername(),
+                                                                      ui->chat_dialog_name->text());
+    MessageInfo systemMessage(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
+                              MainWindow::currentUser->getID());
+    // TODO database send message
+    int messageId = sqlSendMessage(systemMessage);
+    mainWindow->addMessage(MainWindow::currentChat->getID(), MainWindow::currentUser->getID(), messageId, "", "",
+                           QImage(), content, SYSTEM_MESSAGE);
 }
 
 // Admin want to change avatar of the chat

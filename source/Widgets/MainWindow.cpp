@@ -50,6 +50,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->auth_register_error_label->setSizePolicy(retain);
     ui->auth_register_error_label->hide();
 
+    // Put DEFAULT_DATABASE name into labels
+    ui->current_database_name_label->setText(QString("Текущая БД: %1").arg(DEFAULT_DATABASE));
+    ui->current_database_name_label->setToolTip(DEFAULT_DATABASE);
+
     // Connect all main window widgets to the functions
     // Authentication
     connect(ui->auth_password_edit, SIGNAL(returnPressed()), this, SLOT(sign_in_button_released()));

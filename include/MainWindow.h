@@ -111,7 +111,7 @@ private:
 
     bool checkPhoneNumber(const QString &phoneNumber) const;
 
-    bool checkName(const QString &name) const;
+    bool checkName(const QString &name, bool isFirstname) const;
 
 private slots:
 

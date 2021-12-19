@@ -1785,7 +1785,7 @@ border-radius: 12px;</string>
                <number>12</number>
               </property>
               <item>
-               <widget class="QScrollArea" name="scrollArea">
+               <widget class="QScrollArea" name="settings_scrollarea">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -1799,14 +1799,14 @@ border-radius: 12px;</string>
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
+                   <y>-44</y>
                    <width>505</width>
-                   <height>916</height>
+                   <height>956</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_4">
                   <item>
-                   <widget class="QFrame" name="frame_2">
+                   <widget class="QFrame" name="settings_profile_frame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1827,16 +1827,16 @@ border-radius: 12px;</string>
                       <number>20</number>
                      </property>
                      <property name="leftMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <property name="topMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <property name="rightMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <property name="bottomMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <item>
                       <widget class="Line" name="line_2">
@@ -1892,6 +1892,9 @@ border-radius: 12px;</string>
                        </property>
                        <property name="text">
                         <string>Error</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
                        </property>
                        <property name="wordWrap">
                         <bool>true</bool>
@@ -2202,7 +2205,7 @@ border-radius: 12px;</string>
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QFrame" name="frame_3">
+                   <widget class="QFrame" name="settings_general_frame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -2223,16 +2226,16 @@ border-radius: 12px;</string>
                       <number>16</number>
                      </property>
                      <property name="leftMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <property name="topMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <property name="rightMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <property name="bottomMargin">
-                      <number>0</number>
+                      <number>10</number>
                      </property>
                      <item>
                       <widget class="Line" name="line_5">
@@ -2293,6 +2296,9 @@ border-radius: 12px;</string>
                          </property>
                          <property name="text">
                           <string>Error</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>true</bool>
@@ -2561,6 +2567,9 @@ border-radius: 12px;</string>
                          <property name="text">
                           <string>Error</string>
                          </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                          <property name="wordWrap">
                           <bool>true</bool>
                          </property>
@@ -2678,6 +2687,21 @@ border-radius: 12px;</string>
                   </item>
                  </layout>
                 </widget>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignBottom">
+               <widget class="QLabel" name="settings_save_label">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Error</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
               <item>
@@ -3074,7 +3098,7 @@ color: rgb(231, 231, 231);</string>
   <tabstop>settings_username_edit</tabstop>
   <tabstop>settings_change_username_button</tabstop>
   <tabstop>settings_save_button</tabstop>
-  <tabstop>scrollArea</tabstop>
+  <tabstop>settings_scrollarea</tabstop>
   <tabstop>messages_search_edit</tabstop>
   <tabstop>messages_search_button</tabstop>
   <tabstop>messages_search_remove_messages</tabstop>

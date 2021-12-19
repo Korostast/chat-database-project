@@ -218,3 +218,9 @@ QPlainTextEdit {
     border-radius: 8px;
     border-color: grey;
 }
+
+/*-----Settings frames-----*/
+#settings_general_frame, #settings_profile_frame {
+    background: #212121;
+    border-radius: 16px;
+}

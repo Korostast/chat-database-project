@@ -119,50 +119,61 @@ void AvatarEditor::saveImage() {
     QImage result = image->copy(rect).scaled(RESULT_IMAGE_SIZE, RESULT_IMAGE_SIZE,
                                              Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    // TODO database work here
-
     auto *mainWindow = qobject_cast<MainWindow *>(this->parentWidget());
 
     // TODO switch case
-    if (MainWindow::currentState == MESSAGES) {
-        QString path("../resources/images/chats/%1.png");
-        if (!result.save(QString(path).arg(MainWindow::currentChat->getID()), "png")) {
-            qCritical() << "Error: can't save image";
-            return;
+    switch (MainWindow::currentState) {
+        case MESSAGES: {
+            QString path("../resources/images/chats/%1.png");
+            if (!result.save(QString(path).arg(MainWindow::currentChat->getID()), "png")) {
+                qCritical() << "Error: can't save image. Please, throw away your MacBook";
+                return;
+            }
+            // TODO database update chat avatar
+            sqlUpdateChatAvatar(MainWindow::currentChat->getID(), result);
+
+            mainWindow->updateChat(MainWindow::currentChat->getID(), MainWindow::currentChat->getName(),
+                                   result, MainWindow::currentChat->getRole());
+            QString content = QString("Пользователь %1 изменил аватарку беседы")
+                    .arg(MainWindow::currentUser->getUsername());
+
+            // TODO database send message
+            MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
+                                MainWindow::currentUser->getID());
+            int messageId = sqlSendMessage(message);
+
+            mainWindow->addMessage(MainWindow::currentChat->getID(), MainWindow::currentUser->getID(), messageId, "",
+                                   "", QImage(), content, SYSTEM_MESSAGE);
+            break;
         }
-        // TODO database update chat avatar
-        sqlUpdateChat(MainWindow::currentChat->getID(), MainWindow::currentChat->getName(), result);
+        case CHAT_CREATION: {
+            mainWindow->ui->chat_creation_avatar->setPixmap(getCircularPixmap(result, CHAT_CREATION_CHAT_IMAGE_SIZE));
 
-        mainWindow->updateChat(MainWindow::currentChat->getID(), MainWindow::currentChat->getName(),
-                               result, MainWindow::currentChat->getRole());
-        QString content = QString("Пользователь %1 изменил аватарку беседы").arg(
-                MainWindow::currentUser->getUsername());
-
-        // TODO database send message
-        MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
-                            MainWindow::currentUser->getID());
-        int messageId = sqlSendMessage(message);
-
-        mainWindow->addMessage(MainWindow::currentChat->getID(), MainWindow::currentUser->getID(), messageId, "", "",
-                               QImage(), content, SYSTEM_MESSAGE);
-    } else if (MainWindow::currentState == CHAT_CREATION) {
-        mainWindow->ui->chat_creation_avatar->setPixmap(getCircularPixmap(result, CHAT_CREATION_CHAT_IMAGE_SIZE));
-    } else if (MainWindow::currentState == MY_PROFILE) {
-        // TODO user avatar
-        mainWindow->ui->profile_avatar->setPixmap(QPixmap::fromImage(result)
-                                                          .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE,
-                                                                  Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-
-        sqlUpdateAvatar(MainWindow::currentUser->getID(), result);
-
-        QString path("../resources/images/users/profile_%1.png");
-        if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
-            qCritical() << "Error: can't save image";
+            QString path("../resources/images/chats/chat_%1.png");
+            if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
+                qCritical() << "Error: can't save image. Please, throw away your MacBook";
+            }
+            break;
         }
-    } else {
-        QString path("../resources/images/users/other_%1.png");
-        if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
-            qCritical() << "Error: can't save image";
+        case MY_PROFILE: {
+            // TODO user avatar
+            mainWindow->ui->profile_avatar->setPixmap(QPixmap::fromImage(result)
+                                                              .scaled(PROFILE_IMAGE_SIZE, PROFILE_IMAGE_SIZE,
+                                                                      Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+
+            sqlUpdateAvatar(MainWindow::currentUser->getID(), result);
+
+            QString path("../resources/images/users/profile_%1.png");
+            if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
+                qCritical() << "Error: can't save image. Please, throw away your MacBook";
+            }
+            break;
+        }
+        default: {
+            QString path("../resources/images/users/other_%1.png");
+            if (!result.save(QString(path).arg(MainWindow::currentUser->getUsername()), "png")) {
+                qCritical() << "Error: can't save image. Please, throw away your MacBook";
+            }
         }
     }
 
