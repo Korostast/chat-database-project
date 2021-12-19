@@ -40,9 +40,8 @@ void dbConnect(const QString &dbName) {
         qCritical() << "Could not find 'db_access.txt' file with access credentials";
         exit(100);
     }
-    qDebug() << "Found database access credentials";
-    QTextStream qTextStream(&qFile);
 
+    QTextStream qTextStream(&qFile);
     QSqlDatabase db = QSqlDatabase::addDatabase(qTextStream.readLine());
     db.setHostName(qTextStream.readLine());
     db.setDatabaseName(dbName);
@@ -168,7 +167,7 @@ QList<PersonalChatInfo> sqlLoadPersonalChats(int userID) {
         result.append(PersonalChatInfo(q.value("id").toInt(),
                                        q.value("friend_id").toInt(),
                                        q.value("friend_username").toString(),
-                                       QImage::fromData(q.value("friend_avatar").toByteArray())
+                                       base64ToImage(q.value("friend_avatar").toByteArray())
                       )
         );
 
@@ -300,7 +299,6 @@ UserInfo sqlLoadProfile(int userID) {
     return result;
 }
 
-
 QList<UserInfo> sqlLoadFriends(int userID) {
     qDebug() << "Loading friends for user" << userID;
     QSqlQuery q;
@@ -395,7 +393,7 @@ int sqlSendMessage(const MessageInfo &message) {
             .arg(message.chatID)
             .arg(message.userID)
             .arg(insertString(message.content))
-            .arg(message.type ? "system_info" : "user_message");
+            .arg(insertString(message.type ? "system_info" : "user_message"));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
     if (!q.next())
@@ -515,7 +513,7 @@ void sqlRemoveFriend(int userID, int friendID) {
     QSqlQuery q;
     QString qStr;
 
-    qStr = QString("call deleteFriend(%1,%2)")
+    qStr = QString("call deleteFriend(%1, %2)")
             .arg(userID)
             .arg(friendID);
     if (!q.exec(qStr))
@@ -529,9 +527,9 @@ int sqlCreateGroupChat(int creatorID, const QString &chatName,
     QString qStr;
 
     // Step 1 - Create new entry in 'Chat'
-    qStr = QString("call createGroupChat(%1, '%2')")
+    qStr = QString("call createGroupChat(%1, %2)")
             .arg(insertString(chatName))
-            .arg(imageToBase64(avatar));
+            .arg(insertString(imageToBase64(avatar)));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
@@ -552,8 +550,8 @@ int sqlCreateGroupChat(int creatorID, const QString &chatName,
 
 void sqlAddMembers(int chatID, const std::vector<int> &participants) {
     qDebug() << "Adding new members to chat" << chatID;
-    QString qStr;
     QSqlQuery q;
+    QString qStr;
 
     for (auto now: participants) {
         qStr = QString("call joinChat(%1, %2)")
@@ -596,11 +594,11 @@ void sqlCreateDatabase(const QString &databaseName) {
 
 void sqlDeleteDatabase(const QString &databaseName) {
     qWarning() << "DELETING DATABASE" << databaseName;
-
-    QString qStr = QString("drop database %1")
-            .arg(insertString(databaseName));
-
     QSqlQuery q;
+    QString qStr;
+
+    qStr = QString("drop database %1")
+            .arg(insertString(databaseName));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
@@ -639,8 +637,7 @@ void sqlUpdateChatAvatar(int chatID, const QImage &newAvatar) {
 }
 
 void sqlUpdateUsername(int userID, const QString &newUsername) {
-    qDebug() << "Trying to change username of user with id =" << userID;
-
+    qDebug() << "Updating username of user" << userID;
     QSqlQuery q;
     QString qStr;
 
@@ -652,37 +649,32 @@ void sqlUpdateUsername(int userID, const QString &newUsername) {
 }
 
 void sqlUpdatePassword(int userID, const QString &newPassword) {
-    qDebug() << "Trying to change password of user with id =" << userID;
-
+    qDebug() << "Updating password of user" << userID;
     QSqlQuery q;
     QString qStr;
 
-    // Check that old password and new password do not match
+    // Step 1 - Check that the new password differs from the old one
     qStr = QString("call checkPassword(%1, %2)")
             .arg(userID)
             .arg(insertString(newPassword));
-
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
     if (q.value("result").toBool())
         throw QSqlException("Password is not changed because it cannot be the same as the old password");
 
-    // Update password
+    // Step 2 - Update password
     qStr = QString("call updatePassword(%1, %2)")
             .arg(userID)
             .arg(insertString(newPassword));
-
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
 void sqlUpdateAvatar(int userID, const QImage &newAvatar) {
-    qDebug() << "Updating avatar of user with id =" << userID;
-
+    qDebug() << "Updating avatar of user" << userID;
     QSqlQuery q;
     QString qStr;
 
-    // Check that old password and new password do not match
     qStr = QString("call updateAvatar(%1, '%2')")
             .arg(userID)
             .arg(imageToBase64(newAvatar));
@@ -692,12 +684,10 @@ void sqlUpdateAvatar(int userID, const QImage &newAvatar) {
 
 void sqlUpdateOther(int userID, const QString &newStatus, const QString &newPhoneNumber, const QString &newFirstName,
                     const QString &newLastName) {
-    qDebug() << "Updating other information of user with id =" << userID;
-
+    qDebug() << "Updating other information of user" << userID;
     QSqlQuery q;
     QString qStr;
 
-    // Check that old password and new password do not match
     qStr = QString("call updateOther(%1, %2, %3, %4, %5)")
             .arg(userID)
             .arg(insertString(newStatus),
