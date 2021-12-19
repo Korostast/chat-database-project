@@ -56,7 +56,10 @@ void MainWindow::showProfile(const UserInfo *user) const {
 }
 
 
-void MainWindow::profile_button_released() const {
+void MainWindow::profile_button_released() {
+    // Clear temp variables
+    tempImage = QImage();
+
     UserInfo user = sqlLoadProfile(currentUser->getID());
     showProfile(&user);
 }

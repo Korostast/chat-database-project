@@ -168,7 +168,7 @@ QList<PersonalChatInfo> sqlLoadPersonalChats(int userID) {
         result.append(PersonalChatInfo(q.value("id").toInt(),
                                        q.value("friend_id").toInt(),
                                        q.value("friend_username").toString(),
-                                       QImage::fromData(q.value("friend_avatar").toByteArray())
+                                       base64ToImage(q.value("friend_avatar").toByteArray())
                       )
         );
 
@@ -651,21 +651,24 @@ void sqlUpdateUsername(int userID, const QString &newUsername) {
         qWarning() << q.lastError().databaseText();
 }
 
-void sqlUpdatePassword(int userID, const QString &newPassword) {
+void sqlUpdatePassword(int userID, const QString &oldPassword, const QString &newPassword) {
     qDebug() << "Trying to change password of user with id =" << userID;
 
     QSqlQuery q;
     QString qStr;
 
-    // Check that old password and new password do not match
+    // Check that old password is correct
     qStr = QString("call checkPassword(%1, %2)")
             .arg(userID)
-            .arg(insertString(newPassword));
+            .arg(insertString(oldPassword));
+    qDebug() << qStr;
 
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
-    if (q.value("result").toBool())
-        throw QSqlException("Password is not changed because it cannot be the same as the old password");
+    if (!q.next())
+        throw QSqlException("Changing password failed");
+    if (!q.value("result").toBool()){
+        throw QSqlException("Password is not changed because old password is incorrect");}
 
     // Update password
     qStr = QString("call updatePassword(%1, %2)")

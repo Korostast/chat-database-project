@@ -90,7 +90,7 @@ void sqlUpdateChatAvatar(int chatID, const QImage &newAvatar);
 
 void sqlUpdateUsername(int userID, const QString &newUsername);
 
-void sqlUpdatePassword(int userID, const QString &newPassword);
+void sqlUpdatePassword(int userID, const QString &oldPassword, const QString &newPassword);
 
 void sqlUpdateAvatar(int userID, const QImage &newAvatar);
 

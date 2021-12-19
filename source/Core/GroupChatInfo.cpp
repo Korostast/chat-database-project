@@ -13,7 +13,6 @@ void ChatDialog::setupCurrentChatUI(ChatWidget *chat) {
     ui->chat_dialog_avatar->setPixmap(
             AvatarEditor::getCircularPixmap(chat->getAvatar(), CHAT_DIALOG_AVATAR_IMAGE_SIZE));
     ui->chat_dialog_name->setText(chat->getName());
-    ui->chat_dialog_count_members->setText(QString::number(chat->getCountMembers()));
     if (chat->getRole() == ADMIN) {
         ui->chat_dialog_name->setReadOnly(false);
         ui->chat_dialog_add_member_button->show();
@@ -26,6 +25,7 @@ void ChatDialog::setupCurrentChatUI(ChatWidget *chat) {
 
     // TODO database searchMessages members list
     QList<UserChatMember> members = sqlLoadChatMembers(MainWindow::currentChat->getID());
+    ui->chat_dialog_count_members->setText(QString::number(members.count()) + " участников");
 
     // Cleaning
     ui->chat_dialog_members_list->clear();
@@ -126,6 +126,9 @@ void ChatDialog::leaveChat() {
     close();
 
     QMetaObject::invokeMethod(mainWindow->ui->chats_button, "released");
+
+    mainWindow->chats_button_released();
+    mainWindow->ui->main_stacked_widget->setCurrentIndex(GROUP_CHAT_LIST_PAGE);
 
     // Remove chat from chats list and back to chat list
     // TODO

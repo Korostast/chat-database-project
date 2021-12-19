@@ -34,6 +34,8 @@ public:
 
     static UserInfo *currentUser;
 
+    QImage tempImage;
+
     explicit MainWindow(QWidget *parent = nullptr);
 
     ~MainWindow() override;
@@ -131,14 +133,6 @@ private slots:
 
     void chat_name_label_released();
 
-    void chats_button_released();
-
-    void profile_button_released() const;
-
-    void friends_button_released();
-
-    void settings_button_released() const;
-
     void search_people();
 
     void sendMessage();
@@ -162,6 +156,15 @@ private slots:
     void change_username();
 
     void change_password_return_pressed() const;
+
+public slots:
+    void chats_button_released();
+
+    void profile_button_released();
+
+    void friends_button_released();
+
+    void settings_button_released();
 };
 
 #endif // MAINWINDOW_H
