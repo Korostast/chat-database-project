@@ -21,23 +21,25 @@ void MainWindow::settings_button_released() const {
 }
 
 bool MainWindow::checkPhoneNumber(const QString &phoneNumber) const {
-    if (std::ranges::all_of(phoneNumber.begin(), phoneNumber.end(), [](QChar letter) { return letter.isDigit(); })) {
-        return true;
-    } else {
-        ui->settings_profile_info_error_label->setText("Номер телефона может состоять только из цифр");
-        ui->settings_profile_info_error_label->show();
-        return false;
+    for (const auto &letter : phoneNumber) {
+        if (!letter.isDigit()) {
+            ui->settings_profile_info_error_label->setText("Номер телефона может состоять только из цифр");
+            ui->settings_profile_info_error_label->show();
+            return false;
+        }
     }
+    return true;
 }
 
 bool MainWindow::checkName(const QString &name) const {
-    if (std::ranges::all_of(name.begin(), name.end(), [](QChar letter) { return letter.isLetter(); })) {
-        return true;
-    } else {
-        ui->settings_profile_info_error_label->setText("Имя может состоять только из букв");
-        ui->settings_profile_info_error_label->show();
-        return false;
+    for (const auto &letter : name) {
+        if (!letter.isLetter()) {
+            ui->settings_profile_info_error_label->setText("Имя может состоять только из букв");
+            ui->settings_profile_info_error_label->show();
+            return false;
+        }
     }
+    return true;
 }
 
 // TODO refactor
