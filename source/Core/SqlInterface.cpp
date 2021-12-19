@@ -648,7 +648,7 @@ void sqlUpdateUsername(int userID, const QString &newUsername) {
         qWarning() << q.lastError().databaseText();
 }
 
-void sqlUpdatePassword(int userID, const QString &newPassword) {
+void sqlUpdatePassword(int userID, const QString &oldPassword, const QString &newPassword) {
     qDebug() << "Updating password of user" << userID;
     QSqlQuery q;
     QString qStr;
@@ -656,7 +656,7 @@ void sqlUpdatePassword(int userID, const QString &newPassword) {
     // Step 1 - Check that the new password differs from the old one
     qStr = QString("call checkPassword(%1, %2)")
             .arg(userID)
-            .arg(insertString(newPassword));
+            .arg(insertString(oldPassword));
 
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
