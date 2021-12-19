@@ -61,7 +61,7 @@ QString MainWindow::checkRegisterInput(const QString &username, const QString &p
 }
 
 void MainWindow::sign_in_button_released() {
-    qDebug() << "AUTH BUTTON CLICKED";
+    qDebug() << "Auth button released";
 
     QString password = ui->auth_password_edit->text();
     QString emailOrUsername = ui->auth_email_edit->text();
@@ -92,7 +92,7 @@ void MainWindow::sign_in_button_released() {
 }
 
 void MainWindow::register_button_released() {
-    qDebug() << "REGISTER BUTTON CLICKED";
+    qDebug() << "Register button released";
 
     QString username = ui->register_username_edit->text();
     QString password = ui->register_password_edit->text();

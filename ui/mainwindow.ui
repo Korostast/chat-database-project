@@ -1799,7 +1799,7 @@ border-radius: 12px;</string>
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-44</y>
+                   <y>-446</y>
                    <width>505</width>
                    <height>956</height>
                   </rect>
@@ -2691,6 +2691,12 @@ border-radius: 12px;</string>
               </item>
               <item alignment="Qt::AlignBottom">
                <widget class="QLabel" name="settings_save_label">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>38</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <pointsize>12</pointsize>

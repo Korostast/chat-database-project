@@ -132,7 +132,7 @@ UserInfo sqlAuthenticateUser(const QString &password, const QString &emailOrUser
 
     UserInfo result(q.value("id").toInt(),
                     q.value("username").toString(),
-                    QImage::fromData(q.value("avatar").toByteArray()));
+                    base64ToImage(q.value("avatar").toByteArray()));
 
     return result;
 }

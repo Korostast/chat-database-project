@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "SqlInterface.h"
+#include <QScrollBar>
 
 void errorLabelSetText(QLabel *label, const QString &error, bool isError) {
     label->setText(error);
@@ -39,6 +40,8 @@ bool MainWindow::checkPhoneNumber(const QString &phoneNumber) const {
         if (!(letter.isDigit() || letter == '+' || letter == '-') ) {
             errorLabelSetText(ui->settings_profile_info_error_label, "Номер телефона может состоять только из цифр",
                               true);
+            auto *verticalScrollBar = ui->settings_scrollarea->verticalScrollBar();
+            verticalScrollBar->setValue(verticalScrollBar->minimum());
             ui->settings_phonenumber_edit->setFocus();
             return false;
         }
@@ -50,6 +53,8 @@ bool MainWindow::checkName(const QString &name, bool isFirstname) const {
     for (const auto &letter: name) {
         if (!letter.isLetter()) {
             errorLabelSetText(ui->settings_profile_info_error_label, "Имя может состоять только из букв", true);
+            auto *verticalScrollBar = ui->settings_scrollarea->verticalScrollBar();
+            verticalScrollBar->setValue(verticalScrollBar->minimum());
             if (isFirstname)
                 ui->settings_firstname_edit->setFocus();
             else
@@ -75,14 +80,9 @@ void MainWindow::settings_save_button_released() {
     }
 
     sqlUpdateOther(currentUser->getID(), status, phoneNumber, firstname, lastname);
-    currentUser->setFirstName(firstname);
-    currentUser->setLastName(lastname);
-    currentUser->setPhoneNumber(phoneNumber);
-    currentUser->setStatus(status);
 
     ui->settings_profile_info_error_label->hide();
-    ui->settings_save_label->setText("Настройки сохранены");
-    ui->settings_save_label->show();
+    errorLabelSetText(ui->settings_save_label, "Настройки сохранены", false);
 
     qInfo() << "Settings are saved successfully";
 }
@@ -93,26 +93,26 @@ void MainWindow::change_password() const {
     QString oldPassword(ui->settings_old_password_edit->text());
     QString newPassword(ui->settings_new_password_edit->text());
     QString repeatPassword(ui->settings_repeat_password_edit->text());
-    if (newPassword.isEmpty()) {
-        errorLabelSetText(ui->settings_password_error_label, "Пароль не изменён, так как новый пароль пустой", true);
-        return;
-    }
+
     for (auto letter: newPassword.toLatin1()) {
         if (!isalnum(letter) && !QString("@-_&").contains(letter)) {
             errorLabelSetText(ui->settings_password_error_label, "Пароль не изменён, так как пароль может состоять "
                                                                  "только из латинских букв, цифр и знаков @-_&", true);
+            ui->settings_new_password_edit->setFocus();
             return;
         }
     }
     if (newPassword == oldPassword) {
         ui->settings_password_error_label->setText("Пароль не может быть изменён на старый");
         errorLabelSetText(ui->settings_password_error_label, "Пароль не может быть изменён на старый", true);
+        ui->settings_new_password_edit->setFocus();
         return;
     }
     if (newPassword != repeatPassword) {
         ui->settings_password_error_label->setText("Пароль не изменён, так как новый пароль повторен неправильно");
         errorLabelSetText(ui->settings_password_error_label, "Пароль не изменён, так как новый пароль "
                                                              "повторен неправильно", true);
+        ui->settings_repeat_password_edit->setFocus();
         return;
     }
 
@@ -120,8 +120,8 @@ void MainWindow::change_password() const {
     try {
         sqlUpdatePassword(currentUser->getID(), newPassword);
     } catch (QSqlException &error) {
-        ui->settings_password_error_label->setText(error.what());
-        ui->settings_password_error_label->show();
+        errorLabelSetText(ui->settings_password_error_label, error.what(), true);
+        ui->settings_old_password_edit->setFocus();
         qInfo() << "Password is not unchanged: " << error.what();
         return;
     }
@@ -134,21 +134,21 @@ void MainWindow::change_password() const {
 void MainWindow::change_username() {
     qDebug() << "Trying to change username..";
     QString newUsername = ui->settings_username_edit->text();
-    if (currentUser->getUsername() == newUsername) {
-        ui->settings_username_error_label->setText("Имя пользователя не может быть сменено на старое");
-        ui->settings_username_error_label->show();
+    if (newUsername.isEmpty()) {
+        errorLabelSetText(ui->settings_username_error_label, "Имя пользователя не может быть пустым", true);
+        ui->settings_username_error_label->setFocus();
         return;
     }
-    if (newUsername.isEmpty()) {
-        ui->settings_username_error_label->setText("Имя пользователя не может быть пустым");
-        ui->settings_username_error_label->show();
+    if (currentUser->getUsername() == newUsername) {
+        errorLabelSetText(ui->settings_username_error_label, "Имя пользователя не может быть сменено на старое", true);
+        ui->settings_username_error_label->setFocus();
         return;
     }
     for (auto letter: newUsername.toLatin1()) {
         if (!isalnum(letter)) {
-            ui->settings_username_error_label->setText("Имя пользователя не изменено, потому что допустимы только "
-                                                       "латинские буквы и цифры");
-            ui->settings_username_error_label->show();
+            errorLabelSetText(ui->settings_username_error_label, "Имя пользователя не изменено, потому что "
+                                                                 "допустимы только латинские буквы и цифры", true);
+            ui->settings_username_error_label->setFocus();
             return;
         }
     }
@@ -158,15 +158,14 @@ void MainWindow::change_username() {
         sqlUpdateUsername(currentUser->getID(), newUsername);
         currentUser->setUsername(newUsername);
     } catch (QSqlException &error) {
-        ui->settings_username_error_label->setText(error.what());
-        ui->settings_username_error_label->show();
+        errorLabelSetText(ui->settings_username_error_label, error.what(), true);
+        ui->settings_username_error_label->setFocus();
         qInfo() << "Username is not changed: " << error.what();
         return;
     }
 
     // Success
-    ui->settings_username_error_label->setText("Имя пользователя успешно сменено");
-    ui->settings_username_error_label->show();
+    errorLabelSetText(ui->settings_username_error_label, "Имя пользователя успешно сменено", false);
     ui->current_user_name_label->setText(newUsername);
     qInfo() << "Username is changed successfully";
 }
