@@ -156,6 +156,8 @@ void ChatDialog::addMembers() {
         return;
 
     auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
+    mainWindow->ui->chat_online_or_members_label->setText(
+            QString::number(ui->chat_dialog_members_list->count() + countMembers) + " участников");
 
     // Success
     std::vector<int> users;

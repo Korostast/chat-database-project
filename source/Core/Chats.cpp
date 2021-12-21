@@ -24,7 +24,7 @@ MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGr
     auto *widget = new ChatWidget(this);
     widget->setID(id);
     widget->setName(name);
-    widget->setAvatar(avatar);
+    widget->setAvatar(avatar, isGroup);
     widget->setGroup(isGroup);
     widget->setCountMembers(countMembers);
     widget->setRole(role);

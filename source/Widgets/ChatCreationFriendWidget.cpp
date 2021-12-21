@@ -33,7 +33,7 @@ const QImage &ChatCreationFriendWidget::getAvatar() const {
 }
 
 void ChatCreationFriendWidget::setAvatar(const QImage &avatar) {
-    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(avatar, CHAT_CREATION_FRIEND_IMAGE_SIZE);
+    ChatCreationFriendWidget::avatar = avatar.isNull() ? QImage(":user default avatar") : avatar;
+    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(ChatCreationFriendWidget::avatar, CHAT_CREATION_FRIEND_IMAGE_SIZE);
     ui->chat_creation_friend_avatar->setPixmap(resultPixmap);
-    ChatCreationFriendWidget::avatar = avatar;
 }

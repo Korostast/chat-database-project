@@ -8,5 +8,6 @@
         <file alias="QSS">CSS/MainTheme.qss</file>
         <file alias="Refresh Icon">images/icons/refresh.png</file>
         <file alias="user default avatar">images/icons/no-profile-picture-icon.jpg</file>
+        <file alias="Down arrow">images/icons/down-arrow-icon.png</file>
     </qresource>
 </RCC>

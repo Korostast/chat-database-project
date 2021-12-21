@@ -39,7 +39,7 @@ public:
 
     const QImage &getAvatar() const;
 
-    void setAvatar(const QImage &image);
+    void setAvatar(const QImage &image, bool isGroup);
 
     const QString &getName() const;
 

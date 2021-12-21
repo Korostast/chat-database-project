@@ -15,6 +15,8 @@ class ChatDialog : public QDialog {
 Q_OBJECT
 
 public:
+    Ui::ChatDialog *ui;
+
     explicit ChatDialog(QWidget *parent = nullptr);
 
     ~ChatDialog() override;
@@ -24,10 +26,6 @@ public:
     void removeMemberFromUI(ChatMemberWidget *member);
 
     void openFileChooser();
-
-private:
-
-    Ui::ChatDialog *ui;
 
 private slots:
 

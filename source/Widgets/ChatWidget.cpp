@@ -26,8 +26,11 @@ void ChatWidget::setName(const QString &name) {
     this->name = name;
 }
 
-void ChatWidget::setAvatar(const QImage &image) {
-    this->avatar = image.isNull() ? QImage(":chat default image") : image;
+void ChatWidget::setAvatar(const QImage &image, bool isGroup) {
+    if (!image.isNull())
+        this->avatar = image;
+    else
+        this->avatar = isGroup ? QImage(":chat default image") : QImage(":user default avatar");
     QPixmap resultPixmap = AvatarEditor::getCircularPixmap(this->avatar, CHAT_IMAGE_SIZE);
     ui->avatar->setPixmap(resultPixmap);
 }

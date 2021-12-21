@@ -194,6 +194,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="database_choose_button">
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Выбрать базу данных</string>
          </property>

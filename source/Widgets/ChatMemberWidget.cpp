@@ -4,6 +4,8 @@
 #include "ui_chatmemberwidget.h"
 #include "SqlInterface.h"
 #include "ClickableLabel.h"
+#include "ui_chatdialog.h"
+#include "ui_mainWindow.h"
 
 ChatMemberWidget::ChatMemberWidget(QWidget *parent)
         : QWidget(parent), ui(new Ui::ChatMemberWidget), id(-1), role(VIEWER) {
@@ -42,8 +44,9 @@ const QImage &ChatMemberWidget::getAvatar() const {
 }
 
 void ChatMemberWidget::setAvatar(const QImage &avatar) {
-    ChatMemberWidget::avatar = avatar.isNull() ?  QImage(":user default avatar") : avatar;
-    ui->chat_members_avatar->setPixmap(AvatarEditor::getCircularPixmap(ChatMemberWidget::avatar, CHAT_MEMBER_IMAGE_SIZE));
+    ChatMemberWidget::avatar = avatar.isNull() ? QImage(":user default avatar") : avatar;
+    ui->chat_members_avatar->setPixmap(
+            AvatarEditor::getCircularPixmap(ChatMemberWidget::avatar, CHAT_MEMBER_IMAGE_SIZE));
 }
 
 const QString &ChatMemberWidget::getName() const {
@@ -76,7 +79,6 @@ void ChatMemberWidget::setRole(ROLE role) {
 // Admin click to the remove member button
 void ChatMemberWidget::removeMember() {
     // TODO database remove chat member
-    // TODO remove yourself from the chat
 
     auto *sender = qobject_cast<QPushButton *>(QObject::sender());
     if (sender == ui->chat_members_remove_button) {
@@ -87,16 +89,25 @@ void ChatMemberWidget::removeMember() {
 
         sqlRemoveChatMember(chatMemberWidget->getID(), MainWindow::currentChat->getID());
 
-        auto *chatDialog = qobject_cast<ChatDialog *>(sender->window());
-
         qInfo() << QString(
-                "Admin remove user with messageID - %1, username - %2, role - %3 from chat with messageID - %4, username - %5")
-                .arg(chatMemberWidget->getID()).arg(chatMemberWidget->getName()).arg(chatMemberWidget->getRole())
-                .arg(MainWindow::currentChat->getID()).arg(MainWindow::currentChat->getName());
+                "Admin remove user with userID - %1, username - %2, role - %3 from chat with chatID - %4, username - %5")
+                .arg(chatMemberWidget->getID())
+                .arg(chatMemberWidget->getName())
+                .arg(chatMemberWidget->getRole())
+                .arg(MainWindow::currentChat->getID())
+                .arg(MainWindow::currentChat->getName()
+                );
 
+        auto *chatDialog = qobject_cast<ChatDialog *>(sender->window());
         chatDialog->removeMemberFromUI(chatMemberWidget);
+        chatDialog->ui->chat_dialog_count_members->setText(
+                QString::number(chatDialog->ui->chat_dialog_members_list->count()) + " участников");
 
         auto *mainWindow = qobject_cast<MainWindow *>(chatDialog->parent());
+        mainWindow->ui->chat_online_or_members_label->setText(
+                QString::number(chatDialog->ui->chat_dialog_members_list->count()) + " участников");
+
+
         // TODO database send message
         MessageInfo message(-1, content, nullptr, SYSTEM_MESSAGE, MainWindow::currentChat->getID(),
                             chatMemberWidget->getID());
