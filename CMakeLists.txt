@@ -53,7 +53,33 @@ add_executable(${TARGET_NAME}
         AvatarEditorWidget/include/Defines.h source/Core/Chats.cpp
         source/Core/Friends.cpp
         source/Core/Profile.cpp
-        include/Defines.h source/Core/GroupChatInfo.cpp include/SystemMessageWidget.h source/Widgets/SystemMessageWidget.cpp source/Widgets/ChatMemberWidget.cpp include/ChatMemberWidget.h include/MessageTextEdit.h source/Widgets/MessageTextEdit.cpp source/Widgets/FriendWidget.cpp include/FriendWidget.h include/IncomingRequestWidget.h source/Widgets/IncomingRequestWidget.cpp include/AbstractFriendWidget.h include/OutcomingRequestWidget.h source/Widgets/OutcomingRequestWidget.cpp include/SearchPeopleWidget.h source/Widgets/SearchPeopleWidget.cpp include/SqlInterface.h source/Core/SqlInterface.cpp include/ChatCreationFriendWidget.h source/Widgets/ChatCreationFriendWidget.cpp source/Core/Settings.cpp include/DatabaseChooserDialog.h source/Widgets/DatabaseChooserDialog.cpp source/Core/DatabaseAdminAccess.cpp include/DeleteDatabaseMessagebox.h source/Widgets/DeleteDatabaseMessagebox.cpp)
+        include/Defines.h
+        source/Core/GroupChatInfo.cpp
+        include/SystemMessageWidget.h
+        source/Widgets/SystemMessageWidget.cpp
+        source/Widgets/ChatMemberWidget.cpp
+        include/ChatMemberWidget.h
+        include/MessageTextEdit.h
+        source/Widgets/MessageTextEdit.cpp
+        source/Widgets/FriendWidget.cpp
+        include/FriendWidget.h
+        include/IncomingRequestWidget.h
+        source/Widgets/IncomingRequestWidget.cpp
+        include/AbstractFriendWidget.h
+        include/OutcomingRequestWidget.h
+        source/Widgets/OutcomingRequestWidget.cpp
+        include/SearchPeopleWidget.h
+        source/Widgets/SearchPeopleWidget.cpp
+        include/SqlInterface.h
+        source/Core/SqlInterface.cpp
+        include/ChatCreationFriendWidget.h
+        source/Widgets/ChatCreationFriendWidget.cpp
+        source/Core/Settings.cpp
+        include/DatabaseChooserDialog.h
+        source/Widgets/DatabaseChooserDialog.cpp
+        source/Core/DatabaseAdminAccess.cpp
+        include/DeleteDatabaseMessagebox.h
+        source/Widgets/DeleteDatabaseMessagebox.cpp)
 
 #Copy required libraries into work directory
 if (WIN32)
@@ -67,7 +93,25 @@ if (WIN32)
                 "${QT_INSTALL_PATH}/plugins/platforms/qwindows.dll"
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/platforms/")
     endif ()
-    foreach (QT_LIB Core Gui Widgets)
+    if (EXISTS "${QT_INSTALL_PATH}/plugins/imageformats/qgif.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E make_directory
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/imageformats/")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                "${QT_INSTALL_PATH}/plugins/imageformats/qgif.dll"
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/imageformats/")
+    endif ()
+    if (EXISTS "${QT_INSTALL_PATH}/plugins/imageformats/qjpeg.dll")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E make_directory
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/imageformats/")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                "${QT_INSTALL_PATH}/plugins/imageformats/qjpeg.dll"
+                "$<TARGET_FILE_DIR:${PROJECT_NAME}>/plugins/imageformats/")
+    endif ()
+    foreach (QT_LIB Core Gui Widgets Sql)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy
                 "${QT_INSTALL_PATH}/bin/Qt6${QT_LIB}.dll"

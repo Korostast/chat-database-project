@@ -78,7 +78,8 @@ void MainWindow::sign_in_button_released() {
         if (currentUser->getAvatar().isNull())
             currentUser->setAvatar(QImage(":chatDefaultImage"));
         ui->current_user_name_label->setText(currentUser->getUsername());
-        ui->current_user_avatar_label->setPixmap(AvatarEditor::getCircularPixmap(currentUser->getAvatar(), 40));
+        ui->current_user_avatar_label->setPixmap(
+                AvatarEditor::getCircularPixmap(currentUser->getAvatar(), CURRENT_USER_IMAGE_SIZE));
         currentState = CHATS;
     } catch (QSqlException &error) {
         ui->auth_register_error_label->setText(error.what());
@@ -111,7 +112,8 @@ void MainWindow::register_button_released() {
         if (currentUser->getAvatar().isNull())
             currentUser->setAvatar(QImage(":chatDefaultImage"));
         ui->current_user_name_label->setText(currentUser->getUsername());
-        ui->current_user_avatar_label->setPixmap(AvatarEditor::getCircularPixmap(currentUser->getAvatar(), 40));
+        ui->current_user_avatar_label->setPixmap(
+                AvatarEditor::getCircularPixmap(currentUser->getAvatar(), CURRENT_USER_IMAGE_SIZE));
         currentState = CHATS;
     } catch (QSqlException &error) {
         ui->auth_register_error_label->setText(error.what());
@@ -162,7 +164,7 @@ void MainWindow::open_choose_database_dialog() {
     // TODO database load databases list
     QList<QString> databases = sqlLoadDatabaseList();
     databaseDialog->ui->database_choose_list->clear();
-    for (const auto &db : databases)
+    for (const auto &db: databases)
         databaseDialog->ui->database_choose_list->addItem(db);
 
     databaseDialog->ui->admin_database_creation_stacked_widget->setCurrentIndex(2);
