@@ -24,7 +24,7 @@ MainWindow::addChat(int id, const QString &name, const QImage &avatar, bool isGr
     auto *widget = new ChatWidget(this);
     widget->setID(id);
     widget->setName(name);
-    widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
+    widget->setAvatar(avatar);
     widget->setGroup(isGroup);
     widget->setCountMembers(countMembers);
     widget->setRole(role);
@@ -162,7 +162,7 @@ void MainWindow::insertMessage(UserMessageWidget *message, int row) {
     widget->setMessageID(message->getMessageID());
     // TODO image of message widget | upd. Done ?
     const auto &avatar = message->getAvatar();
-    widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
+    widget->setAvatar(avatar);
     widget->setName(message->getName());
     widget->setTime(message->getTime());
     widget->setContent(message->getContent());
@@ -201,7 +201,7 @@ MainWindow::addMessage(int chatID, int userID, int messageID, const QString &use
             widget->setUserID(userID);
             widget->setMessageID(messageID);
             // TODO image of message widget | upd. Done ?
-            widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
+            widget->setAvatar(avatar);
             widget->setName(username);
             widget->setTime(time);
             widget->setContent(content);
@@ -346,7 +346,7 @@ void MainWindow::chat_creation_open_ui() {
     QList<UserInfo> friends = sqlLoadFriends(currentUser->getID());
     ui->chat_creation_friends_list->clear();
     ui->chat_creation_name_edit->clear();
-    ui->chat_creation_avatar->setPixmap(AvatarEditor::getCircularPixmap(QImage(":chatDefaultImage"),
+    ui->chat_creation_avatar->setPixmap(AvatarEditor::getCircularPixmap(QImage(":chat default image"),
                                                                         CHAT_CREATION_CHAT_IMAGE_SIZE));
     for (const auto &fr: friends)
         addToList<ChatCreationFriendWidget>(fr.getID(), fr.getUsername(), fr.getAvatar(),

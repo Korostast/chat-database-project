@@ -792,7 +792,7 @@ border-radius: 12px;</string>
              </size>
             </property>
             <property name="currentIndex">
-             <number>3</number>
+             <number>2</number>
             </property>
             <widget class="QWidget" name="personal_chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0,0,0,0" columnstretch="0">
@@ -1277,6 +1277,9 @@ border-radius: 12px;</string>
               </item>
               <item>
                <layout class="QGridLayout" name="gridLayout_2">
+                <property name="bottomMargin">
+                 <number>10</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="CustomPlainTextEdit" name="message_text_edit">
                   <property name="sizePolicy">
@@ -1738,6 +1741,9 @@ border-radius: 12px;</string>
               </item>
               <item row="2" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <property name="bottomMargin">
+                 <number>16</number>
+                </property>
                 <item>
                  <widget class="ClickableLabel" name="chat_creation_avatar">
                   <property name="sizePolicy">
@@ -1808,7 +1814,7 @@ border-radius: 12px;</string>
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-446</y>
+                   <y>0</y>
                    <width>505</width>
                    <height>956</height>
                   </rect>

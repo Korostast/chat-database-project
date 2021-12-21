@@ -5,38 +5,30 @@
 // We opened a profile of the user. Awful code.
 void MainWindow::showProfile(const UserInfo *user) const {
     const auto &avatar = user->getAvatar();
-    ui->profile_avatar->setPixmap(QPixmap::fromImage(avatar.isNull() ? QImage(":chatDefaultImage") : avatar)
+    ui->profile_avatar->setPixmap(QPixmap::fromImage(avatar.isNull() ? QImage(":user default avatar") : avatar)
                                           .scaled(PROFILE_IMAGE_SIZE,
                                                   PROFILE_IMAGE_SIZE,
                                                   Qt::IgnoreAspectRatio,
                                                   Qt::SmoothTransformation));
     ui->profile_username->setText(user->getUsername());
     ui->profile_status->setText(user->getStatus());
-    if (!user->getFirstName().isEmpty()) {
-        ui->profile_first_name->setText(user->getFirstName());
-        ui->profile_first_name_const->show();
-        ui->profile_first_name->show();
-    } else {
-        ui->profile_first_name_const->hide();
-        ui->profile_first_name->hide();
-    }
-
-    if (!user->getLastName().isEmpty()) {
-        ui->profile_last_name->setText(user->getLastName());
-        ui->profile_last_name_const->show();
-        ui->profile_last_name->show();
-    } else {
-        ui->profile_last_name_const->hide();
-        ui->profile_last_name->hide();
-    }
-
-    if (!user->getPhoneNumber().isEmpty()) {
-        ui->profile_phone_number->setText(user->getPhoneNumber());
-        ui->profile_phone_number_const->show();
-        ui->profile_phone_number->show();
-    } else {
-        ui->profile_phone_number_const->hide();
-        ui->profile_phone_number->hide();
+    QList<std::pair<std::pair<QLabel *, QLabel *>, QString> > profileFields{
+            {{ui->profile_first_name,   ui->profile_first_name_const},   user->getFirstName()},
+            {{ui->profile_last_name,    ui->profile_last_name_const},    user->getLastName()},
+            {{ui->profile_phone_number, ui->profile_phone_number_const}, user->getPhoneNumber()},
+    };
+    for (auto &field: profileFields) {
+        QLabel *valueLabel = field.first.first;
+        QLabel *constLabel = field.first.second;
+        QString &value = field.second;
+        if (!value.isEmpty()) {
+            valueLabel->setText(value);
+            valueLabel->show();
+            constLabel->show();
+        } else {
+            valueLabel->hide();
+            constLabel->hide();
+        }
     }
 
     if (currentUser->getID() == user->getID()) {

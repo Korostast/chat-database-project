@@ -42,8 +42,8 @@ const QImage &ChatMemberWidget::getAvatar() const {
 }
 
 void ChatMemberWidget::setAvatar(const QImage &avatar) {
-    ChatMemberWidget::avatar = avatar;
-    ui->chat_members_avatar->setPixmap(AvatarEditor::getCircularPixmap(avatar, CHAT_MEMBER_IMAGE_SIZE));
+    ChatMemberWidget::avatar = avatar.isNull() ?  QImage(":user default avatar") : avatar;
+    ui->chat_members_avatar->setPixmap(AvatarEditor::getCircularPixmap(ChatMemberWidget::avatar, CHAT_MEMBER_IMAGE_SIZE));
 }
 
 const QString &ChatMemberWidget::getName() const {

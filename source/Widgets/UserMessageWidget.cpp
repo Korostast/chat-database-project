@@ -35,7 +35,7 @@ const QImage & UserMessageWidget::getAvatar() const {
 }
 
 void UserMessageWidget::setAvatar(const QImage &image) {
-    UserMessageWidget::avatar = image;
+    UserMessageWidget::avatar = image.isNull() ? QImage(":user default avatar") : image;
     ui->message_avatar->setPixmap(AvatarEditor::getCircularPixmap(image, USER_MESSAGE_IMAGE_SIZE));
 }
 

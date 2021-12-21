@@ -70,7 +70,7 @@ public:
         widget->setUsername(username);
 
         // TODO avatars | done ?
-        widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
+        widget->setAvatar(avatar);
 
         item->setSizeHint(widget->sizeHint());
 

@@ -88,23 +88,8 @@ struct UserChatMember {
     ROLE role;
 };
 
-// TODO refactor this
-struct ChatInfo {
-    ChatInfo(int id, QString name, QImage avatar = QImage(":chatDefaultImage"), bool group = false,
-             int countMembers = 2, ROLE role = PARTICIPANT)
-            : id(id), name(std::move(name)), avatar(std::move(avatar)), group(group), countMembers(countMembers),
-              role(role) {}
-
-    int id;
-    QString name;
-    QImage avatar;
-    bool group;
-    int countMembers;
-    ROLE role;
-};
-
 struct PersonalChatInfo {
-    PersonalChatInfo(int chatID, int friendID, QString name, QImage avatar = QImage(":chatDefaultImage"))
+    PersonalChatInfo(int chatID, int friendID, QString name, QImage avatar = QImage(":user chat image"))
             : chatID(chatID), friendID(friendID), name(std::move(name)), avatar(std::move(avatar)) {}
 
     int chatID;
@@ -117,7 +102,7 @@ struct PersonalChatInfo {
 };
 
 struct GroupChatInfo {
-    GroupChatInfo(int chatID, QString name, QImage avatar = QImage(":chatDefaultImage"), int countMembers = 2,
+    GroupChatInfo(int chatID, QString name, QImage avatar = QImage(":chat default image"), int countMembers = 2,
                   ROLE role = PARTICIPANT)
             : chatID(chatID), name(std::move(name)), avatar(std::move(avatar)), countMembers(countMembers),
               role(role) {}
@@ -132,7 +117,7 @@ struct GroupChatInfo {
 
 struct MessageInfo {
     MessageInfo(int messageID, QString content, QString time, MESSAGE_TYPE type, int chatID, int userID,
-                QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"))
+                QString username = nullptr, QImage avatar = QImage(":user default image"))
             : chatID(chatID), userID(userID), messageID(messageID), username(std::move(username)),
               time(std::move(time)), avatar(std::move(avatar)), content(std::move(content)), type(type) {}
 

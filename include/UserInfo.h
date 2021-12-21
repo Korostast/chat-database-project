@@ -17,7 +17,7 @@ private:
 
 public:
 
-    explicit UserInfo(int id = -1, QString username = nullptr, QImage avatar = QImage(":chatDefaultImage"),
+    explicit UserInfo(int id = -1, QString username = nullptr, QImage avatar = QImage(":user default image"),
                       QString status = nullptr, QString email = nullptr, QString phoneNumber = nullptr,
                       QString firstName = nullptr, QString lastName = nullptr);
 

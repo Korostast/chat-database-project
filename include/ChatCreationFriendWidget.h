@@ -9,6 +9,7 @@ namespace Ui {
 }
 QT_END_NAMESPACE
 
+// TODO Inherit from AbstractFriendWidget
 class ChatCreationFriendWidget : public QWidget {
 Q_OBJECT
 

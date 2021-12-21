@@ -1,6 +1,6 @@
 #include "ClickableLabel.h"
 
-ClickableLabel::ClickableLabel(QWidget *parent, Qt::WindowFlags f)
+ClickableLabel::ClickableLabel(QWidget *parent)
         : QLabel(parent), intPositiveData(-1) {
     setAttribute(Qt::WA_Hover, true);
     setMouseTracking(true);

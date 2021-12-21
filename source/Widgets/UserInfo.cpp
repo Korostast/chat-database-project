@@ -31,7 +31,7 @@ const QImage &UserInfo::getAvatar() const {
 }
 
 void UserInfo::setAvatar(const QImage &avatar) {
-    UserInfo::avatar = avatar;
+    UserInfo::avatar = avatar.isNull() ? QImage(":user default avatar") : avatar;
 }
 
 const QString &UserInfo::getPhoneNumber() const {

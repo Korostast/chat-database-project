@@ -30,7 +30,7 @@ void SearchPeopleWidget::setUsername(const QString &username) {
 }
 
 void SearchPeopleWidget::setAvatar(const QImage &avatar) {
-    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(avatar, SEARCH_PEOPLE_IMAGE_SIZE);
-    ui->search_people_avatar->setPixmap(resultPixmap);
     AbstractFriendWidget::setAvatar(avatar);
+    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(getAvatar(), SEARCH_PEOPLE_IMAGE_SIZE);
+    ui->search_people_avatar->setPixmap(resultPixmap);
 }

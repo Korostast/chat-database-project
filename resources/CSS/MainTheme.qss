@@ -27,7 +27,7 @@ QListWidget::item:alternate {
 }
 
 QListWidget::item:selected {
-    border-radius: 6px;
+    border-radius: 10px;
     color: #111111;
 }
 
@@ -36,10 +36,12 @@ QListWidget::item:selected:!active {
 }
 
 QListWidget::item:selected:active {
+    border-radius: 10px;
     background: rgb(121, 135, 170);
 }
 
 QListWidget::item:hover {
+border-radius: 10px;
     background: rgb(41, 50, 66);
 }
 

@@ -31,7 +31,7 @@ void OutcomingRequestWidget::setUsername(const QString &username) {
 }
 
 void OutcomingRequestWidget::setAvatar(const QImage &avatar) {
-    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(avatar, OUTCOMING_REQUESTS_IMAGE_SIZE);
-    ui->outcoming_request_avatar->setPixmap(resultPixmap);
     AbstractFriendWidget::setAvatar(avatar);
+    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(getAvatar(), OUTCOMING_REQUESTS_IMAGE_SIZE);
+    ui->outcoming_request_avatar->setPixmap(resultPixmap);
 }

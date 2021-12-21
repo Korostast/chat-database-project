@@ -99,10 +99,7 @@ void MainWindow::addPersonInSearch(int personID, const QString &username, const 
     }
     widget->setFriendID(personID);
     widget->setUsername(username);
-    widget->setAvatar(avatar.isNull() ? QImage(":chatDefaultImage") : avatar);
-
-    // TODO Check if this person is already in the list of outcoming_requests_list and friends list and incoming_requests_list ?
-
+    widget->setAvatar(avatar);
 
     item->setSizeHint(widget->sizeHint());
 

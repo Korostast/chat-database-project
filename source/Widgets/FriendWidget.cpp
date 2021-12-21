@@ -32,7 +32,7 @@ void FriendWidget::setUsername(const QString &username) {
 }
 
 void FriendWidget::setAvatar(const QImage &avatar) {
-    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(avatar, FRIEND_IMAGE_SIZE);
-    ui->friend_avatar->setPixmap(resultPixmap);
     AbstractFriendWidget::setAvatar(avatar);
+    QPixmap resultPixmap = AvatarEditor::getCircularPixmap(getAvatar(), FRIEND_IMAGE_SIZE);
+    ui->friend_avatar->setPixmap(resultPixmap);
 }

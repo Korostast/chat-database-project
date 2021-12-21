@@ -36,7 +36,7 @@ public:
     }
 
     virtual void setAvatar(const QImage &avatar) {
-        AbstractFriendWidget::avatar = avatar;
+        AbstractFriendWidget::avatar = avatar.isNull() ? QImage(":user default avatar") : avatar;
     }
 
 protected:

@@ -76,7 +76,7 @@ void MainWindow::sign_in_button_released() {
         // TODO database authorization
         currentUser = new UserInfo(sqlAuthenticateUser(password, emailOrUsername));
         if (currentUser->getAvatar().isNull())
-            currentUser->setAvatar(QImage(":chatDefaultImage"));
+            currentUser->setAvatar(QImage(":user default avatar"));
         ui->current_user_name_label->setText(currentUser->getUsername());
         ui->current_user_avatar_label->setPixmap(
                 AvatarEditor::getCircularPixmap(currentUser->getAvatar(), CURRENT_USER_IMAGE_SIZE));
@@ -109,8 +109,7 @@ void MainWindow::register_button_released() {
     try {
         // TODO database register account
         currentUser = new UserInfo(sqlRegisterUser(username, email, password));
-        if (currentUser->getAvatar().isNull())
-            currentUser->setAvatar(QImage(":chatDefaultImage"));
+        currentUser->setAvatar(QImage(":user default avatar")); // TODO this should be in sql foo?
         ui->current_user_name_label->setText(currentUser->getUsername());
         ui->current_user_avatar_label->setPixmap(
                 AvatarEditor::getCircularPixmap(currentUser->getAvatar(), CURRENT_USER_IMAGE_SIZE));

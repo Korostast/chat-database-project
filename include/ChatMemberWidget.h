@@ -21,6 +21,7 @@ private:
     QString name;
 
     ROLE role;
+
 public:
     int getID() const;
 

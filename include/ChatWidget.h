@@ -39,6 +39,8 @@ public:
 
     const QImage &getAvatar() const;
 
+    void setAvatar(const QImage &image);
+
     const QString &getName() const;
 
     int getCountMembers() const;
@@ -56,8 +58,8 @@ public:
     void setGroup(bool group);
 
     void setName(const QString &name);
-
 public:
+
     Ui::ChatWidget *ui;
 
     explicit ChatWidget(QWidget *parent = nullptr);
@@ -65,8 +67,6 @@ public:
     ~ChatWidget() override;
 
     void mouseReleaseEvent(QMouseEvent *event) override;
-
-    void setAvatar(const QImage &image);
 };
 
 #endif //CHATDATABASEPROJECT_CHATWIDGET_H
