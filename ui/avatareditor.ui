@@ -32,7 +32,7 @@
    <item row="0" column="1">
     <widget class="QStackedWidget" name="avatar_editor_stacked_widget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="choose_file_page">
       <property name="sizePolicy">
@@ -62,6 +62,7 @@
           <property name="font">
            <font>
             <pointsize>12</pointsize>
+            <bold>true</bold>
            </font>
           </property>
           <property name="text">
@@ -86,7 +87,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Загрузите вашу будущую аватарку. Вы можете загрузить изображение в формате PNG.</string>
+        <string>Загрузите вашу будущую аватарку. Вы можете загрузить изображение в формате PNG, JPG или GIF.</string>
        </property>
        <property name="scaledContents">
         <bool>false</bool>

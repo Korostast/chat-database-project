@@ -26,6 +26,7 @@ QByteArray imageToBase64(const QImage &img) {
     QByteArray ba;
     QBuffer buffer(&ba);
     buffer.open(QIODevice::WriteOnly);
+    qDebug() << img.format();
     img.save(&buffer, "PNG");
     return ba.toBase64();
 }

@@ -151,6 +151,7 @@ void AvatarEditor::saveImage() {
                                                                       Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
             sqlUpdateAvatar(MainWindow::currentUser->getID(), result);
+            mainWindow->ui->current_user_avatar_label->setPixmap(getCircularPixmap(result, CURRENT_USER_IMAGE_SIZE));
             break;
         }
         default: {
@@ -169,7 +170,7 @@ void AvatarEditor::setChooseFilePage() const {
 // Let user choose an image
 void AvatarEditor::editorFileChooserOpen() {
     qDebug() << "Open file chooser";
-    QString fileName = QFileDialog::getOpenFileName(this, "Open a file", "/", "Image Files (*.png)");
+    QString fileName = QFileDialog::getOpenFileName(this, "Open a file", "/", "Images (*.png *.jpg *.jpeg *.gif)");
     if (fileName != nullptr) { // TODO refactor
         qDebug() << "File chosen:" << fileName;
         loadImageIntoScene(fileName);
