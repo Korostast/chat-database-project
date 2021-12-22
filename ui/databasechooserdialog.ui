@@ -62,7 +62,7 @@
             </font>
            </property>
            <property name="maxLength">
-            <number>32</number>
+            <number>41</number>
            </property>
            <property name="echoMode">
             <enum>QLineEdit::Password</enum>
