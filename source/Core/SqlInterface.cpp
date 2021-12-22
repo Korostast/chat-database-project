@@ -19,7 +19,7 @@ QString insertString(const QString &s) {
     if (s.isEmpty())
         return "null";
     else
-        return QString("'%1'").arg(s);
+        return QString("'%1'").arg(QString(s).replace("'", "''"));
 }
 
 QByteArray imageToBase64(const QImage &img) {
@@ -27,7 +27,7 @@ QByteArray imageToBase64(const QImage &img) {
     QBuffer buffer(&ba);
     buffer.open(QIODevice::WriteOnly);
     qDebug() << img.format();
-    img.save(&buffer, "PNG");
+    img.save(&buffer, "png");
     return ba.toBase64();
 }
 
@@ -611,7 +611,6 @@ void sqlChooseDatabase(const QString &databaseName) {
 
 void sqlUpdateChatName(int chatID, const QString &newName) {
     qDebug() << "Updating avatar of chat with id =" << chatID;
-
     QSqlQuery q;
     QString qStr;
 
@@ -663,8 +662,9 @@ void sqlUpdatePassword(int userID, const QString &oldPassword, const QString &ne
         qWarning() << q.lastError().databaseText();
     if (!q.next())
         throw QSqlException("Changing password failed");
-    if (!q.value("result").toBool()){
-        throw QSqlException("Password is not changed because old password is incorrect");}
+    if (!q.value("result").toBool()) {
+        throw QSqlException("Password is not changed because old password is incorrect");
+    }
 
     // Step 2 - Update password
     qStr = QString("call updatePassword(%1, %2)")

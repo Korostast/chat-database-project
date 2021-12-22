@@ -301,6 +301,10 @@ int MainWindow::deleteMessage(UserMessageWidget *message) const {
     int size = ui->messageList->count();
     for (int i = 0; i < size; ++i) {
         auto *widget = qobject_cast<UserMessageWidget *>(ui->messageList->itemWidget(ui->messageList->item(i)));
+
+        if (widget == nullptr)
+            continue;
+
         if (message->getMessageID() == widget->getMessageID()) {
             delete ui->messageList->takeItem(i);
             return i;
