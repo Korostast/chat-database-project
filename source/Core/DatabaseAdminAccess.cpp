@@ -100,16 +100,17 @@ void DatabaseChooserDialog::choose_database() {
     // If we confirmed choosing
     if (reply == QMessageBox::Yes) {
         qDebug() << QString("Chose database with name: %1").arg(databaseName);
+        // TODO database choose database
+        sqlChooseDatabase(databaseName);
+
         auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());
 
         QFontMetrics metrics(mainWindow->ui->current_database_name_label->font());
-        QString elidedText = metrics.elidedText("Текущая БД: " + databaseName,
+        QString elidedText = metrics.elidedText("Текущая БД: " + dbName(),
                                                 Qt::ElideRight, mainWindow->ui->current_database_name_label->width());
         mainWindow->ui->current_database_name_label->setText(elidedText);
         mainWindow->ui->current_database_name_label->setToolTip(databaseName);
 
-        // TODO database choose database
-        sqlChooseDatabase(databaseName);
         close();
     }
 }
