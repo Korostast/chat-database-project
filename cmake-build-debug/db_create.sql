@@ -4,36 +4,34 @@ create table Chat
         primary key,
     chat_name    varchar(32)   not null,
     is_group     tinyint(1)    not null,
-    thumbnail    blob          null,
+    avatar       blob          null,
     member_count int default 0 null
 );
 
 create table User
 (
-    id             int auto_increment
+    id       int auto_increment
         primary key,
-    username       varchar(16)   not null,
-    profile_status varchar(200)  null,
-    friend_count   int default 0 null,
-    thumbnail      blob          null,
+    username varchar(16) not null,
+    avatar   longblob    null,
     constraint username
         unique (username)
 );
 
 create table Account
 (
-    id            int          not null
+    id           int           not null
         primary key,
-    password_hash varchar(32)  not null,
-    email         varchar(320) not null,
-    phone_number  varchar(15)  null,
-    created_date  date         not null,
-    first_name    varchar(32)  null,
-    last_name     varchar(32)  null,
+    password     varchar(32)   not null,
+    email        varchar(320)  not null,
+    phone_number varchar(15)   null,
+    created_date date          not null,
+    first_name   varchar(32)   null,
+    last_name    varchar(32)   null,
+    friend_count int default 0 null,
+    status       varchar(200)  null,
     constraint email
         unique (email),
-    constraint phone_number
-        unique (phone_number),
     constraint Account_ibfk_1
         foreign key (id) references User (id)
             on update cascade on delete cascade
@@ -49,7 +47,7 @@ create table Chat_to_User
 (
     chat_id   int                                                                        not null,
     user_id   int                                                                        not null,
-    user_role enum ('admin', 'moderator', 'participant', 'viewer') default 'participant' not null,
+    user_role enum ('viewer', 'participant', 'moderator', 'admin') default 'participant' null,
     primary key (chat_id, user_id),
     constraint Chat_to_User_ibfk_1
         foreign key (chat_id) references Chat (id)
@@ -61,6 +59,26 @@ create table Chat_to_User
 
 create index user_id
     on Chat_to_User (user_id);
+
+create definer = admin@`%` trigger userJoinedChat
+    after insert
+    on Chat_to_User
+    for each row
+begin
+    update Chat C
+    set C.member_count = C.member_count + 1
+    where C.id = NEW.chat_id;
+end;
+
+create definer = admin@`%` trigger userLeftChat
+    before delete
+    on Chat_to_User
+    for each row
+begin
+    update Chat C
+    set C.member_count = C.member_count - 1
+    where C.id = OLD.chat_id;
+end;
 
 create table Friend_List
 (
@@ -83,9 +101,23 @@ create definer = admin@`%` trigger brokenFriendship
     on Friend_List
     for each row
 begin
-    update User U
-    set U.friend_count = U.friend_count - 1
-    where U.id in (OLD.first_id, OLD.second_id);
+    declare commonChatID int;
+
+    update Account A
+    set A.friend_count = A.friend_count - 1
+    where A.id in (OLD.first_id, OLD.second_id);
+
+    set commonChatID = (select C.id
+                        from Chat C
+                        where not C.is_group
+                          and 2 = (select count(*)
+                                   from Chat_to_User CtU
+                                   where CtU.chat_id = C.id
+                                     and CtU.user_id in (OLD.first_id, OLD.second_id)));
+
+    delete
+    from Chat C
+    where C.id = commonChatID;
 end;
 
 create definer = admin@`%` trigger newFriendship
@@ -93,9 +125,20 @@ create definer = admin@`%` trigger newFriendship
     on Friend_List
     for each row
 begin
-    update User U
-    set U.friend_count = U.friend_count + 1
-    where U.id in (NEW.first_id, NEW.second_id);
+    declare newChatID int;
+
+    update Account A
+    set A.friend_count = A.friend_count + 1
+    where A.id in (NEW.first_id, NEW.second_id);
+
+    insert into Chat(chat_name, is_group)
+    values ('<private>', false);
+
+    set newChatID = last_insert_id();
+
+    insert into Chat_to_User(chat_id, user_id)
+    values (newChatID, NEW.first_id),
+           (newChatID, NEW.second_id);
 end;
 
 create table Message
@@ -107,15 +150,11 @@ create table Message
     content_type  enum ('user_message', 'system_info') not null,
     chat_id       int                                  not null,
     user_id       int                                  null,
-    reply_id      int                                  null,
     constraint Message_ibfk_1
         foreign key (chat_id) references Chat (id)
             on update cascade on delete cascade,
     constraint Message_ibfk_2
         foreign key (user_id) references User (id)
-            on update cascade on delete set null,
-    constraint Message_ibfk_3
-        foreign key (reply_id) references Message (id)
             on update cascade on delete set null
 );
 
@@ -124,9 +163,6 @@ create index chat_id
 
 create fulltext index content
     on Message (content);
-
-create index reply_id
-    on Message (reply_id);
 
 create index user_id
     on Message (user_id);
@@ -151,81 +187,100 @@ create index username_2
     on User (username);
 
 create
-    definer = admin@`%` procedure acceptRequest(IN user_id_ int, IN requested_id_ int)
+    definer = admin@`%` procedure acceptFriendRequest(IN userID int, IN requestedID int)
 begin
-    call deleteRequest(user_id_, requested_id_);
-    call addFriend(user_id_, requested_id_);
+    call deleteFriendRequest(userID, requestedID);
+    call addFriend(userID, requestedID);
 end;
 
 create
-    definer = admin@`%` procedure addFriend(IN user_id_ int, IN friend_id_ int)
+    definer = admin@`%` procedure addFriend(IN userID int, IN friendID int)
 begin
-    insert into Friend_List values (user_id_, friend_id_);
+    insert into Friend_List
+    values (userID, friendID);
 end;
 
 create
-    definer = admin@`%` procedure authenticateUser(IN id_ int, IN password_hash_ varchar(32))
+    definer = admin@`%` procedure authenticateUser(IN userID int, IN password varchar(32))
 begin
-    select *
+    select U.id, U.username, U.avatar, A.status, A.email
     from User U
              join Account A on U.id = A.id
-    where U.id = id_ and A.password_hash = password_hash_;
+    where U.id = userID
+      and A.password = password;
 end;
 
 create
-    definer = admin@`%` procedure createChat(IN chat_name_ varchar(32), IN is_group_ tinyint(1))
+    definer = admin@`%` procedure checkPassword(IN userID int, IN password varchar(32))
 begin
-    insert into Chat(chat_name, is_group) VALUES (chat_name_, is_group_);
+    select password = (select A.password from Account A where id = userID) as result;
 end;
 
 create
-    definer = admin@`%` procedure deleteAccount(IN user_id_ int)
+    definer = admin@`%` procedure createGroupChat(IN chatName varchar(32), IN avatar longblob)
 begin
-    delete from User where id = user_id_;
+    insert into Chat(chat_name, avatar, is_group)
+    values (chatName, avatar, true);
+    select last_insert_id();
 end;
 
 create
-    definer = admin@`%` procedure deleteChat(IN id_ int)
+    definer = admin@`%` procedure deleteChat(IN chatID int)
 begin
-    delete from Chat where id = id_;
+    delete
+    from Chat
+    where id = chatID;
 end;
 
 create
-    definer = admin@`%` procedure deleteFriend(IN user_id_ int, IN friend_id_ int)
+    definer = admin@`%` procedure deleteFriend(IN userID int, IN friendID int)
 begin
     delete
     from Friend_List
-    where first_id = user_id_ and second_id = friend_id_
-       or first_id = friend_id_ and second_id = user_id_;
+    where first_id = userID and second_id = friendID
+       or first_id = friendID and second_id = userID;
 end;
 
 create
-    definer = admin@`%` procedure deleteMessage(IN id_ int)
+    definer = admin@`%` procedure deleteFriendRequest(IN userID int, IN requestedID int)
 begin
-    delete from Message where id = id_;
+    delete
+    from Request_List
+    where user_id = userID
+      and requested_id = requestedID;
 end;
 
 create
-    definer = admin@`%` procedure deleteMessageByPattern(IN chat_id_ int, IN pattern varchar(4000))
+    definer = admin@`%` procedure deleteMessage(IN messageID int)
 begin
     delete
     from Message
-    where chat_id = chat_id_
+    where id = messageID;
+end;
+
+create
+    definer = admin@`%` procedure deleteMessagesByPattern(IN chatID int, IN pattern varchar(4000))
+begin
+    delete
+    from Message
+    where chat_id = chatID
       and content like concat('%', pattern, '%');
 end;
 
 create
-    definer = admin@`%` procedure deleteRequest(IN user_id_ int, IN requested_id_ int)
+    definer = admin@`%` procedure deleteUser(IN userID int)
 begin
-    delete from Request_List where user_id = user_id_ and requested_id = requested_id_;
+    delete
+    from User
+    where id = userID;
 end;
 
 create
-    definer = admin@`%` procedure editMessage(IN id_ int, IN content_ varchar(4000))
+    definer = admin@`%` procedure editMessage(IN messageID int, IN newContent varchar(4000))
 begin
     update Message
-    set content = content_
-    where id = id_;
+    set content = newContent
+    where id = messageID;
 end;
 
 create
@@ -238,127 +293,167 @@ begin
 end;
 
 create
-    definer = admin@`%` procedure getChatList(IN user_id int)
+    definer = admin@`%` procedure getChatMembers(IN chatID int)
 begin
-    select C.id,
-           if(C.is_group, C.chat_name, (select U.username
-                                        from Chat_to_User CtU2
-                                                 join User U on U.id = CtU2.user_id
-                                        where CtU2.chat_id = C.id
-                                          and U.id != user_id)),
-           C.thumbnail,
-           C.is_group,
-           C.member_count,
-           CtU.user_role
-    from Chat C
-             join Chat_to_User CtU on C.id = CtU.chat_id
-    where CtU.user_id = user_id;
-end;
-
-create
-    definer = admin@`%` procedure getChatMembers(IN chat_id_ int)
-begin
-    select U.id, U.username
+    select U.id, U.username, U.avatar, CtU.user_role - 1 as user_role
     from Chat_to_User CtU
              join User U on CtU.user_id = U.id
-    where CtU.chat_id = chat_id_;
+    where CtU.chat_id = chatID;
 end;
 
 create
-    definer = admin@`%` procedure getFriends(IN user_id int)
+    definer = admin@`%` procedure getFriends(IN userID int)
 begin
-    select U.id, U.username, U.thumbnail
+    select U.id, U.username, U.avatar
     from Friend_List FL
              join User U on U.id = FL.first_id
-    where user_id = FL.second_id
+    where userID = FL.second_id
     union
-    select U.id, U.username, U.thumbnail
+    select U.id, U.username, U.avatar
     from Friend_List FL
              join User U on U.id = FL.second_id
-    where user_id = FL.first_id;
+    where userID = FL.first_id;
 end;
 
 create
-    definer = admin@`%` procedure getIncomingRequests(IN user_id int)
+    definer = admin@`%` procedure getGroupChats(IN userID int)
 begin
-    select U.id, U.username
-    from Request_List RL
-             join User U on U.id = RL.requested_id
-    where user_id = RL.user_id;
+    select C.id, C.chat_name, C.avatar, C.member_count, CtU.user_role - 1 as user_role
+    from Chat C
+             join Chat_to_User CtU on C.id = CtU.chat_id
+    where CtU.user_id = userID
+      and C.is_group;
 end;
 
 create
-    definer = admin@`%` procedure getMessages(IN chat_id int)
+    definer = admin@`%` procedure getIncomingRequests(IN userID int)
 begin
-    select M.id, M.content, M.sent_datetime, M.content_type, M.chat_id, M.user_id, M.reply_id, U.username
-    from Message M
-             join User U on M.user_id = U.id
-    where M.chat_id = chat_id;
-end;
-
-create
-    definer = admin@`%` procedure getOutgoingRequests(IN user_id int)
-begin
-    select U.id, U.username
+    select U.id, U.username, U.avatar
     from Request_List RL
              join User U on U.id = RL.user_id
-    where user_id = RL.requested_id;
+    where userID = RL.requested_id;
+end;
+
+create
+    definer = admin@`%` procedure getMessages(IN chatID int)
+begin
+    select M.id,
+           M.content,
+           M.sent_datetime,
+           M.content_type - 1 as content_type,
+           M.chat_id,
+           M.user_id,
+           U.username,
+           U.avatar
+    from Message M
+             join User U on M.user_id = U.id
+    where M.chat_id = chatID;
+end;
+
+create
+    definer = admin@`%` procedure getOutgoingRequests(IN userID int)
+begin
+    select U.id, U.username, U.avatar
+    from Request_List RL
+             join User U on U.id = RL.requested_id
+    where userID = RL.user_id;
+end;
+
+create
+    definer = admin@`%` procedure getPersonalChats(IN userID int)
+begin
+    select C.id,
+           (select U.id
+            from Chat_to_User CtU2
+                     join User U on U.id = CtU2.user_id
+            where CtU2.chat_id = C.id
+              and U.id != userID) as friend_id,
+           (select U.username
+            from Chat_to_User CtU2
+                     join User U on U.id = CtU2.user_id
+            where CtU2.chat_id = C.id
+              and U.id != userID) as friend_username,
+           (select U.avatar
+            from Chat_to_User CtU2
+                     join User U on U.id = CtU2.user_id
+            where CtU2.chat_id = C.id
+              and U.id != userID) as friend_avatar
+    from Chat C
+             join Chat_to_User CtU on C.id = CtU.chat_id
+    where CtU.user_id = userID
+      and not C.is_group;
 end;
 
 create
     definer = admin@`%` procedure getProfile(IN userID int)
 begin
-    select U.id, U.username, U.thumbnail, U.profile_status, A.email, A.phone_number, A.first_name, A.last_name
+    select U.id,
+           U.username,
+           U.avatar,
+           A.status,
+           A.email,
+           A.phone_number,
+           A.first_name,
+           A.last_name
     from User U
              join Account A on U.id = A.id
     where U.id = userID;
 end;
 
 create
-    definer = admin@`%` procedure joinChat(IN chat_id_ int, IN user_id_ int)
+    definer = admin@`%` procedure joinChat(IN chatID int, IN userID int)
 begin
-    insert into Chat_to_User(chat_id, user_id) values (chat_id_, user_id_);
+    insert into Chat_to_User(chat_id, user_id)
+    values (chatID, userID);
 end;
 
 create
-    definer = admin@`%` procedure leaveChat(IN chat_id_ int, IN user_id_ int)
+    definer = admin@`%` procedure leaveChat(IN chatID int, IN userID int)
 begin
-    delete from Chat_to_User where chat_id = chat_id_ and user_id = user_id_;
+    delete
+    from Chat_to_User
+    where chat_id = chatID
+      and user_id = userID;
 end;
 
 create
-    definer = admin@`%` procedure makeRequest(IN user_id_ int, IN requested_id_ int)
+    definer = admin@`%` procedure registerUser(IN username varchar(16), IN password varchar(32), IN email varchar(320))
 begin
-    insert into Request_List values (user_id_, requested_id_);
+    declare newID int;
+
+    insert into User(username) values (username);
+    set newID = last_insert_id();
+    insert into Account(id, password, email, created_date) values (newID, password, email, now());
+
+    select U.id, U.username, U.avatar, A.status, A.email
+    from User U
+             join Account A on U.id = A.id
+    where U.id = newID;
 end;
 
 create
-    definer = admin@`%` procedure registerAccount(IN username_ varchar(16), IN password_hash_ varchar(32),
-                                                  IN email_ varchar(320))
+    definer = admin@`%` procedure searchMessagesByPattern(IN chatID int, IN pattern varchar(4000))
 begin
-    declare new_id int;
-    insert into User(username) values (username_);
-    set new_id = (select U.id from User U order by U.id desc limit 1);
-    insert into Account(id, password_hash, email, created_date) values (new_id, password_hash_, email_, now());
-    select new_id;
-end;
-
-create
-    definer = admin@`%` procedure searchMessage(IN chat_id int, IN message varchar(4000))
-begin
-    select *
+    select M.id,
+           M.content,
+           M.sent_datetime,
+           M.content_type - 1 as content_type,
+           M.chat_id,
+           M.user_id,
+           U.username,
+           U.avatar
     from Message M
              join User U on M.user_id = U.id
-    where M.chat_id = chat_id
-      and M.content like concat('%', message, '%');
+    where M.chat_id = chatID
+      and M.content like concat('%', pattern, '%');
 end;
 
 create
-    definer = admin@`%` procedure searchUsers(IN userID int, IN username varchar(16))
+    definer = admin@`%` procedure searchUsersByPattern(IN userID int, IN pattern varchar(16))
 begin
     select U.id,
            U.username,
-           U.thumbnail,
+           U.avatar,
            (case
                 when exists(select *
                             from Friend_List FL
@@ -378,7 +473,7 @@ begin
                 else 'stranger'
                end) as relation
     from User U
-    where U.username like concat('%', username, '%');
+    where U.username like concat('%', pattern, '%');
 end;
 
 create
@@ -389,50 +484,81 @@ begin
 end;
 
 create
-    definer = admin@`%` procedure sendMessage(IN chat_id_ int, IN user_id_ int, IN content_ varchar(4000),
-                                              IN content_type_ enum ('user_message', 'system_info'), IN reply_id_ int)
+    definer = admin@`%` procedure sendMessage(IN chatID int, IN userID int, IN content varchar(4000),
+                                              IN contentType enum ('user_message', 'system_info'))
 begin
-    insert into Message(content, sent_datetime, content_type, chat_id, user_id, reply_id)
-    values (content_, now(), content_type_, chat_id_, user_id_, reply_id_);
-    select last_insert_id();
+    insert into Message(content, sent_datetime, content_type, chat_id, user_id)
+    values (content, now(), contentType, chatID, userID);
+
+    select last_insert_id() as id;
 end;
 
 create
-    definer = admin@`%` procedure updateAccount(IN id_ int, IN password_hash_ varchar(32), IN email_ varchar(320),
-                                                IN phone_number_ varchar(15))
+    definer = admin@`%` procedure updateAvatar(IN userID int, IN newAvatar longblob)
 begin
-    update Account
-    set password_hash = password_hash_,
-        email         = email_,
-        phone_number  = phone_number_
-    where id = id_;
+    update User U
+    set U.avatar = newAvatar
+    where U.id = userID;
 end;
 
 create
-    definer = admin@`%` procedure updateChatName(IN id_ int, IN chat_name_ varchar(32))
+    definer = admin@`%` procedure updateChatAvatar(IN chatID int, IN newAvatar longblob)
 begin
-    update Chat
-    set chat_name = chat_name_
-    where id = id_;
+    update Chat C
+    set C.avatar = newAvatar
+    where C.id = chatID;
 end;
 
 create
-    definer = admin@`%` procedure updateRole(IN chat_id_ int, IN user_id_ int,
-                                             IN user_role_ enum ('admin', 'moderator', 'participant', 'viewer'))
+    definer = admin@`%` procedure updateChatName(IN chatID int, IN newName varchar(32))
+begin
+    update Chat C
+    set C.chat_name = newName
+    where C.id = chatID;
+end;
+
+create
+    definer = admin@`%` procedure updateEmail(IN userID int, IN newEmail varchar(320))
+begin
+    update Account A
+    set A.email = newEmail
+    where A.id = userID;
+end;
+
+create
+    definer = admin@`%` procedure updateOther(IN userID int, IN newStatus varchar(200), IN newPhoneNumber varchar(15),
+                                              IN newFirstName varchar(32), IN newLastName varchar(32))
+begin
+    update Account A
+    set A.status       = newStatus,
+        A.phone_number = newPhoneNumber,
+        A.first_name   = newFirstName,
+        A.last_name    = newLastName
+    where A.id = userID;
+end;
+
+create
+    definer = admin@`%` procedure updatePassword(IN userID int, IN newPassword varchar(32))
+begin
+    update Account A
+    set A.password = newPassword
+    where A.id = userID;
+end;
+
+create
+    definer = admin@`%` procedure updateRole(IN chatID int, IN userID int,
+                                             IN newRole enum ('viewer', 'participant', 'moderator', 'admin'))
 begin
     update Chat_to_User
-    set user_role = user_role_
-    where chat_id = chat_id_
-      and user_id = user_id_;
+    set user_role = newRole
+    where chat_id = chatID
+      and user_id = userID;
 end;
 
 create
-    definer = admin@`%` procedure updateUser(IN id_ int, IN username_ varchar(16), IN profile_status_ varchar(200),
-                                             IN thumbnail_ blob)
+    definer = admin@`%` procedure updateUsername(IN userID int, IN newUsername varchar(16))
 begin
-    update User
-    set username       = username_,
-        profile_status = profile_status_,
-        thumbnail      = thumbnail_
-    where id = id_;
+    update User U
+    set U.username = newUsername
+    where U.id = userID;
 end;
