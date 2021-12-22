@@ -11,14 +11,15 @@ QString MainWindow::checkAuthInput(const QString &password, const QString &email
     // If it is email
     if (!emailOrUsername.contains("@")) {
         for (auto letter: emailOrUsername.toLatin1()) {
-            if (!isalnum(letter)) {
-                return "Username can consist only of latin characters and digits";
+            if (!(isalnum(letter) || letter == '_')) {
+                return "Username can consist only of latin characters, digits and _";
             }
         }
     } else {
         if (emailOrUsername.count() > 32) {
             return "Username can not be more than 32 characters long";
         }
+
     }
     if (password.isEmpty()) {
         return "Password field is empty";
@@ -38,8 +39,8 @@ QString MainWindow::checkRegisterInput(const QString &username, const QString &p
         return "Username field is empty";
     }
     for (auto letter: username.toLatin1()) {
-        if (!isalnum(letter)) {
-            return "Username can consist only of latin characters and digits";
+        if (!(isalnum(letter) || letter == '_')) {
+            return "Username can consist only of latin characters, digits and _";
         }
     }
     if (password.isEmpty()) {
