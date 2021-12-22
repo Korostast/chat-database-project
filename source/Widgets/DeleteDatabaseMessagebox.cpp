@@ -1,3 +1,4 @@
+#include <QMessageBox>
 #include "DeleteDatabaseMessagebox.h"
 #include "ui_deletedatabasemessagebox.h"
 #include "SqlInterface.h"
@@ -22,6 +23,10 @@ void DeleteDatabaseMessagebox::delete_database_edit_text_changed(const QString &
 
 void DeleteDatabaseMessagebox::confirm_delete_database() {
     qDebug() << QString("Database with name \"%1\" has been deleted").arg(databaseName);
-    sqlDeleteDatabase(databaseName);
+    try {
+        sqlDeleteDatabase(databaseName);
+    } catch (QSqlException &error) {
+        QMessageBox::critical(this, "Ошибка", error.what());
+    }
     close();
 }
