@@ -25,6 +25,8 @@ public:
 private:
     bool isDatabaseNameCorrect(const QString& databaseName);
 
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
 
     void add_database();

@@ -114,3 +114,12 @@ void DatabaseChooserDialog::choose_database() {
         close();
     }
 }
+
+void DatabaseChooserDialog::closeEvent(QCloseEvent *event) {
+    qInfo() << "Closing database chooser window";
+    if (ui->admin_database_creation_stacked_widget->currentIndex() == 1) {
+        // TODO call necessary function
+        []{};
+    }
+    QDialog::closeEvent(event);
+}
