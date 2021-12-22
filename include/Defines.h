@@ -44,7 +44,7 @@
 #define MESSAGE_LINE_WIDTH 435
 
 
-#define DEFAULT_DATABASE "template"
+#define DEFAULT_DATABASE "Europe"
 
 #include <QImage>
 #include <utility>

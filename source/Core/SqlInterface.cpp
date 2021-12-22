@@ -574,23 +574,46 @@ void sqlAddMembers(int chatID, const std::vector<int> &participants) {
     }
 }
 
-bool sqlAdminAuth(const QString &password) {
-    return true;
+bool sqlAuthenticateAdmin(const QString &password, QString databaseName) {
+    if (databaseName == nullptr)
+        databaseName = dbName();
+
+    QFile qFile("db_access.txt");
+    if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qCritical() << "Could not find 'db_access.txt' file with access credentials";
+        exit(100);
+    }
+
+    QTextStream qTextStream(&qFile);
+    QSqlDatabase db = QSqlDatabase::addDatabase(qTextStream.readLine(), "admin");
+    db.setHostName(qTextStream.readLine());
+    db.setDatabaseName(databaseName);
+    db.setUserName("admin");
+    db.setPassword(password);
+
+    return db.open();
+}
+
+void sqlExitAdmin() {
+    QSqlDatabase::database("admin").close();
+    QSqlDatabase::removeDatabase("admin");
 }
 
 void sqlCreateDatabase(const QString &databaseName) {
     qWarning() << "CREATING DATABASE" << databaseName;
-    QSqlQuery q;
+    QSqlQuery q(QSqlDatabase::database("admin"));
     QString qStr;
 
     // Step 1 - Create the database itself
     qStr = QString("create database %1")
-            .arg(insertString(databaseName));
+            .arg(databaseName);
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 
-    // Step 2 - Switch current connection the new database
-    sqlChooseDatabase(databaseName);
+    // Step 2 - Switch current administrative connection the new database
+    QString password = QSqlDatabase::database("admin").password();
+    sqlExitAdmin();
+    sqlAuthenticateAdmin(password, databaseName);
 
     // Step 3 - Populate the database with tables, functions and triggers
     QFile qFile("db_create.sql");
@@ -599,17 +622,27 @@ void sqlCreateDatabase(const QString &databaseName) {
         exit(100);
     }
     qStr = qFile.readAll();
+    q = QSqlQuery(QSqlDatabase::database("admin"));
+    if (!q.exec(qStr))
+        qWarning() << q.lastError().databaseText();
+
+    // Step 4 - Grant user 'public' required privileges to use the database
+    qStr = QString("grant select, update, insert, delete, execute on %1.* to public;")
+            .arg(databaseName);
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
 
 void sqlDeleteDatabase(const QString &databaseName) {
     qWarning() << "DELETING DATABASE" << databaseName;
-    QSqlQuery q;
+    QSqlQuery q(QSqlDatabase::database("admin"));
     QString qStr;
 
+    if (databaseName == DEFAULT_DATABASE)
+        throw QSqlException("This database is selected as default and cannot be deleted");
+
     qStr = QString("drop database %1")
-            .arg(insertString(databaseName));
+            .arg(databaseName);
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }

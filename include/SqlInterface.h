@@ -76,7 +76,9 @@ int sqlCreateGroupChat(int creatorID, const QString &chatName,
 
 void sqlAddMembers(int chatID, const std::vector<int> &participants);
 
-bool sqlAdminAuth(const QString &password);
+bool sqlAuthenticateAdmin(const QString &password, QString databaseName);
+
+void sqlExitAdmin();
 
 void sqlCreateDatabase(const QString &databaseName);
 

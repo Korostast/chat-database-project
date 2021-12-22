@@ -4,7 +4,7 @@ create table Chat
         primary key,
     chat_name    varchar(32)   not null,
     is_group     tinyint(1)    not null,
-    avatar       blob          null,
+    avatar       longblob          null,
     member_count int default 0 null
 );
 
