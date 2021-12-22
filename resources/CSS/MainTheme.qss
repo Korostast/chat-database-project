@@ -98,7 +98,8 @@ QPushButton::checked {
 }
 
 QPushButton#chat_back_button, #chat_bar_search_button, #chat_bar_search_cancel, #messages_search_button,
-#messages_search_remove_messages, #messages_search_cancel {
+#messages_search_remove_messages, #messages_search_cancel, #switch_personal_chats, #unused_switch_group_chats,
+#unused_switch_personal_chats, #switch_group_chats {
     background: transparent;
     border-style: solid;
     border-width: 2px;
@@ -109,15 +110,24 @@ QPushButton#chat_back_button, #chat_bar_search_button, #chat_bar_search_cancel, 
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     border-color: #b9b9bb;
-    padding: 2px;
+    padding: 8px 0 4px 0;
 }
 
-QPushButton#chat_back_button::hover, #chat_bar_search_button::hover, #chat_bar_search_cancel::hover,
-#messages_search_button::hover, #messages_search_remove_messages::hover, #messages_search_cancel::hover {
+QPushButton#chat_back_button::checked, #chat_bar_search_button::checked, #chat_bar_search_cancel::checked,
+#messages_search_button::checked, #messages_search_remove_messages::checked, #messages_search_cancel::checked,
+#switch_personal_chats::checked, #unused_switch_group_chats::checked, #unused_switch_personal_chats::checked,
+#switch_group_chats::checked {
     background: #393737;
     border-radius: 8px 8px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+QPushButton#chat_back_button::hover, #chat_bar_search_button::hover, #chat_bar_search_cancel::hover,
+#messages_search_button::hover, #messages_search_remove_messages::hover, #messages_search_cancel::hover,
+#switch_personal_chats::hover, #unused_switch_group_chats::hover, #unused_switch_personal_chats::hover,
+#switch_group_chats::hover {
+    background: #393737;
 }
 
 #chat_bar_search_edit, #messages_search_edit {

@@ -593,8 +593,11 @@ border-radius: 12px;</string>
             <property name="leftMargin">
              <number>0</number>
             </property>
+            <property name="topMargin">
+             <number>30</number>
+            </property>
             <property name="rightMargin">
-             <number>6</number>
+             <number>8</number>
             </property>
             <item>
              <widget class="QPushButton" name="profile_button">
@@ -792,7 +795,7 @@ border-radius: 12px;</string>
              </size>
             </property>
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="personal_chats_page">
              <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0,0,0,0" columnstretch="0">
@@ -1818,7 +1821,7 @@ border-radius: 12px;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>505</width>
+                   <width>449</width>
                    <height>956</height>
                   </rect>
                  </property>
