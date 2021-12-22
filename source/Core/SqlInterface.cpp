@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QDateTime>
 #include <QBuffer>
+#include <QCryptographicHash>
 
 QSqlException::QSqlException(std::string message) : msg(std::move(message)) {}
 
@@ -20,6 +21,10 @@ QString insertString(const QString &s) {
         return "null";
     else
         return QString("'%1'").arg(QString(s).replace("'", "''"));
+}
+
+QString hash(const QString &s) {
+    return QCryptographicHash::hash(s.toUtf8(), QCryptographicHash::Sha3_512);
 }
 
 QByteArray imageToBase64(const QImage &img) {
@@ -72,13 +77,16 @@ UserInfo sqlRegisterUser(const QString &username, const QString &email, const QS
     QSqlQuery q;
     QString qStr;
 
+    // Encrypt the password
+    QString passwordHash = hash(password);
+
     // Check if user with such username exists
     qStr = QString("call existsUser(%1)")
             .arg(insertString(username));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
     if (q.next())
-        throw QSqlException("User with this username already exists");
+        throw QSqlException("Пользователь с таким именем пользователя уже существует");
 
     // Check if user with such email exists
     qStr = QString("call existsUser(%1)")
@@ -86,18 +94,17 @@ UserInfo sqlRegisterUser(const QString &username, const QString &email, const QS
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
     if (q.next())
-        throw QSqlException("User with this email already exists");
+        throw QSqlException("Пользователь с таким адресом почты уже существует");
 
     // Register the account
     qStr = QString("call registerUser(%1, %2, %3)")
             .arg(insertString(username))
-            .arg(insertString(password))
+            .arg(insertString(passwordHash))
             .arg(insertString(email));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
-    if (!q.next())
-        throw QSqlException("Registration failed");
 
+    q.next();
     UserInfo result(q.value("id").toInt(),
                     q.value("username").toString(),
                     QImage::fromData(q.value("avatar").toByteArray()));
@@ -110,25 +117,28 @@ UserInfo sqlAuthenticateUser(const QString &password, const QString &emailOrUser
     QSqlQuery q;
     QString qStr;
 
+    // Encrypt the password
+    QString password_hash = hash(password);
+
     // Check if user exists
     qStr = QString("call existsUser(%1)")
             .arg(insertString(emailOrUsername));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
     if (!q.next())
-        throw QSqlException("User with this username or email does not exist");
+        throw QSqlException("Пользователь с таким именем пользователя или почтой не существует");
 
     int userID = q.value("id").toInt();
 
     // Check credentials
     qStr = QString("call authenticateUser(%1, %2)")
             .arg(userID)
-            .arg(insertString(password));
+            .arg(insertString(password_hash));
 
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
     if (!q.next())
-        throw QSqlException("The password is incorrect. Try again");
+        throw QSqlException("Пароль неверный. Попробуйте еще раз");
 
     UserInfo result(q.value("id").toInt(),
                     q.value("username").toString(),
@@ -653,23 +663,29 @@ void sqlUpdatePassword(int userID, const QString &oldPassword, const QString &ne
     QSqlQuery q;
     QString qStr;
 
-    // Step 1 - Check that the new password differs from the old one
+    // Encrypt both the old and the new passwords
+    QString oldHash = hash(oldPassword);
+    QString newHash = hash(newPassword);
+
+    // Step 1 - Check that the old password is correct
     qStr = QString("call checkPassword(%1, %2)")
             .arg(userID)
-            .arg(insertString(oldPassword));
-
+            .arg(insertString(oldHash));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
-    if (!q.next())
-        throw QSqlException("Changing password failed");
+    q.next();
     if (!q.value("result").toBool()) {
-        throw QSqlException("Password is not changed because old password is incorrect");
+        throw QSqlException("Старый пароль неверен");
     }
 
-    // Step 2 - Update password
+    // Step 2 - Check that the new password is different from the old one
+    if (oldHash == newHash)
+        throw QSqlException("Новый пароль должен отличаться от старого");
+
+    // Step 3 - Update password
     qStr = QString("call updatePassword(%1, %2)")
             .arg(userID)
-            .arg(insertString(newPassword));
+            .arg(insertString(newHash));
     if (!q.exec(qStr))
         qWarning() << q.lastError().databaseText();
 }
