@@ -72,7 +72,7 @@ void DatabaseChooserDialog::admin_auth() {
         return;
 
     // TODO database check admin password request
-    if (sqlAuthenticateAdmin(password, nullptr)) {
+    if (dbConnectAdmin(password, nullptr)) {
         ui->admin_database_creation_stacked_widget->setCurrentIndex(1);
         ui->database_creation_list->clear();
         QList<QString> databases = sqlLoadDatabaseList();
@@ -119,7 +119,7 @@ void DatabaseChooserDialog::closeEvent(QCloseEvent *event) {
     qInfo() << "Closing database chooser window";
     if (ui->admin_database_creation_stacked_widget->currentIndex() == 1) {
         // TODO call necessary function
-        sqlExitAdmin();
+        dbCloseAdmin();
     }
     QDialog::closeEvent(event);
 }

@@ -72,6 +72,34 @@ QString dbName() {
     return QSqlDatabase::database().databaseName();
 }
 
+bool dbConnectAdmin(const QString &password, QString databaseName) {
+    if (databaseName == nullptr)
+        databaseName = dbName();
+
+    qDebug() << "Connecting to database" << databaseName << "as administrator";
+
+    QFile qFile("db_access.txt");
+    if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qCritical() << "Could not find 'db_access.txt' file with access credentials";
+        exit(100);
+    }
+
+    QTextStream qTextStream(&qFile);
+    QSqlDatabase db = QSqlDatabase::addDatabase(qTextStream.readLine(), "admin");
+    db.setHostName(qTextStream.readLine());
+    db.setDatabaseName(databaseName);
+    db.setUserName("admin");
+    db.setPassword(password);
+
+    return db.open();
+}
+
+void dbCloseAdmin() {
+    QSqlDatabase::database("admin").close();
+    QSqlDatabase::removeDatabase("admin");
+    qDebug() << "Administrative database connection closed";
+}
+
 UserInfo sqlRegisterUser(const QString &username, const QString &email, const QString &password) {
     qDebug() << "Registering" << username;
     QSqlQuery q;
@@ -574,31 +602,6 @@ void sqlAddMembers(int chatID, const std::vector<int> &participants) {
     }
 }
 
-bool sqlAuthenticateAdmin(const QString &password, QString databaseName) {
-    if (databaseName == nullptr)
-        databaseName = dbName();
-
-    QFile qFile("db_access.txt");
-    if (!qFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qCritical() << "Could not find 'db_access.txt' file with access credentials";
-        exit(100);
-    }
-
-    QTextStream qTextStream(&qFile);
-    QSqlDatabase db = QSqlDatabase::addDatabase(qTextStream.readLine(), "admin");
-    db.setHostName(qTextStream.readLine());
-    db.setDatabaseName(databaseName);
-    db.setUserName("admin");
-    db.setPassword(password);
-
-    return db.open();
-}
-
-void sqlExitAdmin() {
-    QSqlDatabase::database("admin").close();
-    QSqlDatabase::removeDatabase("admin");
-}
-
 void sqlCreateDatabase(const QString &databaseName) {
     qWarning() << "CREATING DATABASE" << databaseName;
     QSqlQuery q(QSqlDatabase::database("admin"));
@@ -612,8 +615,8 @@ void sqlCreateDatabase(const QString &databaseName) {
 
     // Step 2 - Switch current administrative connection the new database
     QString password = QSqlDatabase::database("admin").password();
-    sqlExitAdmin();
-    sqlAuthenticateAdmin(password, databaseName);
+    dbCloseAdmin();
+    dbConnectAdmin(password, databaseName);
 
     // Step 3 - Populate the database with tables, functions and triggers
     QFile qFile("db_create.sql");
