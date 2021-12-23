@@ -4,7 +4,7 @@ create table Chat
         primary key,
     chat_name    varchar(32)   not null,
     is_group     tinyint(1)    not null,
-    avatar       longblob          null,
+    avatar       longblob      null,
     member_count int default 0 null
 );
 
@@ -78,6 +78,11 @@ begin
     update Chat C
     set C.member_count = C.member_count - 1
     where C.id = OLD.chat_id;
+
+    delete
+    from Chat C
+    where C.id = OLD.chat_id
+      and C.member_count = 0;
 end;
 
 create table Friend_List
