@@ -347,7 +347,8 @@ begin
            U.avatar
     from Message M
              join User U on M.user_id = U.id
-    where M.chat_id = chatID;
+    where M.chat_id = chatID
+    order by M.sent_datetime;
 end;
 
 create

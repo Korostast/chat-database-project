@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include "DeleteDatabaseMessagebox.h"
 #include "ui_deletedatabasemessagebox.h"
+#include "ui_databasechooserdialog.h"
 #include "SqlInterface.h"
 
 DeleteDatabaseMessagebox::DeleteDatabaseMessagebox(QWidget *parent) : QDialog(parent), ui(new Ui::DeleteDatabaseMessagebox) {
@@ -25,6 +26,11 @@ void DeleteDatabaseMessagebox::confirm_delete_database() {
     qDebug() << QString("Database with name \"%1\" has been deleted").arg(databaseName);
     try {
         sqlDeleteDatabase(databaseName);
+        auto *databaseChooser = qobject_cast<DatabaseChooserDialog *>(parent());
+        QList<QListWidgetItem*> items = databaseChooser->ui->database_creation_list->selectedItems();
+        foreach(QListWidgetItem * item, items) {
+            delete databaseChooser->ui->database_creation_list->takeItem(databaseChooser->ui->database_creation_list->row(item));
+        }
     } catch (QSqlException &error) {
         QMessageBox::critical(this, "Ошибка", error.what());
     }

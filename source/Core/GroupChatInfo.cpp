@@ -137,6 +137,9 @@ void ChatDialog::leaveChat() {
 
 void ChatDialog::loadAddMemberUI() {
     // TODO database searchMessages friends
+    if (!ui->chat_dialog_add_member_button->hasFocus()) {
+        return;
+    }
     QList<UserInfo> friends = sqlLoadFriends(MainWindow::currentUser->getID());
     ui->chat_dialog_add_members_friend_list->clear();
     auto *mainWindow = qobject_cast<MainWindow *>(parentWidget());

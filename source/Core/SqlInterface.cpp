@@ -441,7 +441,7 @@ void sqlDeleteMessagesByPattern(int chatID, const QString &pattern) {
     QSqlQuery q;
     QString qStr;
 
-    qStr = QString("call deleteMessageByPattern(%1, %2)")
+    qStr = QString("call deleteMessagesByPattern(%1, %2)")
             .arg(chatID)
             .arg(insertString(pattern));
     if (!q.exec(qStr))

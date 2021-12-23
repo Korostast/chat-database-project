@@ -90,9 +90,11 @@ void MainWindow::openChat() {
     // Clear all previous messages from list
     ui->messageList->clear();
 
-    for (const auto &message: messages)
+    for (const auto &message: messages) {
         addMessage(message.chatID, message.userID, message.messageID, message.username, message.time,
                    message.avatar, message.content, message.type);
+        qDebug() << "Message with date:" << message.time;
+    }
 
     ui->messageList->scrollToBottom();
     ui->chat_avatar->setPixmap(AvatarEditor::getCircularPixmap(currentChat->getAvatar(), AVATAR_IN_CHAT_IMAGE_SIZE));
